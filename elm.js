@@ -12197,69 +12197,12 @@ Elm.Shipper.make = function (_elm) {
    _L.fromArray([]),
    _L.fromArray([A2($Html.a,
    _L.fromArray([$Html$Attributes.href("https://shippersavers.com")]),
-   _L.fromArray([$Html.text("Shipper Savers")]))]));
-   var seaportItem = F3(function (code,
-   city,
-   country) {
-      return A2($Html.tr,
-      _L.fromArray([]),
-      _L.fromArray([A2($Html.td,
-                   _L.fromArray([$Html$Attributes.$class("code")]),
-                   _L.fromArray([$Html.text(code)]))
-                   ,A2($Html.td,
-                   _L.fromArray([$Html$Attributes.$class("city")]),
-                   _L.fromArray([$Html.text(city)]))
-                   ,A2($Html.td,
-                   _L.fromArray([$Html$Attributes.$class("country")]),
-                   _L.fromArray([$Html.text(country)]))]));
-   });
-   var seaportList = A2($Html.div,
-   _L.fromArray([$Html$Attributes.id("main")
-                ,$Html$Attributes.$class("container")]),
-   _L.fromArray([A2($Html.h2,
-                _L.fromArray([$Html$Attributes.$class("content-subhead")]),
-                _L.fromArray([$Html.text("Seaports")]))
-                ,A2($Html.table,
-                _L.fromArray([$Html$Attributes.$class("pure-table")]),
-                _L.fromArray([A2($Html.thead,
-                             _L.fromArray([]),
-                             _L.fromArray([A2($Html.tr,
-                             _L.fromArray([]),
-                             _L.fromArray([A2($Html.th,
-                                          _L.fromArray([]),
-                                          _L.fromArray([$Html.text("Code")]))
-                                          ,A2($Html.th,
-                                          _L.fromArray([]),
-                                          _L.fromArray([$Html.text("City")]))
-                                          ,A2($Html.th,
-                                          _L.fromArray([]),
-                                          _L.fromArray([$Html.text("Country")]))]))]))
-                             ,A2($Html.tbody,
-                             _L.fromArray([]),
-                             _L.fromArray([A3(seaportItem,
-                                          "ALSAR",
-                                          "Sarande",
-                                          "Albania")
-                                          ,A3(seaportItem,
-                                          "RUVVO",
-                                          "Vladivostok",
-                                          "Russia")
-                                          ,A3(seaportItem,
-                                          "SEHAD",
-                                          "Halmstad",
-                                          "Sweden")]))]))]));
-   var pageHeader = A2($Html.header,
-   _L.fromArray([$Html$Attributes.$class("")]),
-   _L.fromArray([A2($Html.h1,
-   _L.fromArray([]),
-   _L.fromArray([$Html.text("Shipper Savers")]))]));
+   _L.fromArray([$Html.text("Shipper Savers!")]))]));
    var view = F2(function (address,
    model) {
       return A2($Html.div,
       _L.fromArray([$Html$Attributes.id("container")]),
-      _L.fromArray([pageHeader
-                   ,seaportList
-                   ,pageFooter]));
+      _L.fromArray([pageFooter]));
    });
    var update = F2(function (action,
    model) {
@@ -12306,9 +12249,6 @@ Elm.Shipper.make = function (_elm) {
                          ,NoOp: NoOp
                          ,update: update
                          ,view: view
-                         ,pageHeader: pageHeader
-                         ,seaportItem: seaportItem
-                         ,seaportList: seaportList
                          ,pageFooter: pageFooter
                          ,main: main};
    return _elm.Shipper.values;

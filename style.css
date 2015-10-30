@@ -1,3 +1,48 @@
-body {
-    color: #777;
+html {
+  position: relative;
+  min-height: 100%;
 }
+
+body {
+  margin: 0 0 5rem;
+  background: #ffffff;
+  color: #4f4f4f;
+  font: 14px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1.4em;
+}
+
+header {
+  text-align: center;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 2em;
+}
+.container {
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1em;
+    padding-right: 1em;
+    max-width: 768px;
+}
+
+#main {
+  
+}
+
+.content-subhead {
+  margin: 2em 0 1em 0;
+  font-weight: 300;
+  color: #888;
+  position: relative;
+}
+
+footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 5rem;
+  width: 100%;
+  text-align: center;
+  padding-top: 1em;
+  border-top: 1px solid #eee;
+}
+
