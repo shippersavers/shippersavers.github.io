@@ -12188,6 +12188,7 @@ Elm.Shipper.make = function (_elm) {
    $Basics = Elm.Basics.make(_elm),
    $Html = Elm.Html.make(_elm),
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
@@ -12198,79 +12199,114 @@ Elm.Shipper.make = function (_elm) {
    _L.fromArray([A2($Html.a,
    _L.fromArray([$Html$Attributes.href("https://shippersavers.com")]),
    _L.fromArray([$Html.text("Shipper Savers")]))]));
-   var seaportItem = F3(function (code,
-   city,
-   country) {
+   var seaportItem = function (seaport) {
       return A2($Html.tr,
       _L.fromArray([]),
       _L.fromArray([A2($Html.td,
                    _L.fromArray([$Html$Attributes.$class("code")]),
-                   _L.fromArray([$Html.text(code)]))
+                   _L.fromArray([$Html.text(seaport.code)]))
                    ,A2($Html.td,
                    _L.fromArray([$Html$Attributes.$class("city")]),
-                   _L.fromArray([$Html.text(city)]))
+                   _L.fromArray([$Html.text(seaport.city)]))
                    ,A2($Html.td,
                    _L.fromArray([$Html$Attributes.$class("country")]),
-                   _L.fromArray([$Html.text(country)]))]));
-   });
-   var seaportList = A2($Html.div,
-   _L.fromArray([$Html$Attributes.id("main")
-                ,$Html$Attributes.$class("container")]),
-   _L.fromArray([A2($Html.h2,
-                _L.fromArray([$Html$Attributes.$class("content-subhead")]),
-                _L.fromArray([$Html.text("Seaports")]))
-                ,A2($Html.table,
-                _L.fromArray([$Html$Attributes.$class("pure-table")]),
-                _L.fromArray([A2($Html.thead,
-                             _L.fromArray([]),
-                             _L.fromArray([A2($Html.tr,
-                             _L.fromArray([]),
-                             _L.fromArray([A2($Html.th,
-                                          _L.fromArray([]),
-                                          _L.fromArray([$Html.text("Code")]))
-                                          ,A2($Html.th,
-                                          _L.fromArray([]),
-                                          _L.fromArray([$Html.text("City")]))
-                                          ,A2($Html.th,
-                                          _L.fromArray([]),
-                                          _L.fromArray([$Html.text("Country")]))]))]))
-                             ,A2($Html.tbody,
-                             _L.fromArray([]),
-                             _L.fromArray([A3(seaportItem,
-                                          "ALSAR",
-                                          "Sarande",
-                                          "Albania")
-                                          ,A3(seaportItem,
-                                          "RUVVO",
-                                          "Vladivostok",
-                                          "Russia")
-                                          ,A3(seaportItem,
-                                          "SEHAD",
-                                          "Halmstad",
-                                          "Sweden")]))]))]));
+                   _L.fromArray([$Html.text(seaport.country)]))]));
+   };
+   var seaportList = function (seaports) {
+      return A2($Html.div,
+      _L.fromArray([$Html$Attributes.id("main")
+                   ,$Html$Attributes.$class("")]),
+      _L.fromArray([A2($Html.h2,
+                   _L.fromArray([$Html$Attributes.$class("content-subhead")]),
+                   _L.fromArray([$Html.text("Seaports")]))
+                   ,A2($Html.table,
+                   _L.fromArray([$Html$Attributes.$class("pure-table")]),
+                   _L.fromArray([A2($Html.thead,
+                                _L.fromArray([]),
+                                _L.fromArray([A2($Html.tr,
+                                _L.fromArray([]),
+                                _L.fromArray([A2($Html.th,
+                                             _L.fromArray([]),
+                                             _L.fromArray([$Html.text("Code")]))
+                                             ,A2($Html.th,
+                                             _L.fromArray([]),
+                                             _L.fromArray([$Html.text("City")]))
+                                             ,A2($Html.th,
+                                             _L.fromArray([]),
+                                             _L.fromArray([$Html.text("Country")]))]))]))
+                                ,A2($Html.tbody,
+                                _L.fromArray([]),
+                                A2($List.map,
+                                seaportItem,
+                                seaports))]))]));
+   };
    var pageHeader = A2($Html.header,
    _L.fromArray([$Html$Attributes.$class("")]),
    _L.fromArray([A2($Html.h1,
    _L.fromArray([]),
    _L.fromArray([$Html.text("Shipper Savers")]))]));
-   var view = F2(function (address,
-   model) {
-      return A2($Html.div,
-      _L.fromArray([$Html$Attributes.id("container")]),
-      _L.fromArray([pageHeader
-                   ,seaportList
-                   ,pageFooter]));
-   });
    var update = F2(function (action,
    model) {
       return function () {
          switch (action.ctor)
-         {case "NoOp": return model;}
+         {case "NoOp": return model;
+            case "Sort":
+            return _U.replace([["seaports"
+                               ,A2($List.sortBy,
+                               function (_) {
+                                  return _.code;
+                               },
+                               model.seaports)]],
+              model);}
          _U.badCase($moduleName,
-         "between lines 45 and 47");
+         "between lines 55 and 59");
       }();
    });
+   var Sort = {ctor: "Sort"};
+   var view = F2(function (address,
+   model) {
+      return A2($Html.div,
+      _L.fromArray([$Html$Attributes.$class("container")]),
+      _L.fromArray([pageHeader
+                   ,seaportList(model.seaports)
+                   ,A2($Html.button,
+                   _L.fromArray([$Html$Attributes.$class("sort")
+                                ,A2($Html$Events.onClick,
+                                address,
+                                Sort)]),
+                   _L.fromArray([$Html.text("Sort")]))
+                   ,pageFooter]));
+   });
    var NoOp = {ctor: "NoOp"};
+   var newSeaport = F3(function (code,
+   city,
+   country) {
+      return {_: {}
+             ,city: city
+             ,code: code
+             ,country: country};
+   });
+   var initialModel = {_: {}
+                      ,seaports: _L.fromArray([A3(newSeaport,
+                                              "ALSAR",
+                                              "Sarande",
+                                              "Albania")
+                                              ,A3(newSeaport,
+                                              "RUVVO",
+                                              "Vladivostok",
+                                              "Russia")
+                                              ,A3(newSeaport,
+                                              "BLA",
+                                              "BLA",
+                                              "BLA")
+                                              ,A3(newSeaport,
+                                              "SEHAD",
+                                              "Halmstad",
+                                              "Sweden")])};
+   var main = $StartApp$Simple.start({_: {}
+                                     ,model: initialModel
+                                     ,update: update
+                                     ,view: view});
    var Seaport = F3(function (a,
    b,
    c) {
@@ -12279,31 +12315,16 @@ Elm.Shipper.make = function (_elm) {
              ,code: a
              ,country: c};
    });
-   var initialModel = {_: {}
-                      ,seaports: _L.fromArray([A3(Seaport,
-                                              "ALSAR",
-                                              "Sarande",
-                                              "Albania")
-                                              ,A3(Seaport,
-                                              "RUVVO",
-                                              "Vladivostok",
-                                              "Russia")
-                                              ,A3(Seaport,
-                                              "SEHAD",
-                                              "Halmstad",
-                                              "Sweden")])};
-   var main = $StartApp$Simple.start({_: {}
-                                     ,model: initialModel
-                                     ,update: update
-                                     ,view: view});
    var Model = function (a) {
       return {_: {},seaports: a};
    };
    _elm.Shipper.values = {_op: _op
                          ,Model: Model
                          ,Seaport: Seaport
+                         ,newSeaport: newSeaport
                          ,initialModel: initialModel
                          ,NoOp: NoOp
+                         ,Sort: Sort
                          ,update: update
                          ,view: view
                          ,pageHeader: pageHeader

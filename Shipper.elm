@@ -23,12 +23,21 @@ type alias Seaport =
     country: String
   }
 
+newSeaport : String -> String -> String -> Seaport
+newSeaport code city country =
+  { code = code ,
+    city = city,
+    country = country
+  }
+
+
 initialModel : Model
 initialModel =
   { seaports =
-    [ Seaport "ALSAR" "Sarande" "Albania",
-      Seaport "RUVVO" "Vladivostok" "Russia",
-      Seaport "SEHAD" "Halmstad" "Sweden"
+    [ newSeaport "ALSAR" "Sarande" "Albania",
+      newSeaport "RUVVO" "Vladivostok" "Russia",
+      newSeaport "BLA" "BLA" "BLA",
+      newSeaport "SEHAD" "Halmstad" "Sweden"
     ]
   }
 
@@ -39,21 +48,28 @@ initialModel =
 
 type Action
   = NoOp
+  | Sort
 
 update : Action -> Model -> Model
 update action model =
   case action of
     NoOp ->
       model
+    Sort ->
+      { model | seaports <- List.sortBy .code model.seaports }
+
 
 -- VIEW
 
 view : Address Action -> Model -> Html
 view address model =
   div
-    [ id "container" ]
+    [ class "container" ]
     [ pageHeader
-    , seaportList
+    , seaportList model.seaports
+    , button
+      [ class "sort", onClick address Sort ]
+      [ text "Sort" ] 
     , pageFooter
     ]
 
@@ -62,18 +78,18 @@ pageHeader =
   header [ class "" ]
     [ h1 [ ] [ text "Shipper Savers"] ]
 
-seaportItem code city country =
+seaportItem seaport =
   tr [ ]
-    [ td [ class "code" ] [ text code],
-      td [ class "city" ] [ text city],
-      td [ class "country" ] [ text country]        
+    [ td [ class "code" ] [ text seaport.code],
+      td [ class "city" ] [ text seaport.city],
+      td [ class "country" ] [ text seaport.country]        
     ]
      
 
 -- seaportList : Html
-seaportList =
+seaportList seaports =
   div [ id "main",
-        class "container"
+        class ""
       ]
     [ h2 [ class "content-subhead"] [ text "Seaports" ],
       table
@@ -86,11 +102,7 @@ seaportList =
             th [ ] [ text "Country" ]
           ]
         ],
-        tbody [ ]
-        [ seaportItem "ALSAR" "Sarande" "Albania",
-          seaportItem "RUVVO" "Vladivostok" "Russia",
-          seaportItem "SEHAD" "Halmstad" "Sweden"
-        ]
+        tbody [ ] (List.map seaportItem seaports)
       ]
     ]
 

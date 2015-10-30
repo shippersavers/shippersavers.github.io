@@ -35,6 +35,10 @@ header {
   position: relative;
 }
 
+.sort {
+  margin: 2em 0 1em 0;  
+}
+
 footer {
   position: absolute;
   left: 0;
