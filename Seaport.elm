@@ -39,31 +39,10 @@ view message result=
 
 -- WIRING
 
--- type alias Mailbox a =
---   { address : Address a,
---     signal : Signal a
---   }
--- In our case
--- Mailbox string
--- Address string
--- Signal  string
-
-
--- main : Signal Html
+main : Signal Html
 main =
   Signal.map2 view query.signal results.signal
 
--- inbox : Signal.Mailbox String
--- inbox =
---   Signal.mailbox "Waiting"
-
--- messages : Signal String
--- messages =
---   inbox.signal 
-  
--- type Result error value
---     = Ok value
---     | Err error
 
 query : Signal.Mailbox String
 query =
@@ -77,25 +56,13 @@ results =
 
 port requests : Signal (Task x ())
 port requests =
-  -- Signal.map lookupSeaport query.signal
-  --   |> Signal.map (\task -> Task.toResult task `andThen` Signal.send results.address)
-  
-  Signal.map
-          (\task -> Task.toResult task `andThen` Signal.send results.address)
-          (Signal.map lookupSeaport query.signal)
-
-
-
--- port requests : Signal (Task String (String))
--- port requests =
---   Signal.map lookupSeaport query.signal
--- f : Json.Decoder (List String) -> String -> Task.Task Http.Error (List String)
--- f = Http.get
+  Signal.map lookupSeaport query.signal
+    |> Signal.map (\task -> Task.toResult task `andThen` Signal.send results.address)
     
 lookupSeaport : String -> Task String (List String)
 lookupSeaport inquiry =
   let
-    toUrl  =
+    toUrl =
       if String.length inquiry >= 1
         then succeed ("http://seaports.herokuapp.com/seaports.json?q=" ++ inquiry)
         else fail "Please input some character"
