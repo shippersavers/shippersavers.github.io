@@ -9,9 +9,25 @@ import Json.Decode as Json exposing ((:=))
 import String
 import Task exposing (..)
 
+-- MODEL
+
+type alias Seaport =
+  { code: String,
+    name: String,
+    country: String
+  }
+
+
 --  View
 
-view : String -> Result String (List String) -> Html
+seaportStr : Seaport -> String
+seaportStr seaport =
+  String.concat [seaport.code,    ", ",
+                 seaport.name,    ", ",
+                 seaport.country, ", "
+                ]
+
+view : String -> Result String (List Seaport) -> Html
 view message result=
   let header =
         h1 [ ] [ text "Seaports" ]
@@ -29,7 +45,10 @@ view message result=
             [ div [  ] [ text msg ] ]
 
           Ok seaports ->
-            List.map (\seaport -> div [ ] [ text seaport ]) seaports
+            List.map
+              (\seaport -> div
+                 [ ]
+                 [ text (seaportStr seaport) ]) seaports
             -- [ div [  ] [ text "OK" ] ]
           
   in
@@ -49,7 +68,7 @@ query =
   Signal.mailbox ""
 
 
-results : Signal.Mailbox (Result String (List String))
+results : Signal.Mailbox (Result String (List Seaport))
 results =
   Signal.mailbox (Err "Waiting")
 
@@ -59,7 +78,7 @@ port requests =
   Signal.map lookupSeaport query.signal
     |> Signal.map (\task -> Task.toResult task `andThen` Signal.send results.address)
     
-lookupSeaport : String -> Task String (List String)
+lookupSeaport : String -> Task String (List Seaport)
 lookupSeaport inquiry =
   let
     toUrl =
@@ -70,12 +89,13 @@ lookupSeaport inquiry =
     toUrl `andThen` (mapError (always "Not found :(") << Http.get places)
 
 
-places : Json.Decoder (List String)
+places : Json.Decoder (List Seaport)
 places =
   let place =
-        Json.object2 (++)
+        Json.object3 Seaport
           ("code" := Json.string)
-          ("country" := Json.string)
+          ("name" := Json.string)
+          ("country" := Json.string)          
   in
       "seaports" := Json.list place
 

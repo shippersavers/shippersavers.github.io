@@ -12774,48 +12774,16 @@ Elm.Seaport.make = function (_elm) {
    $Signal = Elm.Signal.make(_elm),
    $String = Elm.String.make(_elm),
    $Task = Elm.Task.make(_elm);
-   var places = function () {
-      var place = A3($Json$Decode.object2,
-      F2(function (x,y) {
-         return A2($Basics._op["++"],
-         x,
-         y);
-      }),
-      A2($Json$Decode._op[":="],
-      "code",
-      $Json$Decode.string),
-      A2($Json$Decode._op[":="],
-      "country",
-      $Json$Decode.string));
-      return A2($Json$Decode._op[":="],
-      "seaports",
-      $Json$Decode.list(place));
-   }();
-   var lookupSeaport = function (inquiry) {
-      return function () {
-         var toUrl = _U.cmp($String.length(inquiry),
-         1) > -1 ? $Task.succeed(A2($Basics._op["++"],
-         "http://seaports.herokuapp.com/seaports.json?q=",
-         inquiry)) : $Task.fail("Please input some character");
-         return A2($Task.andThen,
-         toUrl,
-         function ($) {
-            return $Task.mapError($Basics.always("Not found :("))($Http.get(places)($));
-         });
-      }();
-   };
    var results = $Signal.mailbox($Result.Err("Waiting"));
    var query = $Signal.mailbox("");
-   var requests = Elm.Native.Task.make(_elm).performSignal("requests",
-   A2($Signal.map,
-   function (task) {
-      return A2($Task.andThen,
-      $Task.toResult(task),
-      $Signal.send(results.address));
-   },
-   A2($Signal.map,
-   lookupSeaport,
-   query.signal)));
+   var seaportStr = function (seaport) {
+      return $String.concat(_L.fromArray([seaport.code
+                                         ,", "
+                                         ,seaport.name
+                                         ,", "
+                                         ,seaport.country
+                                         ,", "]));
+   };
    var view = F2(function (message,
    result) {
       return function () {
@@ -12829,11 +12797,11 @@ Elm.Seaport.make = function (_elm) {
                  function (seaport) {
                     return A2($Html.div,
                     _L.fromArray([]),
-                    _L.fromArray([$Html.text(seaport)]));
+                    _L.fromArray([$Html.text(seaportStr(seaport))]));
                  },
                  result._0);}
             _U.badCase($moduleName,
-            "between lines 27 and 35");
+            "between lines 43 and 54");
          }();
          var field = A2($Html.div,
          _L.fromArray([]),
@@ -12863,7 +12831,54 @@ Elm.Seaport.make = function (_elm) {
    view,
    query.signal,
    results.signal);
+   var Seaport = F3(function (a,
+   b,
+   c) {
+      return {_: {}
+             ,code: a
+             ,country: c
+             ,name: b};
+   });
+   var places = function () {
+      var place = A4($Json$Decode.object3,
+      Seaport,
+      A2($Json$Decode._op[":="],
+      "code",
+      $Json$Decode.string),
+      A2($Json$Decode._op[":="],
+      "name",
+      $Json$Decode.string),
+      A2($Json$Decode._op[":="],
+      "country",
+      $Json$Decode.string));
+      return A2($Json$Decode._op[":="],
+      "seaports",
+      $Json$Decode.list(place));
+   }();
+   var lookupSeaport = function (inquiry) {
+      return function () {
+         var toUrl = _U.cmp($String.length(inquiry),
+         1) > -1 ? $Task.succeed(A2($Basics._op["++"],
+         "http://seaports.herokuapp.com/seaports.json?q=",
+         inquiry)) : $Task.fail("Please input some character");
+         return A2($Task.andThen,
+         toUrl,
+         function ($) {
+            return $Task.mapError($Basics.always("Not found :("))($Http.get(places)($));
+         });
+      }();
+   };
+   var requests = Elm.Native.Task.make(_elm).performSignal("requests",
+   $Signal.map(function (task) {
+      return A2($Task.andThen,
+      $Task.toResult(task),
+      $Signal.send(results.address));
+   })(A2($Signal.map,
+   lookupSeaport,
+   query.signal)));
    _elm.Seaport.values = {_op: _op
+                         ,Seaport: Seaport
+                         ,seaportStr: seaportStr
                          ,view: view
                          ,main: main
                          ,query: query
