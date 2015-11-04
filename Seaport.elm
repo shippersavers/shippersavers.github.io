@@ -27,6 +27,14 @@ seaportStr seaport =
                  seaport.country, ", "
                 ]
 
+seaportList : List Seaport -> List Html
+seaportList seaports =
+  List.map
+    (\seaport -> li
+      [ ]
+      [ text (seaportStr seaport) ]) seaports
+
+
 view : String -> Result String (List Seaport) -> Html
 view message result=
   let header =
@@ -45,15 +53,10 @@ view message result=
             [ div [  ] [ text msg ] ]
 
           Ok seaports ->
-            List.map
-              (\seaport -> div
-                 [ ]
-                 [ text (seaportStr seaport) ]) seaports
-            -- [ div [  ] [ text "OK" ] ]
+            [ ul [ ] (seaportList seaports) ]
           
   in
     div [ ] (header :: field :: message)
-    
 
 
 -- WIRING
