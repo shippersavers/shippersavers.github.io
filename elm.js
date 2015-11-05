@@ -1800,6 +1800,138 @@ Elm.Dict.make = function (_elm) {
                       ,fromList: fromList};
    return _elm.Dict.values;
 };
+Elm.Effects = Elm.Effects || {};
+Elm.Effects.make = function (_elm) {
+   "use strict";
+   _elm.Effects = _elm.Effects || {};
+   if (_elm.Effects.values)
+   return _elm.Effects.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Effects",
+   $Basics = Elm.Basics.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Native$Effects = Elm.Native.Effects.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $Task = Elm.Task.make(_elm),
+   $Time = Elm.Time.make(_elm);
+   var ignore = function (task) {
+      return A2($Task.map,
+      $Basics.always({ctor: "_Tuple0"}),
+      task);
+   };
+   var requestTickSending = $Native$Effects.requestTickSending;
+   var toTaskHelp = F3(function (address,
+   effect,
+   _v0) {
+      return function () {
+         switch (_v0.ctor)
+         {case "_Tuple2":
+            return function () {
+                 switch (effect.ctor)
+                 {case "Batch":
+                    return A3($List.foldl,
+                      toTaskHelp(address),
+                      _v0,
+                      effect._0);
+                    case "None": return _v0;
+                    case "Task":
+                    return function () {
+                         var reporter = A2($Task.andThen,
+                         effect._0,
+                         function (answer) {
+                            return A2($Signal.send,
+                            address,
+                            _L.fromArray([answer]));
+                         });
+                         return {ctor: "_Tuple2"
+                                ,_0: A2($Task.andThen,
+                                _v0._0,
+                                $Basics.always(ignore($Task.spawn(reporter))))
+                                ,_1: _v0._1};
+                      }();
+                    case "Tick":
+                    return {ctor: "_Tuple2"
+                           ,_0: _v0._0
+                           ,_1: A2($List._op["::"],
+                           effect._0,
+                           _v0._1)};}
+                 _U.badCase($moduleName,
+                 "between lines 181 and 200");
+              }();}
+         _U.badCase($moduleName,
+         "between lines 181 and 200");
+      }();
+   });
+   var toTask = F2(function (address,
+   effect) {
+      return function () {
+         var $ = A3(toTaskHelp,
+         address,
+         effect,
+         {ctor: "_Tuple2"
+         ,_0: $Task.succeed({ctor: "_Tuple0"})
+         ,_1: _L.fromArray([])}),
+         combinedTask = $._0,
+         tickMessages = $._1;
+         return $List.isEmpty(tickMessages) ? combinedTask : A2($Task.andThen,
+         combinedTask,
+         $Basics.always(A2(requestTickSending,
+         address,
+         tickMessages)));
+      }();
+   });
+   var Never = function (a) {
+      return {ctor: "Never",_0: a};
+   };
+   var Batch = function (a) {
+      return {ctor: "Batch",_0: a};
+   };
+   var batch = Batch;
+   var None = {ctor: "None"};
+   var none = None;
+   var Tick = function (a) {
+      return {ctor: "Tick",_0: a};
+   };
+   var tick = Tick;
+   var Task = function (a) {
+      return {ctor: "Task",_0: a};
+   };
+   var task = Task;
+   var map = F2(function (func,
+   effect) {
+      return function () {
+         switch (effect.ctor)
+         {case "Batch":
+            return Batch(A2($List.map,
+              map(func),
+              effect._0));
+            case "None": return None;
+            case "Task":
+            return Task(A2($Task.map,
+              func,
+              effect._0));
+            case "Tick":
+            return Tick(function ($) {
+                 return func(effect._0($));
+              });}
+         _U.badCase($moduleName,
+         "between lines 136 and 147");
+      }();
+   });
+   _elm.Effects.values = {_op: _op
+                         ,none: none
+                         ,task: task
+                         ,tick: tick
+                         ,map: map
+                         ,batch: batch
+                         ,toTask: toTask};
+   return _elm.Effects.values;
+};
 Elm.Graphics = Elm.Graphics || {};
 Elm.Graphics.Collage = Elm.Graphics.Collage || {};
 Elm.Graphics.Collage.make = function (_elm) {
@@ -5761,6 +5893,147 @@ Elm.Native.Debug.make = function(localRuntime) {
 		watch: F2(watch),
 		watchSummary:F3(watchSummary),
 	};
+};
+
+Elm.Native.Effects = {};
+Elm.Native.Effects.make = function(localRuntime) {
+
+	localRuntime.Native = localRuntime.Native || {};
+	localRuntime.Native.Effects = localRuntime.Native.Effects || {};
+	if (localRuntime.Native.Effects.values)
+	{
+		return localRuntime.Native.Effects.values;
+	}
+
+	var Task = Elm.Native.Task.make(localRuntime);
+	var Utils = Elm.Native.Utils.make(localRuntime);
+	var Signal = Elm.Signal.make(localRuntime);
+	var List = Elm.Native.List.make(localRuntime);
+
+
+	// polyfill so things will work even if rAF is not available for some reason
+	var _requestAnimationFrame =
+		typeof requestAnimationFrame !== 'undefined'
+			? requestAnimationFrame
+			: function(cb) { setTimeout(cb, 1000 / 60); }
+			;
+
+
+	// batchedSending and sendCallback implement a small state machine in order
+	// to schedule only one send(time) call per animation frame.
+	//
+	// Invariants:
+	// 1. In the NO_REQUEST state, there is never a scheduled sendCallback.
+	// 2. In the PENDING_REQUEST and EXTRA_REQUEST states, there is always exactly
+	//    one scheduled sendCallback.
+	var NO_REQUEST = 0;
+	var PENDING_REQUEST = 1;
+	var EXTRA_REQUEST = 2;
+	var state = NO_REQUEST;
+	var messageArray = [];
+
+
+	function batchedSending(address, tickMessages)
+	{
+		// insert ticks into the messageArray
+		var foundAddress = false;
+
+		for (var i = messageArray.length; i--; )
+		{
+			if (messageArray[i].address === address)
+			{
+				foundAddress = true;
+				messageArray[i].tickMessages = A3(List.foldl, List.cons, messageArray[i].tickMessages, tickMessages);
+				break;
+			}
+		}
+
+		if (!foundAddress)
+		{
+			messageArray.push({ address: address, tickMessages: tickMessages });
+		}
+
+		// do the appropriate state transition
+		switch (state)
+		{
+			case NO_REQUEST:
+				_requestAnimationFrame(sendCallback);
+				state = PENDING_REQUEST;
+				break;
+			case PENDING_REQUEST:
+				state = PENDING_REQUEST;
+				break;
+			case EXTRA_REQUEST:
+				state = PENDING_REQUEST;
+				break;
+		}
+	}
+
+
+	function sendCallback(time)
+	{
+		switch (state)
+		{
+			case NO_REQUEST:
+				// This state should not be possible. How can there be no
+				// request, yet somehow we are actively fulfilling a
+				// request?
+				throw new Error(
+					'Unexpected send callback.\n' +
+					'Please report this to <https://github.com/evancz/elm-effects/issues>.'
+				);
+
+			case PENDING_REQUEST:
+				// At this point, we do not *know* that another frame is
+				// needed, but we make an extra request to rAF just in
+				// case. It's possible to drop a frame if rAF is called
+				// too late, so we just do it preemptively.
+				_requestAnimationFrame(sendCallback);
+				state = EXTRA_REQUEST;
+
+				// There's also stuff we definitely need to send.
+				send(time);
+				return;
+
+			case EXTRA_REQUEST:
+				// Turns out the extra request was not needed, so we will
+				// stop calling rAF. No reason to call it all the time if
+				// no one needs it.
+				state = NO_REQUEST;
+				return;
+		}
+	}
+
+
+	function send(time)
+	{
+		for (var i = messageArray.length; i--; )
+		{
+			var messages = A3(
+				List.foldl,
+				F2( function(toAction, list) { return List.Cons(toAction(time), list); } ),
+				List.Nil,
+				messageArray[i].tickMessages
+			);
+			Task.perform( A2(Signal.send, messageArray[i].address, messages) );
+		}
+		messageArray = [];
+	}
+
+
+	function requestTickSending(address, tickMessages)
+	{
+		return Task.asyncFunction(function(callback) {
+			batchedSending(address, tickMessages);
+			callback(Task.succeed(Utils.Tuple0));
+		});
+	}
+
+
+	return localRuntime.Native.Effects.values = {
+		requestTickSending: F2(requestTickSending)
+	};
+
 };
 
 
@@ -12763,6 +13036,7 @@ Elm.Seaport.make = function (_elm) {
    _L = _N.List.make(_elm),
    $moduleName = "Seaport",
    $Basics = Elm.Basics.make(_elm),
+   $Effects = Elm.Effects.make(_elm),
    $Html = Elm.Html.make(_elm),
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $Html$Events = Elm.Html.Events.make(_elm),
@@ -12772,10 +13046,16 @@ Elm.Seaport.make = function (_elm) {
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm),
+   $StartApp = Elm.StartApp.make(_elm),
    $String = Elm.String.make(_elm),
    $Task = Elm.Task.make(_elm);
-   var results = $Signal.mailbox($Result.Err("Waiting"));
-   var query = $Signal.mailbox("");
+   var portUrl = function (query) {
+      return A2($Http.url,
+      A2($Basics._op["++"],
+      "http://seaports.herokuapp.com/seaports.json?q=",
+      query),
+      _L.fromArray([]));
+   };
    var seaportStr = function (seaport) {
       return $String.concat(_L.fromArray([seaport.code
                                          ,", "
@@ -12784,53 +13064,63 @@ Elm.Seaport.make = function (_elm) {
                                          ,seaport.country
                                          ,", "]));
    };
-   var view = F2(function (message,
-   result) {
-      return function () {
-         var message = function () {
-            switch (result.ctor)
-            {case "Err":
-               return _L.fromArray([A2($Html.div,
-                 _L.fromArray([]),
-                 _L.fromArray([$Html.text(result._0)]))]);
-               case "Ok": return A2($List.map,
-                 function (seaport) {
-                    return A2($Html.div,
-                    _L.fromArray([]),
-                    _L.fromArray([$Html.text(seaportStr(seaport))]));
-                 },
-                 result._0);}
-            _U.badCase($moduleName,
-            "between lines 43 and 54");
-         }();
-         var field = A2($Html.div,
+   var seaportList = function (seaports) {
+      return A2($List.map,
+      function (seaport) {
+         return A2($Html.li,
          _L.fromArray([]),
-         _L.fromArray([A2($Html.input,
-                      _L.fromArray([$Html$Attributes.placeholder("Code of seaport")
-                                   ,A3($Html$Events.on,
-                                   "input",
-                                   $Html$Events.targetValue,
-                                   $Signal.message(query.address))]),
-                      _L.fromArray([]))
-                      ,A2($Html.hr,
-                      _L.fromArray([]),
-                      _L.fromArray([]))]));
-         var header = A2($Html.h1,
-         _L.fromArray([]),
-         _L.fromArray([$Html.text("Seaports")]));
-         return A2($Html.div,
-         _L.fromArray([]),
-         A2($List._op["::"],
-         header,
-         A2($List._op["::"],
-         field,
-         message)));
-      }();
+         _L.fromArray([$Html.text(seaportStr(seaport))]));
+      },
+      seaports);
+   };
+   _op["=>"] = F2(function (v0,
+   v1) {
+      return {ctor: "_Tuple2"
+             ,_0: v0
+             ,_1: v1};
    });
-   var main = A3($Signal.map2,
-   view,
-   query.signal,
-   results.signal);
+   var headerStyle = $Html$Attributes.style(_L.fromArray([A2(_op["=>"],
+                                                         "width",
+                                                         "500px")
+                                                         ,A2(_op["=>"],
+                                                         "text-align",
+                                                         "left")]));
+   var PortUpdate = function (a) {
+      return {ctor: "PortUpdate"
+             ,_0: a};
+   };
+   var view = F2(function (address,
+   model) {
+      return A2($Html.div,
+      _L.fromArray([$Html$Attributes.style(_L.fromArray([A2(_op["=>"],
+      "width",
+      "500px")]))]),
+      _L.fromArray([A2($Html.h2,
+                   _L.fromArray([headerStyle]),
+                   _L.fromArray([$Html.text(A2($Basics._op["++"],
+                   "From: ",
+                   model.topic))]))
+                   ,A2($Html.input,
+                   _L.fromArray([A3($Html$Events.on,
+                                "input",
+                                $Html$Events.targetValue,
+                                function ($) {
+                                   return $Signal.message(address)(PortUpdate($));
+                                })
+                                ,$Html$Attributes.value(model.topic)]),
+                   _L.fromArray([]))
+                   ,A2($Html.ul,
+                   _L.fromArray([]),
+                   seaportList(model.ports))]));
+   });
+   var NewList = function (a) {
+      return {ctor: "NewList"
+             ,_0: a};
+   };
+   var RequestMore = function (a) {
+      return {ctor: "RequestMore"
+             ,_0: a};
+   };
    var Seaport = F3(function (a,
    b,
    c) {
@@ -12839,6 +13129,27 @@ Elm.Seaport.make = function (_elm) {
              ,country: c
              ,name: b};
    });
+   var decodePorts = function () {
+      var place = A4($Json$Decode.object3,
+      Seaport,
+      A2($Json$Decode._op[":="],
+      "code",
+      $Json$Decode.string),
+      A2($Json$Decode._op[":="],
+      "name",
+      $Json$Decode.string),
+      A2($Json$Decode._op[":="],
+      "country",
+      $Json$Decode.string));
+      return A2($Json$Decode._op[":="],
+      "seaports",
+      $Json$Decode.list(place));
+   }();
+   var getListPort = function (query) {
+      return $Effects.task($Task.map(NewList)($Task.toMaybe(A2($Http.get,
+      decodePorts,
+      portUrl(query)))));
+   };
    var places = function () {
       var place = A4($Json$Decode.object3,
       Seaport,
@@ -12868,21 +13179,69 @@ Elm.Seaport.make = function (_elm) {
          });
       }();
    };
-   var requests = Elm.Native.Task.make(_elm).performSignal("requests",
-   $Signal.map(function (task) {
-      return A2($Task.andThen,
-      $Task.toResult(task),
-      $Signal.send(results.address));
-   })(A2($Signal.map,
-   lookupSeaport,
-   query.signal)));
+   var Model = F2(function (a,b) {
+      return {_: {}
+             ,ports: b
+             ,topic: a};
+   });
+   var init = function (topic) {
+      return {ctor: "_Tuple2"
+             ,_0: A2(Model,
+             topic,
+             _L.fromArray([]))
+             ,_1: $Effects.none};
+   };
+   var update = F2(function (action,
+   model) {
+      return function () {
+         switch (action.ctor)
+         {case "NewList":
+            return {ctor: "_Tuple2"
+                   ,_0: A2(Model,
+                   model.topic,
+                   A2($Maybe.withDefault,
+                   model.ports,
+                   action._0))
+                   ,_1: $Effects.none};
+            case "PortUpdate":
+            return {ctor: "_Tuple2"
+                   ,_0: A2(Model,
+                   action._0,
+                   model.ports)
+                   ,_1: getListPort(action._0)};
+            case "RequestMore":
+            return {ctor: "_Tuple2"
+                   ,_0: model
+                   ,_1: getListPort(action._0)};}
+         _U.badCase($moduleName,
+         "between lines 63 and 75");
+      }();
+   });
+   var app = $StartApp.start({_: {}
+                             ,init: init("")
+                             ,inputs: _L.fromArray([])
+                             ,update: update
+                             ,view: view});
+   var main = app.html;
+   var tasks = Elm.Native.Task.make(_elm).performSignal("tasks",
+   app.tasks);
    _elm.Seaport.values = {_op: _op
-                         ,Seaport: Seaport
-                         ,seaportStr: seaportStr
-                         ,view: view
+                         ,app: app
                          ,main: main
-                         ,query: query
-                         ,results: results
+                         ,Model: Model
+                         ,Seaport: Seaport
+                         ,init: init
+                         ,RequestMore: RequestMore
+                         ,NewList: NewList
+                         ,PortUpdate: PortUpdate
+                         ,update: update
+                         ,view: view
+                         ,seaportStr: seaportStr
+                         ,seaportList: seaportList
+                         ,headerStyle: headerStyle
+                         ,getListPort: getListPort
+                         ,portUrl: portUrl
+                         ,decodePorts: decodePorts
                          ,lookupSeaport: lookupSeaport
                          ,places: places};
    return _elm.Seaport.values;
@@ -13030,6 +13389,115 @@ Elm.Signal.make = function (_elm) {
                         ,forwardTo: forwardTo
                         ,Mailbox: Mailbox};
    return _elm.Signal.values;
+};
+Elm.StartApp = Elm.StartApp || {};
+Elm.StartApp.make = function (_elm) {
+   "use strict";
+   _elm.StartApp = _elm.StartApp || {};
+   if (_elm.StartApp.values)
+   return _elm.StartApp.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "StartApp",
+   $Basics = Elm.Basics.make(_elm),
+   $Effects = Elm.Effects.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $Task = Elm.Task.make(_elm);
+   var start = function (config) {
+      return function () {
+         var updateStep = F2(function (action,
+         _v0) {
+            return function () {
+               switch (_v0.ctor)
+               {case "_Tuple2":
+                  return function () {
+                       var $ = A2(config.update,
+                       action,
+                       _v0._0),
+                       newModel = $._0,
+                       additionalEffects = $._1;
+                       return {ctor: "_Tuple2"
+                              ,_0: newModel
+                              ,_1: $Effects.batch(_L.fromArray([_v0._1
+                                                               ,additionalEffects]))};
+                    }();}
+               _U.badCase($moduleName,
+               "between lines 94 and 97");
+            }();
+         });
+         var update = F2(function (actions,
+         _v4) {
+            return function () {
+               switch (_v4.ctor)
+               {case "_Tuple2":
+                  return A3($List.foldl,
+                    updateStep,
+                    {ctor: "_Tuple2"
+                    ,_0: _v4._0
+                    ,_1: $Effects.none},
+                    actions);}
+               _U.badCase($moduleName,
+               "on line 101, column 13 to 64");
+            }();
+         });
+         var messages = $Signal.mailbox(_L.fromArray([]));
+         var singleton = function (action) {
+            return _L.fromArray([action]);
+         };
+         var address = A2($Signal.forwardTo,
+         messages.address,
+         singleton);
+         var inputs = $Signal.mergeMany(A2($List._op["::"],
+         messages.signal,
+         A2($List.map,
+         $Signal.map(singleton),
+         config.inputs)));
+         var effectsAndModel = A3($Signal.foldp,
+         update,
+         config.init,
+         inputs);
+         var model = A2($Signal.map,
+         $Basics.fst,
+         effectsAndModel);
+         return {_: {}
+                ,html: A2($Signal.map,
+                config.view(address),
+                model)
+                ,model: model
+                ,tasks: A2($Signal.map,
+                function ($) {
+                   return $Effects.toTask(messages.address)($Basics.snd($));
+                },
+                effectsAndModel)};
+      }();
+   };
+   var App = F3(function (a,b,c) {
+      return {_: {}
+             ,html: a
+             ,model: b
+             ,tasks: c};
+   });
+   var Config = F4(function (a,
+   b,
+   c,
+   d) {
+      return {_: {}
+             ,init: a
+             ,inputs: d
+             ,update: b
+             ,view: c};
+   });
+   _elm.StartApp.values = {_op: _op
+                          ,start: start
+                          ,Config: Config
+                          ,App: App};
+   return _elm.StartApp.values;
 };
 Elm.String = Elm.String || {};
 Elm.String.make = function (_elm) {
