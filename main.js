@@ -4573,6 +4573,39 @@ Elm.List.make = function (_elm) {
                       ,sortWith: sortWith};
    return _elm.List.values;
 };
+Elm.Main = Elm.Main || {};
+Elm.Main.make = function (_elm) {
+   "use strict";
+   _elm.Main = _elm.Main || {};
+   if (_elm.Main.values)
+   return _elm.Main.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Main",
+   $Basics = Elm.Basics.make(_elm),
+   $Effects = Elm.Effects.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Seaport = Elm.Seaport.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $StartApp = Elm.StartApp.make(_elm),
+   $Task = Elm.Task.make(_elm);
+   var app = $StartApp.start({_: {}
+                             ,init: $Seaport.init
+                             ,inputs: _L.fromArray([])
+                             ,update: $Seaport.update
+                             ,view: $Seaport.view});
+   var main = app.html;
+   var tasks = Elm.Native.Task.make(_elm).performSignal("tasks",
+   app.tasks);
+   _elm.Main.values = {_op: _op
+                      ,app: app
+                      ,main: main};
+   return _elm.Main.values;
+};
 Elm.Maybe = Elm.Maybe || {};
 Elm.Maybe.make = function (_elm) {
    "use strict";
@@ -13046,7 +13079,6 @@ Elm.Seaport.make = function (_elm) {
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm),
-   $StartApp = Elm.StartApp.make(_elm),
    $String = Elm.String.make(_elm),
    $Task = Elm.Task.make(_elm);
    var portUrl = function (query) {
@@ -13068,8 +13100,11 @@ Elm.Seaport.make = function (_elm) {
       return A2($List.map,
       function (seaport) {
          return A2($Html.li,
-         _L.fromArray([]),
-         _L.fromArray([$Html.text(seaportStr(seaport))]));
+         _L.fromArray([$Html$Attributes.$class("pure-menu-item")]),
+         _L.fromArray([A2($Html.a,
+         _L.fromArray([$Html$Attributes.href("#")
+                      ,$Html$Attributes.$class("pure-menu-link")]),
+         _L.fromArray([$Html.text(seaportStr(seaport))]))]));
       },
       seaports);
    };
@@ -13109,9 +13144,11 @@ Elm.Seaport.make = function (_elm) {
                                 })
                                 ,$Html$Attributes.value(model.topic)]),
                    _L.fromArray([]))
-                   ,A2($Html.ul,
-                   _L.fromArray([]),
-                   seaportList(model.ports))]));
+                   ,A2($Html.div,
+                   _L.fromArray([$Html$Attributes.$class("pure-menu custom-restricted-width")]),
+                   _L.fromArray([A2($Html.ul,
+                   _L.fromArray([$Html$Attributes.$class("pure-menu-list")]),
+                   seaportList(model.ports))]))]));
    });
    var NewList = function (a) {
       return {ctor: "NewList"
@@ -13184,13 +13221,11 @@ Elm.Seaport.make = function (_elm) {
              ,ports: b
              ,topic: a};
    });
-   var init = function (topic) {
-      return {ctor: "_Tuple2"
-             ,_0: A2(Model,
-             topic,
-             _L.fromArray([]))
-             ,_1: $Effects.none};
-   };
+   var init = {ctor: "_Tuple2"
+              ,_0: A2(Model,
+              "ru",
+              _L.fromArray([]))
+              ,_1: $Effects.none};
    var update = F2(function (action,
    model) {
       return function () {
@@ -13214,20 +13249,10 @@ Elm.Seaport.make = function (_elm) {
                    ,_0: model
                    ,_1: getListPort(action._0)};}
          _U.badCase($moduleName,
-         "between lines 63 and 75");
+         "between lines 45 and 57");
       }();
    });
-   var app = $StartApp.start({_: {}
-                             ,init: init("")
-                             ,inputs: _L.fromArray([])
-                             ,update: update
-                             ,view: view});
-   var main = app.html;
-   var tasks = Elm.Native.Task.make(_elm).performSignal("tasks",
-   app.tasks);
    _elm.Seaport.values = {_op: _op
-                         ,app: app
-                         ,main: main
                          ,Model: Model
                          ,Seaport: Seaport
                          ,init: init

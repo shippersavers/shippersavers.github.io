@@ -1,12 +1,22 @@
+import Effects exposing (Never)
+import Seaport exposing (init, update, view)
+import StartApp
+import Task
 
 
-import CounterList exposing (init, update, view)
-import StartApp.Simple exposing (start)
+app =
+  StartApp.start
+    { init = init
+    , update = update
+    , view = view
+    , inputs = []
+    }
 
 
 main =
-  start
-    { model = init
-    , update = update
-    , view = view
-    }
+  app.html
+
+
+port tasks : Signal (Task.Task Never ())
+port tasks =
+  app.tasks
