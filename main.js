@@ -13096,15 +13096,6 @@ Elm.Seaport.make = function (_elm) {
                                          ,seaport.country
                                          ,", "]));
    };
-   var seaportList = function (seaports) {
-      return A2($List.map,
-      function (seaport) {
-         return A2($Html.li,
-         _L.fromArray([$Html$Attributes.$class("")]),
-         _L.fromArray([$Html.text(seaportStr(seaport))]));
-      },
-      seaports);
-   };
    _op["=>"] = F2(function (v0,
    v1) {
       return {ctor: "_Tuple2"
@@ -13117,6 +13108,22 @@ Elm.Seaport.make = function (_elm) {
                                                          ,A2(_op["=>"],
                                                          "text-align",
                                                          "left")]));
+   var Pickup = function (a) {
+      return {ctor: "Pickup"
+             ,_0: a};
+   };
+   var seaportList = F2(function (address,
+   seaports) {
+      return A2($List.map,
+      function (seaport) {
+         return A2($Html.li,
+         _L.fromArray([A2($Html$Events.onClick,
+         address,
+         Pickup(seaport))]),
+         _L.fromArray([$Html.text(seaportStr(seaport))]));
+      },
+      seaports);
+   });
    var PortUpdate = function (a) {
       return {ctor: "PortUpdate"
              ,_0: a};
@@ -13129,7 +13136,7 @@ Elm.Seaport.make = function (_elm) {
                    _L.fromArray([headerStyle]),
                    _L.fromArray([$Html.text(A2($Basics._op["++"],
                    "From: ",
-                   model.topic))]))
+                   seaportStr(model.seaport)))]))
                    ,A2($Html.input,
                    _L.fromArray([$Html$Attributes.$class("autocomplete")
                                 ,A3($Html$Events.on,
@@ -13138,13 +13145,15 @@ Elm.Seaport.make = function (_elm) {
                                 function ($) {
                                    return $Signal.message(address)(PortUpdate($));
                                 })
-                                ,$Html$Attributes.value(model.topic)]),
+                                ,$Html$Attributes.value(model.seaportCode)]),
                    _L.fromArray([]))
                    ,A2($Html.div,
                    _L.fromArray([$Html$Attributes.$class("autocomplete")]),
                    _L.fromArray([A2($Html.ul,
                    _L.fromArray([$Html$Attributes.$class("select")]),
-                   seaportList(model.ports))]))]));
+                   A2(seaportList,
+                   address,
+                   model.ports))]))]));
    });
    var NewList = function (a) {
       return {ctor: "NewList"
@@ -13162,6 +13171,10 @@ Elm.Seaport.make = function (_elm) {
              ,country: c
              ,name: b};
    });
+   var emptySeaport = A3(Seaport,
+   "",
+   "",
+   "");
    var decodePorts = function () {
       var place = A4($Json$Decode.object3,
       Seaport,
@@ -13212,14 +13225,18 @@ Elm.Seaport.make = function (_elm) {
          });
       }();
    };
-   var Model = F2(function (a,b) {
+   var Model = F3(function (a,
+   b,
+   c) {
       return {_: {}
-             ,ports: b
-             ,topic: a};
+             ,ports: c
+             ,seaport: b
+             ,seaportCode: a};
    });
    var init = {ctor: "_Tuple2"
-              ,_0: A2(Model,
-              "ru",
+              ,_0: A3(Model,
+              "",
+              emptySeaport,
               _L.fromArray([]))
               ,_1: $Effects.none};
    var update = F2(function (action,
@@ -13228,16 +13245,25 @@ Elm.Seaport.make = function (_elm) {
          switch (action.ctor)
          {case "NewList":
             return {ctor: "_Tuple2"
-                   ,_0: A2(Model,
-                   model.topic,
+                   ,_0: A3(Model,
+                   model.seaportCode,
+                   emptySeaport,
                    A2($Maybe.withDefault,
                    model.ports,
                    action._0))
                    ,_1: $Effects.none};
+            case "Pickup":
+            return {ctor: "_Tuple2"
+                   ,_0: A3(Model,
+                   action._0.code,
+                   action._0,
+                   model.ports)
+                   ,_1: $Effects.none};
             case "PortUpdate":
             return {ctor: "_Tuple2"
-                   ,_0: A2(Model,
+                   ,_0: A3(Model,
                    action._0,
+                   emptySeaport,
                    model.ports)
                    ,_1: getListPort(action._0)};
             case "RequestMore":
@@ -13245,16 +13271,18 @@ Elm.Seaport.make = function (_elm) {
                    ,_0: model
                    ,_1: getListPort(action._0)};}
          _U.badCase($moduleName,
-         "between lines 45 and 57");
+         "between lines 49 and 66");
       }();
    });
    _elm.Seaport.values = {_op: _op
                          ,Model: Model
                          ,Seaport: Seaport
+                         ,emptySeaport: emptySeaport
                          ,init: init
                          ,RequestMore: RequestMore
                          ,NewList: NewList
                          ,PortUpdate: PortUpdate
+                         ,Pickup: Pickup
                          ,update: update
                          ,view: view
                          ,seaportStr: seaportStr
