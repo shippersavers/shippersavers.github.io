@@ -62,13 +62,14 @@ update action model =
 
 view : Signal.Address Action -> Model -> Html
 view address model =
-  div [ style [ "width" => "500px" ] ]
+  div [ id "main" ]
     [ h2 [headerStyle] [text ("From: " ++ model.topic)]
     , input
-      [ on "input" targetValue (Signal.message address << PortUpdate)
+      [ class "autocomplete"
+      , on "input" targetValue (Signal.message address << PortUpdate)
       , value model.topic
       ] [ ]
-    , div [ class "pure-menu custom-restricted-width" ] [ ul [ class "pure-menu-list" ] (seaportList model.ports) ]
+    , div [ class "autocomplete" ] [ ul [ class "select" ] (seaportList model.ports) ]
     ]
 
 seaportStr : Seaport -> String
@@ -82,8 +83,9 @@ seaportList : List Seaport -> List Html
 seaportList seaports =
   List.map
     (\seaport -> li
-      [ class "pure-menu-item" ]
-      [ a [ href "#", class "pure-menu-link" ] [ text (seaportStr seaport)]  ]) seaports
+      [ class "" ]
+      [ text (seaportStr seaport)]
+    ) seaports
 
 headerStyle : Attribute
 headerStyle =

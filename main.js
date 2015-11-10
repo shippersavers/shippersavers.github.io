@@ -13100,11 +13100,8 @@ Elm.Seaport.make = function (_elm) {
       return A2($List.map,
       function (seaport) {
          return A2($Html.li,
-         _L.fromArray([$Html$Attributes.$class("pure-menu-item")]),
-         _L.fromArray([A2($Html.a,
-         _L.fromArray([$Html$Attributes.href("#")
-                      ,$Html$Attributes.$class("pure-menu-link")]),
-         _L.fromArray([$Html.text(seaportStr(seaport))]))]));
+         _L.fromArray([$Html$Attributes.$class("")]),
+         _L.fromArray([$Html.text(seaportStr(seaport))]));
       },
       seaports);
    };
@@ -13127,16 +13124,15 @@ Elm.Seaport.make = function (_elm) {
    var view = F2(function (address,
    model) {
       return A2($Html.div,
-      _L.fromArray([$Html$Attributes.style(_L.fromArray([A2(_op["=>"],
-      "width",
-      "500px")]))]),
+      _L.fromArray([$Html$Attributes.id("main")]),
       _L.fromArray([A2($Html.h2,
                    _L.fromArray([headerStyle]),
                    _L.fromArray([$Html.text(A2($Basics._op["++"],
                    "From: ",
                    model.topic))]))
                    ,A2($Html.input,
-                   _L.fromArray([A3($Html$Events.on,
+                   _L.fromArray([$Html$Attributes.$class("autocomplete")
+                                ,A3($Html$Events.on,
                                 "input",
                                 $Html$Events.targetValue,
                                 function ($) {
@@ -13145,9 +13141,9 @@ Elm.Seaport.make = function (_elm) {
                                 ,$Html$Attributes.value(model.topic)]),
                    _L.fromArray([]))
                    ,A2($Html.div,
-                   _L.fromArray([$Html$Attributes.$class("pure-menu custom-restricted-width")]),
+                   _L.fromArray([$Html$Attributes.$class("autocomplete")]),
                    _L.fromArray([A2($Html.ul,
-                   _L.fromArray([$Html$Attributes.$class("pure-menu-list")]),
+                   _L.fromArray([$Html$Attributes.$class("select")]),
                    seaportList(model.ports))]))]));
    });
    var NewList = function (a) {
