@@ -69,17 +69,20 @@ footer {
 
 .autocomplete {
   width: 20em; }
+  .autocomplete p {
+    margin: .2em 0 0; }
 
 input.autocomplete {
-  width: 15em; }
+  width: 10em; }
 
 .select {
   /* margin: 0; */
   margin: .2em 0 0;
   padding: 0;
-  border-radius: .3em;
   list-style: none;
   box-sizing: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  box-shadow: 0.05em 0.2em 0.6em rgba(0, 0, 0, 0.2);
   /* background: $base0; */
   /* position: absolute; */
   /* left: 0; */
@@ -87,8 +90,6 @@ input.autocomplete {
   /* max-width: 100%; */
   /* background: hsla(0,0%,100%,.9); */
   /* background: linear-gradient(to bottom right, white, hsla(0,0%,100%,.8)); */
-  /* border: 1px solid rgba(0,0,0,.3); */
-  /* box-shadow: .05em .2em .6em rgba(0,0,0,.2); */
   /* text-shadow: none; */ }
 
 .select li {

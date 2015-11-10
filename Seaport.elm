@@ -15,8 +15,9 @@ import Task exposing (..)
 
 type alias Model =
     { seaportCode : String
-    , seaport : Seaport
+    , seaport : Maybe Seaport
     , ports : List Seaport
+    , hideList : Bool
     }
 
 type alias Seaport =
@@ -25,12 +26,9 @@ type alias Seaport =
     country: String
   }
 
-emptySeaport =
-  Seaport "" "" ""
-
 init : (Model, Effects Action)
 init =
-  ( Model "" emptySeaport []
+  ( Model "" Nothing [] True
   , Effects.none
   )
 
@@ -51,17 +49,17 @@ update action model =
       (model, getListPort query)
 
     NewList maybeSeaport ->
-      ( Model model.seaportCode emptySeaport (Maybe.withDefault model.ports maybeSeaport)
+      ( Model model.seaportCode model.seaport (Maybe.withDefault model.ports maybeSeaport) False
       , Effects.none
       )
 
     PortUpdate code ->
-      ( Model code emptySeaport model.ports
+      ( Model code model.seaport model.ports False
       , getListPort code
       )
 
     Pickup seaport ->
-      ( Model seaport.code seaport model.ports
+      ( Model seaport.code (Just seaport) model.ports True
       , Effects.none
       )
 
@@ -73,7 +71,7 @@ update action model =
 view : Signal.Address Action -> Model -> Html
 view address model =
   div [ id "main" ]
-    [ h2 [headerStyle] [text ("From: " ++ (seaportStr model.seaport))]
+    [ h3 [headerStyle] [text "From:"]
     , input
       [ class "autocomplete"
       , on "input" targetValue (Signal.message address << PortUpdate)
@@ -81,22 +79,24 @@ view address model =
       ] [ ]
     , div
       [ class "autocomplete" ]
-      [ ul
-        [class "select"]
+      [ p [ hidden (not model.hideList) ] [ text (seaportStr model.seaport) ]      
+      , ul
+        [ hidden model.hideList
+        , class "select"
+        ]
         (seaportList address model.ports)
       ]
     ]
 
-seaportStr : Seaport -> String
+seaportStr : Maybe Seaport -> String
 seaportStr seaport =
-  String.concat [seaport.code,    ", ",
-                 seaport.name,    ", ",
-                 seaport.country, ", "
-                ]
+  case seaport of
+    Just p -> String.concat [p.code, ", ", p.name, ", ", p.country, ", "]
+    Nothing -> ""
 
 seaportList : Signal.Address Action -> List Seaport -> List Html
 seaportList address seaports =
-  List.map (\seaport -> li [ onClick address (Pickup seaport) ] [ text (seaportStr seaport)] ) seaports
+  List.map (\seaport -> li [ onClick address (Pickup seaport) ] [ text (seaportStr (Just seaport))] ) seaports
 
 headerStyle : Attribute
 headerStyle =
