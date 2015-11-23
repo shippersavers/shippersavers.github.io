@@ -18,6 +18,7 @@ type alias Model =
     , seaport : Maybe Seaport
     , ports : List Seaport
     , hideList : Bool
+    , counter : Int
     }
 
 type alias Seaport =
@@ -26,9 +27,17 @@ type alias Seaport =
     country: String
   }
 
+newSeaport : String -> String -> String -> Seaport
+newSeaport code city country =
+  { code = code ,
+    name = city,
+    country = country
+  }
+
+
 init : (Model, Effects Action)
 init =
-  ( Model "" Nothing [] True
+  ( Model "" Nothing [] True 0
   , Effects.none
   )
 
@@ -40,7 +49,8 @@ type Action
     | NewList (Maybe (List Seaport))
     | PortUpdate String
     | Pickup Seaport
-
+    | NextPort String
+    | PickupEnter
 
 update : Action -> Model -> (Model, Effects Action)
 update action model =
@@ -49,24 +59,56 @@ update action model =
       (model, getListPort query)
 
     NewList maybeSeaport ->
-      ( Model model.seaportCode model.seaport (Maybe.withDefault model.ports maybeSeaport) False
+      ( Model model.seaportCode model.seaport (Maybe.withDefault model.ports maybeSeaport) False 0
       , Effects.none
       )
 
     PortUpdate code ->
-      ( Model code model.seaport model.ports False
+      ( Model code model.seaport model.ports False 0
       , getListPort code
       )
 
     Pickup seaport ->
-      ( Model seaport.code (Just seaport) model.ports True
+      ( Model seaport.code (Just seaport) model.ports True 0
       , Effects.none
       )
+
+    NextPort direction ->
+      ( Model model.seaportCode model.seaport model.ports False (addCounter direction model.counter (List.length model.ports))
+      , Effects.none
+      )
+
+    PickupEnter ->
+      let
+        seaport = selectedPort model.counter model.ports
+        s = Maybe.withDefault (newSeaport "" "" "")  seaport
+        code    =  s.code
+      in
+        ( Model code seaport model.ports True 0
+        , Effects.none
+        )
 
 
 -- VIEW
 
 (=>) = (,)
+
+selectedPort : Int -> List Seaport -> Maybe Seaport
+selectedPort n seaports = List.head (List.drop (n - 1) seaports)
+
+addCounter : String -> Int -> Int -> Int
+addCounter s x l =
+  case s of
+    "up"   -> if x - 1 > 0 then x - 1  else (l + x) - 1
+    "down" -> if x + 1 > l then (x - l) + 1 else x + 1 
+              
+
+handler : Int -> Action
+handler x =
+  case x of
+    38 -> NextPort "up"
+    40 -> NextPort "down"
+    13 -> PickupEnter
 
 view : Signal.Address Action -> Model -> Html
 view address model =
@@ -75,6 +117,7 @@ view address model =
     , input
       [ class "autocomplete"
       , on "input" targetValue (Signal.message address << PortUpdate)
+      , on "keydown" keyCode (\code -> Signal.message address (handler code))
       , value model.seaportCode
       ] [ ]
     , div
@@ -88,7 +131,7 @@ view address model =
            ("loaded", not (List.isEmpty model.ports))
           ]
         ]
-        (seaportList address model.ports)
+        (seaportList address model.ports model.counter)
       ]
     ]
 
@@ -98,9 +141,21 @@ seaportStr seaport =
     Just p -> String.concat [p.code, ", ", p.name, ", ", p.country]
     Nothing -> ""
 
-seaportList : Signal.Address Action -> List Seaport -> List Html
-seaportList address seaports =
-  List.map (\seaport -> li [ onClick address (Pickup seaport) ] [ text (seaportStr (Just seaport))] ) seaports
+seaportList : Signal.Address Action -> List Seaport -> Int -> List Html
+seaportList address seaports counter =
+  List.map (\s ->
+              li
+              [ onClick address (Pickup (fst s))
+              , classList
+                [ ("selected", (snd s))]
+              ]
+            [ text (seaportStr (Just (fst s)))]
+           ) (List.map2 (,) seaports (counterList (List.length seaports) counter))
+
+counterList : Int -> Int -> List Bool
+counterList l n =
+  List.map (\x -> if x == n then True else False ) [1..l]
+      
 
 headerStyle : Attribute
 headerStyle =

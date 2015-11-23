@@ -103,7 +103,7 @@ ul.loaded:before {
         padding: .2em .5em;
         cursor: pointer;        
     }
-    li:hover {background: hsl(200, 40%, 80%); }
+    li:hover, li.selected{background: hsl(200, 40%, 80%); }
 }
 
 
