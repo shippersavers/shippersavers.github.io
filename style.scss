@@ -1,38 +1,7 @@
-$base03:    #002b36;
-$base02:    #073642;
-$base01:    #586e75;
-$base00:    #657b83;
-$base0:     #839496;
-$base1:     #93a1a1;
-$base2:     #eee8d5;
-$base3:     #fdf6e3;
-$yellow:    #b58900;
-$orange:    #cb4b16;
-$red:       #dc322f;
-$magenta:   #d33682;
-$violet:    #6c71c4;
-$blue:      #268bd2;
-$cyan:      #2aa198;
-$green:     #859900;
-@mixin rebase($rebase03,$rebase02,$rebase01,$rebase00,$rebase0,$rebase1,$rebase2,$rebase3) 
-{
-    background-color:$rebase03;
-    color:$rebase0;
-    * { color:$rebase0; }
-    h1,h2,h3,h4,h5,h6 { color:$rebase1; border-color: $rebase0; }
-    a, a:active, a:visited { color: $rebase1; }
-}
-@mixin accentize($accent) {
-    a, a:active, a:visited, code.url { color: $accent; }
-    h1,h2,h3,h4,h5,h6 {color:$accent}
-}
-/* light is default mode, so pair with general html definition */
-html, .light { @include rebase($base3,$base2,$base1,$base0,$base00,$base01,$base02,$base03)}
-.dark  { @include rebase($base03,$base02,$base01,$base00,$base0,$base1,$base2,$base3)}
-html * {
-    color-profile: sRGB;
-    rendering-intent: auto;
-}
+$base0: #ffffff;
+$base1: #98dafc;
+$base2: #daad86;
+$base3: #312c32;
 
 html {
     position: relative;
@@ -43,6 +12,8 @@ body {
     margin: 0 0 5rem;
     font: 16px "Helvetica Neue", Helvetica, Arial, sans-serif;
     line-height: 1.4em;
+    background-color: $base0;
+    color: $base3;
 }
 
 header {
@@ -95,7 +66,7 @@ input.autocomplete {
     width: 10em;
 }
 
-.select {
+ul.select {
     /* margin: 0; */
     margin: .2em 0 0;
     padding: 0;
@@ -103,23 +74,36 @@ input.autocomplete {
     box-sizing: border-box;
     border: 1px solid rgba(0,0,0,.3);
     box-shadow: .05em .2em .6em rgba(0,0,0,.2);
-    /* background: $base0; */
-    /* position: absolute; */
-    /* left: 0; */
-    /* z-index: 1; */
-    /* max-width: 100%; */
-    /* background: hsla(0,0%,100%,.9); */
-    /* background: linear-gradient(to bottom right, white, hsla(0,0%,100%,.8)); */
-    /* text-shadow: none; */
+    border-radius: .3em;
+    background: rgba(white,.8);
+    /* background: linear-gradient(to bottom right, white, rgba(white,.8)); */
+    border: 1px solid rgba(0,0,0,.3);
+    box-shadow: .05em .2em .6em rgba(0,0,0,.2);
+    text-shadow: none;
+    position: absolute;
+}
+ul.loaded:before {
+    content: "";
+    position: absolute;
+    top: -.43em;
+    left: 1em;
+    width: 0;
+    height: 0;
+    padding: .4em;
+    background: white;
+    border: inherit;
+    border-right: 0;
+    border-bottom: 0;
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
 }
 .select {
     li {
-        background:$base2;
         position: relative;
         padding: .2em .5em;
         cursor: pointer;        
     }
-    li:hover {color: $violet; background:$base3  }
+    li:hover {background: hsl(200, 40%, 80%); }
 }
 
 

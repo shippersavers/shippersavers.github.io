@@ -1861,10 +1861,10 @@ Elm.Effects.make = function (_elm) {
                            effect._0,
                            _v0._1)};}
                  _U.badCase($moduleName,
-                 "between lines 181 and 200");
+                 "between lines 184 and 203");
               }();}
          _U.badCase($moduleName,
-         "between lines 181 and 200");
+         "between lines 184 and 203");
       }();
    });
    var toTask = F2(function (address,
@@ -3070,6 +3070,11 @@ Elm.Html.Attributes.make = function (_elm) {
    $String = Elm.String.make(_elm),
    $VirtualDom = Elm.VirtualDom.make(_elm);
    var attribute = $VirtualDom.attribute;
+   var contextmenu = function (value) {
+      return A2(attribute,
+      "contextmenu",
+      value);
+   };
    var property = $VirtualDom.property;
    var stringProperty = F2(function (name,
    string) {
@@ -3094,13 +3099,8 @@ Elm.Html.Attributes.make = function (_elm) {
    };
    var accesskey = function ($char) {
       return A2(stringProperty,
-      "accesskey",
-      $String.fromList(_L.fromArray([$char])));
-   };
-   var contextmenu = function (value) {
-      return A2(stringProperty,
-      "contextmenu",
-      value);
+      "accessKey",
+      $String.fromChar($char));
    };
    var dir = function (value) {
       return A2(stringProperty,
@@ -3249,7 +3249,7 @@ Elm.Html.Attributes.make = function (_elm) {
    };
    var formaction = function (value) {
       return A2(stringProperty,
-      "formaction",
+      "formAction",
       value);
    };
    var list = function (value) {
@@ -3818,25 +3818,17 @@ Elm.Http.make = function (_elm) {
    };
    var handleResponse = F2(function (handle,
    response) {
-      return function () {
-         var _v0 = _U.cmp(200,
-         response.status) < 1 && _U.cmp(response.status,
-         300) < 0;
-         switch (_v0)
-         {case false:
-            return $Task.fail(A2(BadResponse,
-              response.status,
-              response.statusText));
-            case true: return function () {
-                 var _v1 = response.value;
-                 switch (_v1.ctor)
-                 {case "Text":
-                    return handle(_v1._0);}
-                 return $Task.fail(UnexpectedPayload("Response body is a blob, expecting a string."));
-              }();}
-         _U.badCase($moduleName,
-         "between lines 430 and 437");
-      }();
+      return _U.cmp(200,
+      response.status) < 1 && _U.cmp(response.status,
+      300) < 0 ? function () {
+         var _v0 = response.value;
+         switch (_v0.ctor)
+         {case "Text":
+            return handle(_v0._0);}
+         return $Task.fail(UnexpectedPayload("Response body is a blob, expecting a string."));
+      }() : $Task.fail(A2(BadResponse,
+      response.status,
+      response.statusText));
    });
    var NetworkError = {ctor: "NetworkError"};
    var Timeout = {ctor: "Timeout"};
@@ -3848,7 +3840,7 @@ Elm.Http.make = function (_elm) {
             case "RawTimeout":
             return Timeout;}
          _U.badCase($moduleName,
-         "between lines 442 and 444");
+         "between lines 451 and 453");
       }();
    };
    var fromJson = F2(function (decoder,
@@ -3856,16 +3848,16 @@ Elm.Http.make = function (_elm) {
       return function () {
          var decode = function (str) {
             return function () {
-               var _v4 = A2($Json$Decode.decodeString,
+               var _v3 = A2($Json$Decode.decodeString,
                decoder,
                str);
-               switch (_v4.ctor)
+               switch (_v3.ctor)
                {case "Err":
-                  return $Task.fail(UnexpectedPayload(_v4._0));
+                  return $Task.fail(UnexpectedPayload(_v3._0));
                   case "Ok":
-                  return $Task.succeed(_v4._0);}
+                  return $Task.succeed(_v3._0);}
                _U.badCase($moduleName,
-               "between lines 420 and 423");
+               "between lines 424 and 427");
             }();
          };
          return A2($Task.andThen,
@@ -3899,7 +3891,8 @@ Elm.Http.make = function (_elm) {
                          ,desiredResponseType: $Maybe.Nothing
                          ,onProgress: $Maybe.Nothing
                          ,onStart: $Maybe.Nothing
-                         ,timeout: 0};
+                         ,timeout: 0
+                         ,withCredentials: false};
    var post = F3(function (decoder,
    url,
    body) {
@@ -3916,15 +3909,17 @@ Elm.Http.make = function (_elm) {
          request));
       }();
    });
-   var Settings = F4(function (a,
+   var Settings = F5(function (a,
    b,
    c,
-   d) {
+   d,
+   e) {
       return {_: {}
              ,desiredResponseType: d
              ,onProgress: c
              ,onStart: b
-             ,timeout: a};
+             ,timeout: a
+             ,withCredentials: e};
    });
    var multipart = $Native$Http.multipart;
    var FileData = F3(function (a,
@@ -4014,15 +4009,15 @@ Elm.Http.make = function (_elm) {
       "%20",
       uriEncode(string)));
    };
-   var queryPair = function (_v7) {
+   var queryPair = function (_v6) {
       return function () {
-         switch (_v7.ctor)
+         switch (_v6.ctor)
          {case "_Tuple2":
             return A2($Basics._op["++"],
-              queryEscape(_v7._0),
+              queryEscape(_v6._0),
               A2($Basics._op["++"],
               "=",
-              queryEscape(_v7._1)));}
+              queryEscape(_v6._1)));}
          _U.badCase($moduleName,
          "on line 67, column 3 to 46");
       }();
@@ -7516,18 +7511,24 @@ Elm.Native.Http.make = function(localRuntime) {
 			// set the timeout
 			req.timeout = settings.timeout;
 
+			// enable this withCredentials thing
+			req.withCredentials = settings.withCredentials;
+
 			// ask for a specific MIME type for the response
 			if (settings.desiredResponseType.ctor === 'Just')
 			{
 				req.overrideMimeType(settings.desiredResponseType._0);
 			}
-                    if(request.body.ctor === "BodyFormData")
-                    {
-                        req.send(request.body.formData)
-                    }
-                    else {
-                        req.send(request.body._0);
-                    }
+
+			// actuall send the request
+			if(request.body.ctor === "BodyFormData")
+			{
+				req.send(request.body.formData)
+			}
+			else
+			{
+				req.send(request.body._0);
+			}
 		});
 	}
 
@@ -13096,11 +13097,10 @@ Elm.Seaport.make = function (_elm) {
                                                ,", "
                                                ,seaport._0.name
                                                ,", "
-                                               ,seaport._0.country
-                                               ,", "]));
+                                               ,seaport._0.country]));
             case "Nothing": return "";}
          _U.badCase($moduleName,
-         "between lines 93 and 95");
+         "between lines 97 and 99");
       }();
    };
    _op["=>"] = F2(function (v0,
@@ -13159,7 +13159,15 @@ Elm.Seaport.make = function (_elm) {
                                 _L.fromArray([$Html.text(seaportStr(model.seaport))]))
                                 ,A2($Html.ul,
                                 _L.fromArray([$Html$Attributes.hidden(model.hideList)
-                                             ,$Html$Attributes.$class("select")]),
+                                             ,$Html$Attributes.classList(_L.fromArray([{ctor: "_Tuple2"
+                                                                                       ,_0: "select"
+                                                                                       ,_1: true}
+                                                                                      ,{ctor: "_Tuple2"
+                                                                                       ,_0: "waiting"
+                                                                                       ,_1: $List.isEmpty(model.ports)}
+                                                                                      ,{ctor: "_Tuple2"
+                                                                                       ,_0: "loaded"
+                                                                                       ,_1: $Basics.not($List.isEmpty(model.ports))}]))]),
                                 A2(seaportList,
                                 address,
                                 model.ports))]))]));

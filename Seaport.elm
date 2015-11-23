@@ -70,7 +70,7 @@ update action model =
 
 view : Signal.Address Action -> Model -> Html
 view address model =
-  div [ id "main" ]
+  div  [ id "main" ]
     [ h3 [headerStyle] [text "From:"]
     , input
       [ class "autocomplete"
@@ -82,7 +82,11 @@ view address model =
       [ p [ hidden (not model.hideList) ] [ text (seaportStr model.seaport) ]      
       , ul
         [ hidden model.hideList
-        , class "select"
+        , classList [
+           ("select", True),
+           ("waiting", List.isEmpty model.ports),
+           ("loaded", not (List.isEmpty model.ports))
+          ]
         ]
         (seaportList address model.ports)
       ]
@@ -91,7 +95,7 @@ view address model =
 seaportStr : Maybe Seaport -> String
 seaportStr seaport =
   case seaport of
-    Just p -> String.concat [p.code, ", ", p.name, ", ", p.country, ", "]
+    Just p -> String.concat [p.code, ", ", p.name, ", ", p.country]
     Nothing -> ""
 
 seaportList : Signal.Address Action -> List Seaport -> List Html
