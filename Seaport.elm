@@ -1,4 +1,4 @@
-module Seaport where
+module Seaport (Model, Seaport, init, Action, update, view) where
 
 import Effects exposing (Effects, Never)
 import Html exposing (..)
@@ -14,7 +14,8 @@ import Task exposing (..)
 -- MODEL
 
 type alias Model =
-    { seaportCode : String
+    { id : String
+    , seaportCode : String
     , seaport : Maybe Seaport
     , ports : List Seaport
     , hideList : Bool
@@ -35,9 +36,9 @@ newSeaport code city country =
   }
 
 
-init : (Model, Effects Action)
-init =
-  ( Model "" Nothing [] True 0
+init : String -> (Model, Effects Action)
+init id =
+  ( Model id "" Nothing [] True 0
   , Effects.none
   )
 
@@ -59,22 +60,22 @@ update action model =
       (model, getListPort query)
 
     NewList maybeSeaport ->
-      ( Model model.seaportCode model.seaport (Maybe.withDefault model.ports maybeSeaport) False 0
+      ( Model model.id model.seaportCode model.seaport (Maybe.withDefault model.ports maybeSeaport) False 0
       , Effects.none
       )
 
     PortUpdate code ->
-      ( Model code model.seaport model.ports False 0
+      ( Model model.id code model.seaport model.ports False 0
       , getListPort code
       )
 
     Pickup seaport ->
-      ( Model seaport.code (Just seaport) model.ports True 0
+      ( Model model.id seaport.code (Just seaport) model.ports True 0
       , Effects.none
       )
 
     NextPort direction ->
-      ( Model model.seaportCode model.seaport model.ports False (addCounter direction model.counter (List.length model.ports))
+      ( Model model.id model.seaportCode model.seaport model.ports False (addCounter direction model.counter (List.length model.ports))
       , Effects.none
       )
 
@@ -84,7 +85,7 @@ update action model =
         s = Maybe.withDefault (newSeaport "" "" "")  seaport
         code    =  s.code
       in
-        ( Model code seaport model.ports True 0
+        ( Model model.id code seaport model.ports True 0
         , Effects.none
         )
 

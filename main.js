@@ -4584,15 +4584,17 @@ Elm.Main.make = function (_elm) {
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
-   $Seaport = Elm.Seaport.make(_elm),
+   $SeaportPair = Elm.SeaportPair.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $StartApp = Elm.StartApp.make(_elm),
    $Task = Elm.Task.make(_elm);
    var app = $StartApp.start({_: {}
-                             ,init: $Seaport.init
+                             ,init: A2($SeaportPair.init,
+                             "1",
+                             "2")
                              ,inputs: _L.fromArray([])
-                             ,update: $Seaport.update
-                             ,view: $Seaport.view});
+                             ,update: $SeaportPair.update
+                             ,view: $SeaportPair.view});
    var main = app.html;
    var tasks = Elm.Native.Task.make(_elm).performSignal("tasks",
    app.tasks);
@@ -13109,7 +13111,7 @@ Elm.Seaport.make = function (_elm) {
                                                ,seaport._0.country]));
             case "Nothing": return "";}
          _U.badCase($moduleName,
-         "between lines 140 and 142");
+         "between lines 141 and 143");
       }();
    };
    var addCounter = F3(function (s,
@@ -13123,7 +13125,7 @@ Elm.Seaport.make = function (_elm) {
             case "up": return _U.cmp(x - 1,
               0) > 0 ? x - 1 : l + x - 1;}
          _U.badCase($moduleName,
-         "between lines 101 and 104");
+         "between lines 102 and 105");
       }();
    });
    var selectedPort = F2(function (n,
@@ -13157,7 +13159,7 @@ Elm.Seaport.make = function (_elm) {
             case 40:
             return NextPort("down");}
          _U.badCase($moduleName,
-         "between lines 108 and 111");
+         "between lines 109 and 112");
       }();
    };
    var Pickup = function (a) {
@@ -13313,33 +13315,39 @@ Elm.Seaport.make = function (_elm) {
          });
       }();
    };
-   var Model = F5(function (a,
+   var Model = F6(function (a,
    b,
    c,
    d,
-   e) {
+   e,
+   f) {
       return {_: {}
-             ,counter: e
-             ,hideList: d
-             ,ports: c
-             ,seaport: b
-             ,seaportCode: a};
+             ,counter: f
+             ,hideList: e
+             ,id: a
+             ,ports: d
+             ,seaport: c
+             ,seaportCode: b};
    });
-   var init = {ctor: "_Tuple2"
-              ,_0: A5(Model,
-              "",
-              $Maybe.Nothing,
-              _L.fromArray([]),
-              true,
-              0)
-              ,_1: $Effects.none};
+   var init = function (id) {
+      return {ctor: "_Tuple2"
+             ,_0: A6(Model,
+             id,
+             "",
+             $Maybe.Nothing,
+             _L.fromArray([]),
+             true,
+             0)
+             ,_1: $Effects.none};
+   };
    var update = F2(function (action,
    model) {
       return function () {
          switch (action.ctor)
          {case "NewList":
             return {ctor: "_Tuple2"
-                   ,_0: A5(Model,
+                   ,_0: A6(Model,
+                   model.id,
                    model.seaportCode,
                    model.seaport,
                    A2($Maybe.withDefault,
@@ -13350,7 +13358,8 @@ Elm.Seaport.make = function (_elm) {
                    ,_1: $Effects.none};
             case "NextPort":
             return {ctor: "_Tuple2"
-                   ,_0: A5(Model,
+                   ,_0: A6(Model,
+                   model.id,
                    model.seaportCode,
                    model.seaport,
                    model.ports,
@@ -13362,7 +13371,8 @@ Elm.Seaport.make = function (_elm) {
                    ,_1: $Effects.none};
             case "Pickup":
             return {ctor: "_Tuple2"
-                   ,_0: A5(Model,
+                   ,_0: A6(Model,
+                   model.id,
                    action._0.code,
                    $Maybe.Just(action._0),
                    model.ports,
@@ -13379,7 +13389,8 @@ Elm.Seaport.make = function (_elm) {
                  seaport);
                  var code = s.code;
                  return {ctor: "_Tuple2"
-                        ,_0: A5(Model,
+                        ,_0: A6(Model,
+                        model.id,
                         code,
                         seaport,
                         model.ports,
@@ -13389,7 +13400,8 @@ Elm.Seaport.make = function (_elm) {
               }();
             case "PortUpdate":
             return {ctor: "_Tuple2"
-                   ,_0: A5(Model,
+                   ,_0: A6(Model,
+                   model.id,
                    action._0,
                    model.seaport,
                    model.ports,
@@ -13401,35 +13413,119 @@ Elm.Seaport.make = function (_elm) {
                    ,_0: model
                    ,_1: getListPort(action._0)};}
          _U.badCase($moduleName,
-         "between lines 57 and 89");
+         "between lines 58 and 90");
       }();
    });
    _elm.Seaport.values = {_op: _op
-                         ,Model: Model
-                         ,Seaport: Seaport
-                         ,newSeaport: newSeaport
                          ,init: init
-                         ,RequestMore: RequestMore
-                         ,NewList: NewList
-                         ,PortUpdate: PortUpdate
-                         ,Pickup: Pickup
-                         ,NextPort: NextPort
-                         ,PickupEnter: PickupEnter
                          ,update: update
-                         ,selectedPort: selectedPort
-                         ,addCounter: addCounter
-                         ,handler: handler
                          ,view: view
-                         ,seaportStr: seaportStr
-                         ,seaportList: seaportList
-                         ,counterList: counterList
-                         ,headerStyle: headerStyle
-                         ,getListPort: getListPort
-                         ,portUrl: portUrl
-                         ,decodePorts: decodePorts
-                         ,lookupSeaport: lookupSeaport
-                         ,places: places};
+                         ,Model: Model
+                         ,Seaport: Seaport};
    return _elm.Seaport.values;
+};
+Elm.SeaportPair = Elm.SeaportPair || {};
+Elm.SeaportPair.make = function (_elm) {
+   "use strict";
+   _elm.SeaportPair = _elm.SeaportPair || {};
+   if (_elm.SeaportPair.values)
+   return _elm.SeaportPair.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "SeaportPair",
+   $Basics = Elm.Basics.make(_elm),
+   $Effects = Elm.Effects.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Seaport = Elm.Seaport.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var Right = function (a) {
+      return {ctor: "Right",_0: a};
+   };
+   var Left = function (a) {
+      return {ctor: "Left",_0: a};
+   };
+   var view = F2(function (address,
+   model) {
+      return A2($Html.div,
+      _L.fromArray([]),
+      _L.fromArray([A2($Seaport.view,
+                   A2($Signal.forwardTo,
+                   address,
+                   Left),
+                   model.left)
+                   ,A2($Seaport.view,
+                   A2($Signal.forwardTo,
+                   address,
+                   Right),
+                   model.right)]));
+   });
+   var Model = F2(function (a,b) {
+      return {_: {}
+             ,left: a
+             ,right: b};
+   });
+   var init = F2(function (leftPort,
+   rightPort) {
+      return function () {
+         var $ = $Seaport.init(rightPort),
+         right = $._0,
+         rightFx = $._1;
+         var $ = $Seaport.init(leftPort),
+         left = $._0,
+         leftFx = $._1;
+         return {ctor: "_Tuple2"
+                ,_0: A2(Model,left,right)
+                ,_1: $Effects.batch(_L.fromArray([A2($Effects.map,
+                                                 Left,
+                                                 leftFx)
+                                                 ,A2($Effects.map,
+                                                 Right,
+                                                 rightFx)]))};
+      }();
+   });
+   var update = F2(function (action,
+   model) {
+      return function () {
+         switch (action.ctor)
+         {case "Left":
+            return function () {
+                 var $ = A2($Seaport.update,
+                 action._0,
+                 model.left),
+                 left = $._0,
+                 fx = $._1;
+                 return {ctor: "_Tuple2"
+                        ,_0: A2(Model,left,model.right)
+                        ,_1: A2($Effects.map,Left,fx)};
+              }();
+            case "Right":
+            return function () {
+                 var $ = A2($Seaport.update,
+                 action._0,
+                 model.right),
+                 right = $._0,
+                 fx = $._1;
+                 return {ctor: "_Tuple2"
+                        ,_0: A2(Model,model.left,right)
+                        ,_1: A2($Effects.map,Right,fx)};
+              }();}
+         _U.badCase($moduleName,
+         "between lines 34 and 49");
+      }();
+   });
+   _elm.SeaportPair.values = {_op: _op
+                             ,Model: Model
+                             ,init: init
+                             ,Left: Left
+                             ,Right: Right
+                             ,update: update
+                             ,view: view};
+   return _elm.SeaportPair.values;
 };
 Elm.Signal = Elm.Signal || {};
 Elm.Signal.make = function (_elm) {

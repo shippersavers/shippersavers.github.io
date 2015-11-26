@@ -20,7 +20,7 @@ module.exports = function(grunt) {
     },
     watch: {
       elm: {
-        files: ["Main.elm", "Seaport.elm", "style.scss"],
+        files: ["Main.elm", "Seaport.elm", "SeaportPair.elm", "style.scss"],
         tasks: ["elm", "sass"]
       }
     },

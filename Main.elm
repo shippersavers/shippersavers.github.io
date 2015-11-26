@@ -1,12 +1,12 @@
 import Effects exposing (Never)
-import Seaport exposing (init, update, view)
+import SeaportPair exposing (init, update, view)
 import StartApp
 import Task
 
 
 app =
   StartApp.start
-    { init = init
+    { init = init "1" "2"
     , update = update
     , view = view
     , inputs = []
