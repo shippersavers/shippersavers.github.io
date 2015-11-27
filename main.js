@@ -13477,43 +13477,47 @@ Elm.SeaportPair.make = function (_elm) {
                                 ,A2($Html.ul,
                                 _L.fromArray([$Html$Attributes.$class("pure-menu-list")]),
                                 _L.fromArray([A2($Html.li,
-                                             _L.fromArray([$Html$Attributes.$class("pure-menu-item")]),
-                                             _L.fromArray([A2($Html.a,
-                                             _L.fromArray([$Html$Attributes.href("#")
-                                                          ,$Html$Attributes.$class("pure-menu-link")]),
-                                             _L.fromArray([$Html.text("home")]))]))
-                                             ,A2($Html.li,
-                                             _L.fromArray([$Html$Attributes.$class("pure-menu-item")]),
-                                             _L.fromArray([A2($Html.a,
-                                             _L.fromArray([$Html$Attributes.href("#")
-                                                          ,$Html$Attributes.$class("pure-menu-link")]),
-                                             _L.fromArray([$Html.text("home")]))]))]))]))]))
+                                _L.fromArray([$Html$Attributes.$class("pure-menu-item")]),
+                                _L.fromArray([A2($Html.a,
+                                _L.fromArray([$Html$Attributes.href("#")
+                                             ,$Html$Attributes.$class("pure-menu-link")]),
+                                _L.fromArray([$Html.text("Home")]))]))]))]))]))
                    ,A2($Html.main$,
                    _L.fromArray([]),
-                   _L.fromArray([A2($Html.div,
-                   _L.fromArray([$Html$Attributes.$class("header")]),
-                   _L.fromArray([A2($Html.form,
-                   _L.fromArray([$Html$Attributes.$class("pure-form")]),
-                   _L.fromArray([A2($Html.fieldset,
+                   _L.fromArray([A2($Html.header,
                    _L.fromArray([]),
-                   _L.fromArray([A2($Seaport.view,
-                                A2($Signal.forwardTo,
-                                address,
-                                Left),
-                                model.left)
-                                ,A2($Seaport.view,
-                                A2($Signal.forwardTo,
-                                address,
-                                Right),
-                                model.right)
-                                ,A2($Html.button,
-                                _L.fromArray([$Html$Attributes.classList(_L.fromArray([{ctor: "_Tuple2"
-                                                                                       ,_0: "pure-button"
-                                                                                       ,_1: true}
-                                                                                      ,{ctor: "_Tuple2"
-                                                                                       ,_0: "pure-button-primary"
-                                                                                       ,_1: true}]))]),
-                                _L.fromArray([$Html.text("Search")]))]))]))]))]))]));
+                   _L.fromArray([A2($Html.div,
+                                _L.fromArray([$Html$Attributes.$class("hero-titles")]),
+                                _L.fromArray([A2($Html.h1,
+                                             _L.fromArray([]),
+                                             _L.fromArray([$Html.text("Shipper Savers")]))
+                                             ,A2($Html.h3,
+                                             _L.fromArray([]),
+                                             _L.fromArray([$Html.text("We compare sea freight from shipping lines, helping you save .")]))]))
+                                ,A2($Html.div,
+                                _L.fromArray([$Html$Attributes.$class("hero-form")]),
+                                _L.fromArray([A2($Html.form,
+                                _L.fromArray([$Html$Attributes.$class("pure-form")]),
+                                _L.fromArray([A2($Html.fieldset,
+                                _L.fromArray([]),
+                                _L.fromArray([A2($Seaport.view,
+                                             A2($Signal.forwardTo,
+                                             address,
+                                             Left),
+                                             model.left)
+                                             ,A2($Seaport.view,
+                                             A2($Signal.forwardTo,
+                                             address,
+                                             Right),
+                                             model.right)
+                                             ,A2($Html.button,
+                                             _L.fromArray([$Html$Attributes.classList(_L.fromArray([{ctor: "_Tuple2"
+                                                                                                    ,_0: "pure-button"
+                                                                                                    ,_1: true}
+                                                                                                   ,{ctor: "_Tuple2"
+                                                                                                    ,_0: "pure-button-primary"
+                                                                                                    ,_1: true}]))]),
+                                             _L.fromArray([$Html.text("Search")]))]))]))]))]))]))]));
    });
    var Model = F2(function (a,b) {
       return {_: {}

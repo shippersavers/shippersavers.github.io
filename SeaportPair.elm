@@ -67,30 +67,30 @@ view address model =
           [ a
             [ href "#"
             , class "pure-menu-link" ]
-            [ text "home"]
-          ]
-        , li [ class "pure-menu-item"]
-          [ a
-            [ href "#"
-            , class "pure-menu-link" ]
-            [ text "home"]
+            [ text "Home"]
           ]
         ]
       ]
     ]
   , Html.main' [ ]
-    [ div [ class "header" ]
-      [ Html.form [ class "pure-form" ]
-        [ fieldset []
-          [ Seaport.view (Signal.forwardTo address Left) model.left
-          , Seaport.view (Signal.forwardTo address Right) model.right
-          , button [
-             classList
-             [ ("pure-button", True)
-             , ("pure-button-primary", True)
-             ]
+    [ header [ ]
+      [ div [ class "hero-titles" ]
+        [ h1 [] [ text "Shipper Savers" ]
+        , h3 [] [ text "We compare sea freight from shipping lines, helping you save ."]
+        ]
+      , div [ class "hero-form" ]
+        [ Html.form [ class "pure-form" ]
+          [ fieldset []
+            [ Seaport.view (Signal.forwardTo address Left) model.left
+            , Seaport.view (Signal.forwardTo address Right) model.right
+            , button [
+               classList
+               [ ("pure-button", True)
+               , ("pure-button-primary", True)
+               ]
+              ]
+              [ text "Search"]
             ]
-            [ text "Search"]
           ]
         ]
       ]

@@ -16,44 +16,6 @@ body {
     color: $base3;
 }
 
-header {
-    text-align: center;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 2em;
-}
-
-main {
-}
-
-.container {
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1em;
-    padding-right: 1em;
-    max-width: 768px;
-}
-
-.content-subhead {
-    margin: 2em 0 1em 0;
-    font-weight: 300;
-    position: relative;
-}
-
-.sort {
-    margin: 2em 0 1em 0;  
-}
-
-footer {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    height: 5rem;
-    width: 100%;
-    text-align: center;
-    padding-top: 1em;
-    border-top: 1px solid #eee;
-}
-
 .autocomplete {
     p {
         position: absolute;
@@ -111,18 +73,10 @@ ul.loaded:before {
     display: inline-block;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
+.hero-titles {
+    margin: 2em auto;
+    max-width: 724px;
+}
 
 
 
@@ -171,23 +125,19 @@ The content `<div>` is where all your content goes.
     line-height: 1.6em;
 }
 
-.header {
+header {
      margin: 0;
-     color: #333;
      text-align: center;
-     padding: 2.5em 2em 0;
+     padding: 5em 2em;
      border-bottom: 1px solid #eee;
  }
-    .header h1 {
-        margin: 0.2em 0;
+    header h1 {
         font-size: 3em;
         font-weight: 300;
     }
-     .header h2 {
+    header h3 {
         font-weight: 300;
-        color: #ccc;
-        padding: 0;
-        margin-top: 0;
+        color: #888;
     }
 
 .content-subhead {
@@ -333,7 +283,7 @@ Hides the menu at `48em`, but modify this based on your app's needs.
 */
 @media (min-width: 48em) {
 
-    .header,
+    header,
     .content {
         padding-left: 2em;
         padding-right: 2em;
