@@ -113,9 +113,8 @@ handler x =
 
 view : Signal.Address Action -> Model -> Html
 view address model =
-  div  [ id "main" ]
-    [ h3 [headerStyle] [text "From:"]
-    , input
+  div  [ class "inline" ]
+    [ input
       [ class "autocomplete"
       , on "input" targetValue (Signal.message address << PortUpdate)
       , on "keydown" keyCode (\code -> Signal.message address (handler code))
@@ -123,7 +122,7 @@ view address model =
       ] [ ]
     , div
       [ class "autocomplete" ]
-      [ p [ hidden (not model.hideList) ] [ text (seaportStr model.seaport) ]      
+      [ p [ hidden (not <| seaportExist model.seaport) ] [ text (seaportStr model.seaport) ]      
       , ul
         [ hidden model.hideList
         , classList [
@@ -135,6 +134,14 @@ view address model =
         (seaportList address model.ports model.counter)
       ]
     ]
+
+seaportExist : Maybe Seaport -> Bool
+seaportExist maybe =
+  case maybe of
+    Just value -> True
+    Nothing -> False
+      
+    
 
 seaportStr : Maybe Seaport -> String
 seaportStr seaport =

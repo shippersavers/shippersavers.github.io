@@ -13111,7 +13111,16 @@ Elm.Seaport.make = function (_elm) {
                                                ,seaport._0.country]));
             case "Nothing": return "";}
          _U.badCase($moduleName,
-         "between lines 141 and 143");
+         "between lines 148 and 150");
+      }();
+   };
+   var seaportExist = function (maybe) {
+      return function () {
+         switch (maybe.ctor)
+         {case "Just": return true;
+            case "Nothing": return false;}
+         _U.badCase($moduleName,
+         "between lines 140 and 144");
       }();
    };
    var addCounter = F3(function (s,
@@ -13198,11 +13207,8 @@ Elm.Seaport.make = function (_elm) {
    var view = F2(function (address,
    model) {
       return A2($Html.div,
-      _L.fromArray([$Html$Attributes.id("main")]),
-      _L.fromArray([A2($Html.h3,
-                   _L.fromArray([headerStyle]),
-                   _L.fromArray([$Html.text("From:")]))
-                   ,A2($Html.input,
+      _L.fromArray([$Html$Attributes.$class("inline")]),
+      _L.fromArray([A2($Html.input,
                    _L.fromArray([$Html$Attributes.$class("autocomplete")
                                 ,A3($Html$Events.on,
                                 "input",
@@ -13223,7 +13229,7 @@ Elm.Seaport.make = function (_elm) {
                    ,A2($Html.div,
                    _L.fromArray([$Html$Attributes.$class("autocomplete")]),
                    _L.fromArray([A2($Html.p,
-                                _L.fromArray([$Html$Attributes.hidden($Basics.not(model.hideList))]),
+                                _L.fromArray([$Html$Attributes.hidden($Basics.not(seaportExist(model.seaport)))]),
                                 _L.fromArray([$Html.text(seaportStr(model.seaport))]))
                                 ,A2($Html.ul,
                                 _L.fromArray([$Html$Attributes.hidden(model.hideList)
@@ -13438,6 +13444,7 @@ Elm.SeaportPair.make = function (_elm) {
    $Basics = Elm.Basics.make(_elm),
    $Effects = Elm.Effects.make(_elm),
    $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
@@ -13452,17 +13459,61 @@ Elm.SeaportPair.make = function (_elm) {
    var view = F2(function (address,
    model) {
       return A2($Html.div,
-      _L.fromArray([]),
-      _L.fromArray([A2($Seaport.view,
-                   A2($Signal.forwardTo,
-                   address,
-                   Left),
-                   model.left)
-                   ,A2($Seaport.view,
-                   A2($Signal.forwardTo,
-                   address,
-                   Right),
-                   model.right)]));
+      _L.fromArray([$Html$Attributes.id("layout")]),
+      _L.fromArray([A2($Html.a,
+                   _L.fromArray([$Html$Attributes.href("#menu")
+                                ,$Html$Attributes.id("menuLink")
+                                ,$Html$Attributes.$class("menu-link")]),
+                   _L.fromArray([A2($Html.span,
+                   _L.fromArray([]),
+                   _L.fromArray([]))]))
+                   ,A2($Html.div,
+                   _L.fromArray([$Html$Attributes.id("menu")]),
+                   _L.fromArray([A2($Html.div,
+                   _L.fromArray([$Html$Attributes.$class("pure-menu")]),
+                   _L.fromArray([A2($Html.a,
+                                _L.fromArray([$Html$Attributes.$class("pure-menu-heading")]),
+                                _L.fromArray([$Html.text("Shipper Savers")]))
+                                ,A2($Html.ul,
+                                _L.fromArray([$Html$Attributes.$class("pure-menu-list")]),
+                                _L.fromArray([A2($Html.li,
+                                             _L.fromArray([$Html$Attributes.$class("pure-menu-item")]),
+                                             _L.fromArray([A2($Html.a,
+                                             _L.fromArray([$Html$Attributes.href("#")
+                                                          ,$Html$Attributes.$class("pure-menu-link")]),
+                                             _L.fromArray([$Html.text("home")]))]))
+                                             ,A2($Html.li,
+                                             _L.fromArray([$Html$Attributes.$class("pure-menu-item")]),
+                                             _L.fromArray([A2($Html.a,
+                                             _L.fromArray([$Html$Attributes.href("#")
+                                                          ,$Html$Attributes.$class("pure-menu-link")]),
+                                             _L.fromArray([$Html.text("home")]))]))]))]))]))
+                   ,A2($Html.main$,
+                   _L.fromArray([]),
+                   _L.fromArray([A2($Html.div,
+                   _L.fromArray([$Html$Attributes.$class("header")]),
+                   _L.fromArray([A2($Html.form,
+                   _L.fromArray([$Html$Attributes.$class("pure-form")]),
+                   _L.fromArray([A2($Html.fieldset,
+                   _L.fromArray([]),
+                   _L.fromArray([A2($Seaport.view,
+                                A2($Signal.forwardTo,
+                                address,
+                                Left),
+                                model.left)
+                                ,A2($Seaport.view,
+                                A2($Signal.forwardTo,
+                                address,
+                                Right),
+                                model.right)
+                                ,A2($Html.button,
+                                _L.fromArray([$Html$Attributes.classList(_L.fromArray([{ctor: "_Tuple2"
+                                                                                       ,_0: "pure-button"
+                                                                                       ,_1: true}
+                                                                                      ,{ctor: "_Tuple2"
+                                                                                       ,_0: "pure-button-primary"
+                                                                                       ,_1: true}]))]),
+                                _L.fromArray([$Html.text("Search")]))]))]))]))]))]));
    });
    var Model = F2(function (a,b) {
       return {_: {}

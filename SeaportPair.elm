@@ -51,8 +51,48 @@ update action model =
 -- VIEW
 view : Signal.Address Action -> Model -> Html
 view address model =
-  div [ ]
-    [ Seaport.view (Signal.forwardTo address Left) model.left
-    , Seaport.view (Signal.forwardTo address Right) model.right
+  div
+  [ id "layout" ]
+  [ a [ href "#menu"
+      , id "menuLink"
+      , class "menu-link"
+      ]
+    [ span [] [] ]
+  , div [ id "menu"]
+    [ div [ class "pure-menu" ]
+      [ a [ class "pure-menu-heading" ]
+        [ text "Shipper Savers"]
+      , ul [ class "pure-menu-list"]
+        [ li [ class "pure-menu-item"]
+          [ a
+            [ href "#"
+            , class "pure-menu-link" ]
+            [ text "home"]
+          ]
+        , li [ class "pure-menu-item"]
+          [ a
+            [ href "#"
+            , class "pure-menu-link" ]
+            [ text "home"]
+          ]
+        ]
+      ]
     ]
-
+  , Html.main' [ ]
+    [ div [ class "header" ]
+      [ Html.form [ class "pure-form" ]
+        [ fieldset []
+          [ Seaport.view (Signal.forwardTo address Left) model.left
+          , Seaport.view (Signal.forwardTo address Right) model.right
+          , button [
+             classList
+             [ ("pure-button", True)
+             , ("pure-button-primary", True)
+             ]
+            ]
+            [ text "Search"]
+          ]
+        ]
+      ]
+    ]
+  ]
