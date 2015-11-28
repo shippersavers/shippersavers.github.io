@@ -9,10 +9,12 @@ body {
   background-color: #ffffff;
   color: #312c32; }
 
-.autocomplete p {
-  position: absolute;
-  margin: .2em 0 0;
-  width: 15em; }
+.autocomplete {
+  text-align: left; }
+  .autocomplete p {
+    position: absolute;
+    margin: .2em .5em 0;
+    width: 15em; }
 
 input.autocomplete {
   width: 15em;
@@ -61,8 +63,7 @@ ul.loaded:before {
   display: inline-block; }
 
 .hero-titles {
-  margin: 2em auto;
-  max-width: 724px; }
+  margin: 2em auto; }
 
 /* side-menu.css */
 .pure-img-responsive {
@@ -117,12 +118,21 @@ header h1 {
 
 header h3 {
   font-weight: 300;
-  color: #888; }
+  color: #daad86; }
 
 .content-subhead {
   margin: 50px 0 20px 0;
   font-weight: 300;
   color: #888; }
+
+.pure-button:focus, .pure-button:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    border: 1px solid #4d90fe;
+    outline: none;
+}
+.pure-button {
+    border: 1px solid #fff;
+}
 
 /*
 The `#menu` `<div>` is the parent `<div>` that contains the `.pure-menu` that
@@ -276,3 +286,4 @@ Hides the menu at `48em`, but modify this based on your app's needs.
     left: 150px; } }
 
 /*# sourceMappingURL=style.css.map */
+

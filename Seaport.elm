@@ -185,7 +185,7 @@ getListPort query =
 
 portUrl : String -> String
 portUrl query=
-  Http.url ("http://seaports.herokuapp.com/seaports.json?q=" ++ query) [ ]
+  Http.url ("http://seaports.herokuapp.com/api/v1/seaports?q=" ++ query) [ ]
          
 
 decodePorts : Json.Decoder (List Seaport)
@@ -204,7 +204,7 @@ lookupSeaport inquiry =
   let
     toUrl =
       if String.length inquiry >= 1
-        then succeed ("http://seaports.herokuapp.com/seaports.json?q=" ++ inquiry)
+        then succeed ("http://seaports.herokuapp.com/api/v1/seaports?q=" ++ inquiry)
         else fail "Please input some character"
   in
     toUrl `andThen` (mapError (always "Not found :(") << Http.get places)

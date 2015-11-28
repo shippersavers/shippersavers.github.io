@@ -7,45 +7,45 @@ import Html.Attributes exposing (..)
 --  Model
 
 type alias Model =
-  { left : Seaport.Model
-  , right : Seaport.Model }
+  { from : Seaport.Model
+  , to : Seaport.Model }
 
 init : String -> String -> (Model, Effects Action)
-init leftPort rightPort =
+init fromPort toPort =
   let
-    (left, leftFx)   = Seaport.init leftPort
-    (right, rightFx) = Seaport.init rightPort
+    (from, fromFx)   = Seaport.init fromPort
+    (to, toFx) = Seaport.init toPort
   in
-    ( Model left right
+    ( Model from to
     , Effects.batch
-        [ Effects.map Left leftFx
-        , Effects.map Right rightFx
+        [ Effects.map From fromFx
+        , Effects.map To toFx
         ]
     )
 
 -- UPDATE
 
 type Action
-  = Left Seaport.Action
-  | Right Seaport.Action
+  = From Seaport.Action
+  | To Seaport.Action
 
 update : Action -> Model -> (Model, Effects Action)
 update action model =
   case action of
-    Left act ->
+    From act ->
       let
-        (left, fx) = Seaport.update act model.left
+        (from, fx) = Seaport.update act model.from
       in
-        (Model left model.right
-        , Effects.map Left fx
+        (Model from model.to
+        , Effects.map From fx
         )
 
-    Right act ->
+    To act ->
       let
-        (right, fx) = Seaport.update act model.right
+        (to, fx) = Seaport.update act model.to
       in
-        (Model model.left right
-        , Effects.map Right fx
+        (Model model.from to
+        , Effects.map To fx
         )
 
 -- VIEW
@@ -76,13 +76,13 @@ view address model =
     [ header [ ]
       [ div [ class "hero-titles" ]
         [ h1 [] [ text "Shipper Savers" ]
-        , h3 [] [ text "We compare sea freight from shipping lines, helping you save ."]
+        , h3 [] [ text "We compare sea freight from shipping lines and help save money"]
         ]
       , div [ class "hero-form" ]
-        [ Html.form [ class "pure-form" ]
+        [ div [ class "pure-form" ]
           [ fieldset []
-            [ Seaport.view (Signal.forwardTo address Left) model.left
-            , Seaport.view (Signal.forwardTo address Right) model.right
+            [ Seaport.view (Signal.forwardTo address From) model.from
+            , Seaport.view (Signal.forwardTo address To) model.to
             , button [
                classList
                [ ("pure-button", True)

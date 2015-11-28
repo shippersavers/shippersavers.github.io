@@ -13087,7 +13087,7 @@ Elm.Seaport.make = function (_elm) {
    var portUrl = function (query) {
       return A2($Http.url,
       A2($Basics._op["++"],
-      "http://seaports.herokuapp.com/seaports.json?q=",
+      "http://seaports.herokuapp.com/api/v1/seaports?q=",
       query),
       _L.fromArray([]));
    };
@@ -13312,7 +13312,7 @@ Elm.Seaport.make = function (_elm) {
       return function () {
          var toUrl = _U.cmp($String.length(inquiry),
          1) > -1 ? $Task.succeed(A2($Basics._op["++"],
-         "http://seaports.herokuapp.com/seaports.json?q=",
+         "http://seaports.herokuapp.com/api/v1/seaports?q=",
          inquiry)) : $Task.fail("Please input some character");
          return A2($Task.andThen,
          toUrl,
@@ -13450,11 +13450,11 @@ Elm.SeaportPair.make = function (_elm) {
    $Result = Elm.Result.make(_elm),
    $Seaport = Elm.Seaport.make(_elm),
    $Signal = Elm.Signal.make(_elm);
-   var Right = function (a) {
-      return {ctor: "Right",_0: a};
+   var To = function (a) {
+      return {ctor: "To",_0: a};
    };
-   var Left = function (a) {
-      return {ctor: "Left",_0: a};
+   var From = function (a) {
+      return {ctor: "From",_0: a};
    };
    var view = F2(function (address,
    model) {
@@ -13493,23 +13493,23 @@ Elm.SeaportPair.make = function (_elm) {
                                              _L.fromArray([$Html.text("Shipper Savers")]))
                                              ,A2($Html.h3,
                                              _L.fromArray([]),
-                                             _L.fromArray([$Html.text("We compare sea freight from shipping lines, helping you save .")]))]))
+                                             _L.fromArray([$Html.text("We compare sea freight from shipping lines and help save money")]))]))
                                 ,A2($Html.div,
                                 _L.fromArray([$Html$Attributes.$class("hero-form")]),
-                                _L.fromArray([A2($Html.form,
+                                _L.fromArray([A2($Html.div,
                                 _L.fromArray([$Html$Attributes.$class("pure-form")]),
                                 _L.fromArray([A2($Html.fieldset,
                                 _L.fromArray([]),
                                 _L.fromArray([A2($Seaport.view,
                                              A2($Signal.forwardTo,
                                              address,
-                                             Left),
-                                             model.left)
+                                             From),
+                                             model.from)
                                              ,A2($Seaport.view,
                                              A2($Signal.forwardTo,
                                              address,
-                                             Right),
-                                             model.right)
+                                             To),
+                                             model.to)
                                              ,A2($Html.button,
                                              _L.fromArray([$Html$Attributes.classList(_L.fromArray([{ctor: "_Tuple2"
                                                                                                     ,_0: "pure-button"
@@ -13520,54 +13520,49 @@ Elm.SeaportPair.make = function (_elm) {
                                              _L.fromArray([$Html.text("Search")]))]))]))]))]))]))]));
    });
    var Model = F2(function (a,b) {
-      return {_: {}
-             ,left: a
-             ,right: b};
+      return {_: {},from: a,to: b};
    });
-   var init = F2(function (leftPort,
-   rightPort) {
+   var init = F2(function (fromPort,
+   toPort) {
       return function () {
-         var $ = $Seaport.init(rightPort),
-         right = $._0,
-         rightFx = $._1;
-         var $ = $Seaport.init(leftPort),
-         left = $._0,
-         leftFx = $._1;
+         var $ = $Seaport.init(toPort),
+         to = $._0,
+         toFx = $._1;
+         var $ = $Seaport.init(fromPort),
+         from = $._0,
+         fromFx = $._1;
          return {ctor: "_Tuple2"
-                ,_0: A2(Model,left,right)
+                ,_0: A2(Model,from,to)
                 ,_1: $Effects.batch(_L.fromArray([A2($Effects.map,
-                                                 Left,
-                                                 leftFx)
-                                                 ,A2($Effects.map,
-                                                 Right,
-                                                 rightFx)]))};
+                                                 From,
+                                                 fromFx)
+                                                 ,A2($Effects.map,To,toFx)]))};
       }();
    });
    var update = F2(function (action,
    model) {
       return function () {
          switch (action.ctor)
-         {case "Left":
+         {case "From":
             return function () {
                  var $ = A2($Seaport.update,
                  action._0,
-                 model.left),
-                 left = $._0,
+                 model.from),
+                 from = $._0,
                  fx = $._1;
                  return {ctor: "_Tuple2"
-                        ,_0: A2(Model,left,model.right)
-                        ,_1: A2($Effects.map,Left,fx)};
+                        ,_0: A2(Model,from,model.to)
+                        ,_1: A2($Effects.map,From,fx)};
               }();
-            case "Right":
-            return function () {
+            case "To": return function () {
                  var $ = A2($Seaport.update,
                  action._0,
-                 model.right),
-                 right = $._0,
+                 model.to),
+                 to = $._0,
                  fx = $._1;
                  return {ctor: "_Tuple2"
-                        ,_0: A2(Model,model.left,right)
-                        ,_1: A2($Effects.map,Right,fx)};
+                        ,_0: A2(Model,model.from,to)
+                        ,_1: A2($Effects.map,To,fx)};
               }();}
          _U.badCase($moduleName,
          "between lines 34 and 49");
@@ -13576,8 +13571,8 @@ Elm.SeaportPair.make = function (_elm) {
    _elm.SeaportPair.values = {_op: _op
                              ,Model: Model
                              ,init: init
-                             ,Left: Left
-                             ,Right: Right
+                             ,From: From
+                             ,To: To
                              ,update: update
                              ,view: view};
    return _elm.SeaportPair.values;

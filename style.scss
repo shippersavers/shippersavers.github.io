@@ -17,9 +17,10 @@ body {
 }
 
 .autocomplete {
+    text-align: left;
     p {
         position: absolute;
-        margin: .2em 0 0;
+        margin: .2em .5em 0;
         width: 15em;
     }
 }
@@ -75,7 +76,8 @@ ul.loaded:before {
 
 .hero-titles {
     margin: 2em auto;
-    max-width: 724px;
+}
+.hero-form {
 }
 
 
@@ -137,7 +139,7 @@ header {
     }
     header h3 {
         font-weight: 300;
-        color: #888;
+        color: $base2;
     }
 
 .content-subhead {
