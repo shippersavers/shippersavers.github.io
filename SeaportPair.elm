@@ -1,25 +1,32 @@
 module SeaportPair where
 
 import Seaport
+import Tariff
 import Effects exposing (Effects)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 --  Model
 
 type alias Model =
-  { from : Seaport.Model
-  , to : Seaport.Model }
+  { from   : Seaport.Model
+  , to     : Seaport.Model
+  , tariff : Tariff.Model }
 
 init : String -> String -> (Model, Effects Action)
 init fromPort toPort =
   let
-    (from, fromFx)   = Seaport.init fromPort
-    (to, toFx) = Seaport.init toPort
+    (from, fromFx)
+      = Seaport.init fromPort
+    (to, toFx) =
+      Seaport.init toPort
+    (tariff, tariffFx) =
+      Tariff.init
   in
-    ( Model from to
+    ( Model from to tariff
     , Effects.batch
         [ Effects.map From fromFx
         , Effects.map To toFx
+        , Effects.map Tariff tariffFx
         ]
     )
 
@@ -28,6 +35,7 @@ init fromPort toPort =
 type Action
   = From Seaport.Action
   | To Seaport.Action
+  | Tariff Tariff.Action
 
 update : Action -> Model -> (Model, Effects Action)
 update action model =
@@ -36,7 +44,7 @@ update action model =
       let
         (from, fx) = Seaport.update act model.from
       in
-        (Model from model.to
+        (Model from model.to model.tariff
         , Effects.map From fx
         )
 
@@ -44,9 +52,19 @@ update action model =
       let
         (to, fx) = Seaport.update act model.to
       in
-        (Model model.from to
+        (Model model.from to model.tariff
         , Effects.map To fx
         )
+
+    Tariff act ->
+      let
+        (tariff, fx) = Tariff.update act model.tariff
+      in
+        (Model model.from model.to tariff
+        , Effects.map Tariff fx
+        )
+      
+      
 
 -- VIEW
 view : Signal.Address Action -> Model -> Html
@@ -83,13 +101,7 @@ view address model =
           [ fieldset []
             [ Seaport.view (Signal.forwardTo address From) model.from
             , Seaport.view (Signal.forwardTo address To) model.to
-            , button [
-               classList
-               [ ("pure-button", True)
-               , ("pure-button-primary", True)
-               ]
-              ]
-              [ text "Search"]
+            , Tariff.view (Signal.forwardTo address Tariff) model.tariff
             ]
           ]
         ]
