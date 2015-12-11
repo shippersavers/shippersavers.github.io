@@ -13111,7 +13111,7 @@ Elm.Seaport.make = function (_elm) {
                                                ,seaport._0.country]));
             case "Nothing": return "";}
          _U.badCase($moduleName,
-         "between lines 162 and 164");
+         "between lines 167 and 169");
       }();
    };
    var seaportExist = function (maybe) {
@@ -13120,7 +13120,7 @@ Elm.Seaport.make = function (_elm) {
          {case "Just": return true;
             case "Nothing": return false;}
          _U.badCase($moduleName,
-         "between lines 154 and 158");
+         "between lines 159 and 163");
       }();
    };
    var addCounter = F3(function (s,
@@ -13134,7 +13134,7 @@ Elm.Seaport.make = function (_elm) {
             case "up": return _U.cmp(x - 1,
               0) > 0 ? x - 1 : l + x - 1;}
          _U.badCase($moduleName,
-         "between lines 113 and 116");
+         "between lines 117 and 120");
       }();
    });
    var selectedPort = F2(function (n,
@@ -13155,6 +13155,7 @@ Elm.Seaport.make = function (_elm) {
                                                          ,A2(_op["=>"],
                                                          "text-align",
                                                          "left")]));
+   var EmptyAction = {ctor: "EmptyAction"};
    var ShowList = {ctor: "ShowList"};
    var HideList = {ctor: "HideList"};
    var PickupEnter = {ctor: "PickupEnter"};
@@ -13169,8 +13170,7 @@ Elm.Seaport.make = function (_elm) {
             case 38: return NextPort("up");
             case 40:
             return NextPort("down");}
-         _U.badCase($moduleName,
-         "between lines 120 and 123");
+         return EmptyAction;
       }();
    };
    var Pickup = function (a) {
@@ -13326,7 +13326,11 @@ Elm.Seaport.make = function (_elm) {
    model) {
       return function () {
          switch (action.ctor)
-         {case "HideList":
+         {case "EmptyAction":
+            return {ctor: "_Tuple2"
+                   ,_0: model
+                   ,_1: $Effects.none};
+            case "HideList":
             return {ctor: "_Tuple2"
                    ,_0: A6(Model,
                    model.id,
@@ -13415,7 +13419,7 @@ Elm.Seaport.make = function (_elm) {
                    model.counter)
                    ,_1: $Effects.none};}
          _U.badCase($moduleName,
-         "between lines 60 and 102");
+         "between lines 61 and 106");
       }();
    });
    _elm.Seaport.values = {_op: _op
@@ -13473,7 +13477,8 @@ Elm.SeaportPair.make = function (_elm) {
                    _L.fromArray([A2($Html.div,
                    _L.fromArray([$Html$Attributes.$class("pure-menu")]),
                    _L.fromArray([A2($Html.a,
-                                _L.fromArray([$Html$Attributes.$class("pure-menu-heading")]),
+                                _L.fromArray([$Html$Attributes.href("/")
+                                             ,$Html$Attributes.$class("pure-menu-heading")]),
                                 _L.fromArray([$Html.text("Shipper Savers")]))
                                 ,A2($Html.ul,
                                 _L.fromArray([$Html$Attributes.$class("pure-menu-list")]),
@@ -13482,40 +13487,43 @@ Elm.SeaportPair.make = function (_elm) {
                                 _L.fromArray([A2($Html.a,
                                 _L.fromArray([$Html$Attributes.href("#")
                                              ,$Html$Attributes.$class("pure-menu-link")]),
-                                _L.fromArray([$Html.text("Home")]))]))]))]))]))
+                                _L.fromArray([$Html.text("About")]))]))]))]))]))
                    ,A2($Html.main$,
                    _L.fromArray([]),
                    _L.fromArray([A2($Html.header,
-                   _L.fromArray([]),
-                   _L.fromArray([A2($Html.div,
-                                _L.fromArray([$Html$Attributes.$class("hero-titles")]),
-                                _L.fromArray([A2($Html.h1,
-                                             _L.fromArray([]),
-                                             _L.fromArray([$Html.text("Shipper Savers")]))
-                                             ,A2($Html.h3,
-                                             _L.fromArray([]),
-                                             _L.fromArray([$Html.text("We compare sea freight from shipping lines and help save money")]))]))
-                                ,A2($Html.div,
-                                _L.fromArray([$Html$Attributes.$class("hero-form")]),
-                                _L.fromArray([A2($Html.div,
-                                _L.fromArray([$Html$Attributes.$class("pure-form")]),
-                                _L.fromArray([A2($Html.fieldset,
                                 _L.fromArray([]),
-                                _L.fromArray([A2($Seaport.view,
-                                             A2($Signal.forwardTo,
-                                             address,
-                                             From),
-                                             model.from)
-                                             ,A2($Seaport.view,
-                                             A2($Signal.forwardTo,
-                                             address,
-                                             To),
-                                             model.to)
-                                             ,A2($Tariff.view,
-                                             A2($Signal.forwardTo,
-                                             address,
-                                             Tariff),
-                                             model.tariff)]))]))]))]))]))]));
+                                _L.fromArray([A2($Html.div,
+                                             _L.fromArray([$Html$Attributes.$class("hero-titles")]),
+                                             _L.fromArray([A2($Html.h1,
+                                                          _L.fromArray([]),
+                                                          _L.fromArray([$Html.text("Shipper Savers")]))
+                                                          ,A2($Html.h3,
+                                                          _L.fromArray([]),
+                                                          _L.fromArray([$Html.text("We compare sea freight from shipping lines and help save money")]))]))
+                                             ,A2($Html.div,
+                                             _L.fromArray([$Html$Attributes.$class("hero-form")]),
+                                             _L.fromArray([A2($Html.div,
+                                             _L.fromArray([$Html$Attributes.$class("pure-form")]),
+                                             _L.fromArray([A2($Html.fieldset,
+                                             _L.fromArray([]),
+                                             _L.fromArray([A2($Seaport.view,
+                                                          A2($Signal.forwardTo,
+                                                          address,
+                                                          From),
+                                                          model.from)
+                                                          ,A2($Seaport.view,
+                                                          A2($Signal.forwardTo,
+                                                          address,
+                                                          To),
+                                                          model.to)
+                                                          ,A2($Tariff.view,
+                                                          A2($Signal.forwardTo,
+                                                          address,
+                                                          Tariff),
+                                                          model.tariff)]))]))]))]))
+                                ,A2($Html.section,
+                                _L.fromArray([$Html$Attributes.$class("content")]),
+                                $Tariff.tariffList(model.tariff.tariffs))]))]));
    });
    var Model = F3(function (a,
    b,
@@ -13570,7 +13578,10 @@ Elm.SeaportPair.make = function (_elm) {
             return function () {
                  var $ = A2($Tariff.update,
                  action._0,
-                 model.tariff),
+                 A3($Tariff.Model,
+                 model.from.seaportCode,
+                 model.to.seaportCode,
+                 _L.fromArray([]))),
                  tariff = $._0,
                  fx = $._1;
                  return {ctor: "_Tuple2"
@@ -13596,7 +13607,7 @@ Elm.SeaportPair.make = function (_elm) {
                         ,_1: A2($Effects.map,To,fx)};
               }();}
          _U.badCase($moduleName,
-         "between lines 42 and 67");
+         "between lines 42 and 68");
       }();
    });
    _elm.SeaportPair.values = {_op: _op
@@ -14017,15 +14028,6 @@ Elm.Tariff.make = function (_elm) {
                                          ," BAF: "
                                          ,t.baf]));
    };
-   var tariffList = function (tariffs) {
-      return A2($List.map,
-      function (t) {
-         return A2($Html.li,
-         _L.fromArray([]),
-         _L.fromArray([$Html.text(tariffStr(t))]));
-      },
-      tariffs);
-   };
    var NewList = function (a) {
       return {ctor: "NewList"
              ,_0: a};
@@ -14041,22 +14043,165 @@ Elm.Tariff.make = function (_elm) {
       return A2($Html.div,
       _L.fromArray([$Html$Attributes.$class("inline")]),
       _L.fromArray([A2($Html.button,
-                   _L.fromArray([$Html$Attributes.classList(_L.fromArray([{ctor: "_Tuple2"
-                                                                          ,_0: "pure-button"
-                                                                          ,_1: true}
-                                                                         ,{ctor: "_Tuple2"
-                                                                          ,_0: "pure-button-primary"
-                                                                          ,_1: true}]))
-                                ,A2($Html$Events.onClick,
-                                address,
-                                A2(RequestMore,
-                                model.pol,
-                                model.pod))]),
-                   _L.fromArray([$Html.text("Search")]))
-                   ,A2($Html.ul,
-                   _L.fromArray([]),
-                   tariffList(model.tariffs))]));
+      _L.fromArray([$Html$Attributes.classList(_L.fromArray([{ctor: "_Tuple2"
+                                                             ,_0: "pure-button"
+                                                             ,_1: true}
+                                                            ,{ctor: "_Tuple2"
+                                                             ,_0: "pure-button-primary"
+                                                             ,_1: true}
+                                                            ,{ctor: "_Tuple2"
+                                                             ,_0: "button-xlarge "
+                                                             ,_1: true}]))
+                   ,A2($Html$Events.onClick,
+                   address,
+                   A2(RequestMore,
+                   model.pol,
+                   model.pod))]),
+      _L.fromArray([$Html.text("Search")]))]));
    });
+   var priceTariff = function (t) {
+      return function () {
+         var baf = $String.toFloat(t.baf);
+         var freight = $String.toFloat(t.freight);
+         var result = A3($Result.map2,
+         F2(function (x,y) {
+            return x + y;
+         }),
+         freight,
+         baf);
+         return $Basics.toString($Maybe.withDefault(0.0)($Result.toMaybe(result)));
+      }();
+   };
+   var tariffList = function (tariffs) {
+      return A2($List.map,
+      function (t) {
+         return A2($Html.div,
+         _L.fromArray([$Html$Attributes.$class("callout")]),
+         _L.fromArray([A2($Html.div,
+                      _L.fromArray([$Html$Attributes.$class("pure-g")]),
+                      _L.fromArray([A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-1-5")]),
+                                   _L.fromArray([A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("logo")]),
+                                   _L.fromArray([A2($Html.h3,
+                                   _L.fromArray([]),
+                                   _L.fromArray([$Html.text(t.company)]))]))]))
+                                   ,A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-1-5")]),
+                                   _L.fromArray([A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pol")]),
+                                   _L.fromArray([A2($Html.h3,
+                                   _L.fromArray([]),
+                                   _L.fromArray([$Html.text(t.pol)]))]))]))
+                                   ,A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-1-5")]),
+                                   _L.fromArray([A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("container")]),
+                                   _L.fromArray([A2($Html.h3,
+                                   _L.fromArray([]),
+                                   _L.fromArray([$Html.text(t.container)]))]))]))
+                                   ,A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-1-5")]),
+                                   _L.fromArray([A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pod")]),
+                                   _L.fromArray([A2($Html.h3,
+                                   _L.fromArray([]),
+                                   _L.fromArray([$Html.text(t.pod)]))]))]))
+                                   ,A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-1-5")]),
+                                   _L.fromArray([A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("price")]),
+                                   _L.fromArray([A2($Html.h3,
+                                   _L.fromArray([]),
+                                   _L.fromArray([$Html.text(A2($Basics._op["++"],
+                                   "$ ",
+                                   priceTariff(t)))]))]))]))]))
+                      ,A2($Html.div,
+                      _L.fromArray([$Html$Attributes.$class("pure-g")]),
+                      _L.fromArray([A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-1-5")]),
+                                   _L.fromArray([]))
+                                   ,A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-3-5")]),
+                                   _L.fromArray([A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-g arrow")]),
+                                   _L.fromArray([A2($Html.div,
+                                                _L.fromArray([$Html$Attributes.$class("pure-u-2-24")]),
+                                                _L.fromArray([]))
+                                                ,A2($Html.div,
+                                                _L.fromArray([$Html$Attributes.$class("pure-u-20-24")]),
+                                                _L.fromArray([A2($Html.div,
+                                                _L.fromArray([$Html$Attributes.$class("line")]),
+                                                _L.fromArray([]))]))
+                                                ,A2($Html.div,
+                                                _L.fromArray([$Html$Attributes.$class("pure-u-2-24")]),
+                                                _L.fromArray([A2($Html.div,
+                                                _L.fromArray([$Html$Attributes.$class("point")]),
+                                                _L.fromArray([]))]))]))]))
+                                   ,A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-1-5")]),
+                                   _L.fromArray([]))]))
+                      ,A2($Html.div,
+                      _L.fromArray([$Html$Attributes.$class("pure-g")]),
+                      _L.fromArray([A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-1-24")]),
+                                   _L.fromArray([]))
+                                   ,A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-22-24")]),
+                                   _L.fromArray([A2($Html.hr,
+                                                _L.fromArray([]),
+                                                _L.fromArray([]))
+                                                ,A2($Html.p,
+                                                _L.fromArray([]),
+                                                _L.fromArray([$Html.text("Details")]))]))
+                                   ,A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-1-24")]),
+                                   _L.fromArray([]))]))
+                      ,A2($Html.div,
+                      _L.fromArray([$Html$Attributes.$class("pure-g details")]),
+                      _L.fromArray([A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-6-24")]),
+                                   _L.fromArray([A2($Html.p,
+                                   _L.fromArray([]),
+                                   _L.fromArray([A2($Html.span,
+                                                _L.fromArray([$Html$Attributes.$class("status")]),
+                                                _L.fromArray([$Html.text("Status: ")]))
+                                                ,A2($Html.span,
+                                                _L.fromArray([]),
+                                                _L.fromArray([$Html.text(t.status)]))]))]))
+                                   ,A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-6-24")]),
+                                   _L.fromArray([A2($Html.p,
+                                   _L.fromArray([]),
+                                   _L.fromArray([A2($Html.span,
+                                                _L.fromArray([$Html$Attributes.$class("owners")]),
+                                                _L.fromArray([$Html.text("Owners: ")]))
+                                                ,A2($Html.span,
+                                                _L.fromArray([]),
+                                                _L.fromArray([$Html.text(t.owners)]))]))]))
+                                   ,A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-6-24")]),
+                                   _L.fromArray([A2($Html.p,
+                                   _L.fromArray([]),
+                                   _L.fromArray([A2($Html.span,
+                                                _L.fromArray([$Html$Attributes.$class("freight")]),
+                                                _L.fromArray([$Html.text("Freight: ")]))
+                                                ,A2($Html.span,
+                                                _L.fromArray([]),
+                                                _L.fromArray([$Html.text(t.freight)]))]))]))
+                                   ,A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-6-24")]),
+                                   _L.fromArray([A2($Html.p,
+                                   _L.fromArray([]),
+                                   _L.fromArray([A2($Html.span,
+                                                _L.fromArray([$Html$Attributes.$class("baf")]),
+                                                _L.fromArray([$Html.text("BAF: ")]))
+                                                ,A2($Html.span,
+                                                _L.fromArray([]),
+                                                _L.fromArray([$Html.text(t.baf)]))]))]))]))]));
+      },
+      tariffs);
+   };
    var Tariff = F8(function (a,
    b,
    c,
@@ -14122,8 +14267,8 @@ Elm.Tariff.make = function (_elm) {
    });
    var init = {ctor: "_Tuple2"
               ,_0: A3(Model,
-              "RUVVO",
-              "HKHKG",
+              "",
+              "",
               _L.fromArray([]))
               ,_1: $Effects.none};
    var update = F2(function (action,
@@ -14146,13 +14291,14 @@ Elm.Tariff.make = function (_elm) {
                    model.pol,
                    model.pod)};}
          _U.badCase($moduleName,
-         "between lines 48 and 55");
+         "between lines 59 and 66");
       }();
    });
    _elm.Tariff.values = {_op: _op
                         ,init: init
                         ,update: update
                         ,view: view
+                        ,tariffList: tariffList
                         ,Model: Model
                         ,Tariff: Tariff};
    return _elm.Tariff.values;

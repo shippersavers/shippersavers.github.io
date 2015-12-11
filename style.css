@@ -4,7 +4,8 @@ html {
 
 body {
   margin: 0 0 5rem;
-  font: 16px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 300;
   line-height: 1.4em;
   background-color: #ffffff;
   color: #312c32; }
@@ -65,6 +66,47 @@ ul.loaded:before {
 .hero-titles {
   margin: 2em auto; }
 
+/* Callout */
+.callout {
+  margin: 0 0 1rem 0;
+  padding: 1rem;
+  border: 1px solid #daad86;
+  border-radius: 0;
+  position: relative;
+  background-color: white; }
+
+.pod {
+  text-align: right; }
+
+.price {
+  text-align: right; }
+
+.container {
+  text-align: center; }
+
+.details {
+  text-align: center; }
+
+.status, .owners, .freight, .baf {
+  font-weight: bold; }
+
+/* Arrow */
+.arrow {
+  margin-bottom: 1rem; }
+
+.line {
+  margin-top: 0.5rem;
+  background: #98dafc;
+  height: 0.3rem;
+  width: 100%; }
+
+.point {
+  width: 0;
+  height: 0;
+  border-top: 0.7rem solid transparent;
+  border-bottom: 0.7rem solid transparent;
+  border-left: 1rem solid #98dafc; }
+
 /* side-menu.css */
 .pure-img-responsive {
   max-width: 100%;
@@ -107,18 +149,15 @@ The content `<div>` is where all your content goes.
   line-height: 1.6em; }
 
 header {
-  margin: 0;
+  margin: 0 0 3rem 0;
   text-align: center;
-  padding: 5em 2em;
-  border-bottom: 1px solid #eee; }
-
-header h1 {
-  font-size: 3em;
-  font-weight: 300; }
-
-header h3 {
-  font-weight: 300;
-  color: #daad86; }
+  padding: 2em 2em 3em 2em; }
+  header h1 {
+    font-size: 3em;
+    font-weight: 300; }
+  header h3 {
+    font-weight: 300;
+    color: #daad86; }
 
 .content-subhead {
   margin: 50px 0 20px 0;
@@ -176,10 +215,6 @@ appears on the left side of the page.
 /*
     This styles the selected menu item `<li>`.
     */
-#menu .pure-menu-selected,
-#menu .pure-menu-heading {
-  background: #1f8dd6; }
-
 /*
         This styles a link within a selected menu item `<li>`.
         */
@@ -190,9 +225,12 @@ appears on the left side of the page.
     This styles the menu heading.
     */
 #menu .pure-menu-heading {
-  font-size: 110%;
+  font-size: 120%;
   color: #fff;
   margin: 0; }
+
+#menu .pure-menu-heading:hover {
+  color: #999; }
 
 /* -- Dynamic Button For Responsive Menu -------------------------------------*/
 /*
@@ -243,6 +281,18 @@ small screens.
 .menu-link span:after {
   margin-top: 0.6em; }
 
+.button-xsmall {
+  font-size: 70%; }
+
+.button-small {
+  font-size: 85%; }
+
+.button-large {
+  font-size: 110%; }
+
+.button-xlarge {
+  font-size: 125%; }
+
 /* -- Responsive Styles (Media Queries) ------------------------------------- */
 /*
 Hides the menu at `48em`, but modify this based on your app's needs.
@@ -274,6 +324,6 @@ Hides the menu at `48em`, but modify this based on your app's needs.
     */
   #layout.active {
     position: relative;
-    left: 150px; } }
+    left: 200px; } }
 
 /*# sourceMappingURL=style.css.map */

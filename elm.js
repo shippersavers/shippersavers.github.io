@@ -13111,7 +13111,7 @@ Elm.Seaport.make = function (_elm) {
                                                ,seaport._0.country]));
             case "Nothing": return "";}
          _U.badCase($moduleName,
-         "between lines 162 and 164");
+         "between lines 167 and 169");
       }();
    };
    var seaportExist = function (maybe) {
@@ -13120,7 +13120,7 @@ Elm.Seaport.make = function (_elm) {
          {case "Just": return true;
             case "Nothing": return false;}
          _U.badCase($moduleName,
-         "between lines 154 and 158");
+         "between lines 159 and 163");
       }();
    };
    var addCounter = F3(function (s,
@@ -13134,7 +13134,7 @@ Elm.Seaport.make = function (_elm) {
             case "up": return _U.cmp(x - 1,
               0) > 0 ? x - 1 : l + x - 1;}
          _U.badCase($moduleName,
-         "between lines 113 and 116");
+         "between lines 117 and 120");
       }();
    });
    var selectedPort = F2(function (n,
@@ -13155,6 +13155,7 @@ Elm.Seaport.make = function (_elm) {
                                                          ,A2(_op["=>"],
                                                          "text-align",
                                                          "left")]));
+   var EmptyAction = {ctor: "EmptyAction"};
    var ShowList = {ctor: "ShowList"};
    var HideList = {ctor: "HideList"};
    var PickupEnter = {ctor: "PickupEnter"};
@@ -13169,8 +13170,7 @@ Elm.Seaport.make = function (_elm) {
             case 38: return NextPort("up");
             case 40:
             return NextPort("down");}
-         _U.badCase($moduleName,
-         "between lines 120 and 123");
+         return EmptyAction;
       }();
    };
    var Pickup = function (a) {
@@ -13326,7 +13326,11 @@ Elm.Seaport.make = function (_elm) {
    model) {
       return function () {
          switch (action.ctor)
-         {case "HideList":
+         {case "EmptyAction":
+            return {ctor: "_Tuple2"
+                   ,_0: model
+                   ,_1: $Effects.none};
+            case "HideList":
             return {ctor: "_Tuple2"
                    ,_0: A6(Model,
                    model.id,
@@ -13415,7 +13419,7 @@ Elm.Seaport.make = function (_elm) {
                    model.counter)
                    ,_1: $Effects.none};}
          _U.badCase($moduleName,
-         "between lines 60 and 102");
+         "between lines 61 and 106");
       }();
    });
    _elm.Seaport.values = {_op: _op
@@ -13515,7 +13519,10 @@ Elm.SeaportPair.make = function (_elm) {
                                              A2($Signal.forwardTo,
                                              address,
                                              Tariff),
-                                             model.tariff)]))]))]))]))]))]));
+                                             model.tariff)]))]))]))
+                                ,A2($Html.div,
+                                _L.fromArray([$Html$Attributes.$class("listTariff")]),
+                                $Tariff.tariffList(model.tariff.tariffs))]))]))]));
    });
    var Model = F3(function (a,
    b,
@@ -13570,7 +13577,10 @@ Elm.SeaportPair.make = function (_elm) {
             return function () {
                  var $ = A2($Tariff.update,
                  action._0,
-                 model.tariff),
+                 A3($Tariff.Model,
+                 model.from.seaportCode,
+                 model.to.seaportCode,
+                 _L.fromArray([]))),
                  tariff = $._0,
                  fx = $._1;
                  return {ctor: "_Tuple2"
@@ -13596,7 +13606,7 @@ Elm.SeaportPair.make = function (_elm) {
                         ,_1: A2($Effects.map,To,fx)};
               }();}
          _U.badCase($moduleName,
-         "between lines 42 and 67");
+         "between lines 42 and 68");
       }();
    });
    _elm.SeaportPair.values = {_op: _op
@@ -13999,6 +14009,19 @@ Elm.Tariff.make = function (_elm) {
       pod))),
       _L.fromArray([]));
    });
+   var tariffList = function (tariffs) {
+      return A2($List.map,
+      function (t) {
+         return A2($Html.div,
+         _L.fromArray([$Html$Attributes.$class("tariff")]),
+         _L.fromArray([A2($Html.div,
+         _L.fromArray([$Html$Attributes.$class("logo")]),
+         _L.fromArray([A2($Html.p,
+         _L.fromArray([]),
+         _L.fromArray([$Html.text(t.pol)]))]))]));
+      },
+      tariffs);
+   };
    var tariffStr = function (t) {
       return $String.concat(_L.fromArray(["Company: "
                                          ,t.company
@@ -14017,38 +14040,33 @@ Elm.Tariff.make = function (_elm) {
                                          ," BAF: "
                                          ,t.baf]));
    };
-   var tariffList = function (tariffs) {
-      return A2($List.map,
-      function (t) {
-         return A2($Html.li,
-         _L.fromArray([]),
-         _L.fromArray([$Html.text(tariffStr(t))]));
-      },
-      tariffs);
-   };
    var NewList = function (a) {
       return {ctor: "NewList"
              ,_0: a};
    };
-   var RequestMore = {ctor: "RequestMore"};
+   var RequestMore = F2(function (a,
+   b) {
+      return {ctor: "RequestMore"
+             ,_0: a
+             ,_1: b};
+   });
    var view = F2(function (address,
    model) {
       return A2($Html.div,
       _L.fromArray([$Html$Attributes.$class("inline")]),
       _L.fromArray([A2($Html.button,
-                   _L.fromArray([$Html$Attributes.classList(_L.fromArray([{ctor: "_Tuple2"
-                                                                          ,_0: "pure-button"
-                                                                          ,_1: true}
-                                                                         ,{ctor: "_Tuple2"
-                                                                          ,_0: "pure-button-primary"
-                                                                          ,_1: true}]))
-                                ,A2($Html$Events.onClick,
-                                address,
-                                RequestMore)]),
-                   _L.fromArray([$Html.text("Search")]))
-                   ,A2($Html.ul,
-                   _L.fromArray([]),
-                   tariffList(model.tariffs))]));
+      _L.fromArray([$Html$Attributes.classList(_L.fromArray([{ctor: "_Tuple2"
+                                                             ,_0: "pure-button"
+                                                             ,_1: true}
+                                                            ,{ctor: "_Tuple2"
+                                                             ,_0: "pure-button-primary"
+                                                             ,_1: true}]))
+                   ,A2($Html$Events.onClick,
+                   address,
+                   A2(RequestMore,
+                   model.pol,
+                   model.pod))]),
+      _L.fromArray([$Html.text("Search")]))]));
    });
    var Tariff = F8(function (a,
    b,
@@ -14105,11 +14123,19 @@ Elm.Tariff.make = function (_elm) {
       decodePorts,
       A2(portUrl,pol,pod)))));
    });
-   var Model = function (a) {
-      return {_: {},tariffs: a};
-   };
+   var Model = F3(function (a,
+   b,
+   c) {
+      return {_: {}
+             ,pod: b
+             ,pol: a
+             ,tariffs: c};
+   });
    var init = {ctor: "_Tuple2"
-              ,_0: Model(_L.fromArray([]))
+              ,_0: A3(Model,
+              "",
+              "",
+              _L.fromArray([]))
               ,_1: $Effects.none};
    var update = F2(function (action,
    model) {
@@ -14117,7 +14143,10 @@ Elm.Tariff.make = function (_elm) {
          switch (action.ctor)
          {case "NewList":
             return {ctor: "_Tuple2"
-                   ,_0: Model(A2($Maybe.withDefault,
+                   ,_0: A3(Model,
+                   model.pol,
+                   model.pod,
+                   A2($Maybe.withDefault,
                    model.tariffs,
                    action._0))
                    ,_1: $Effects.none};
@@ -14125,16 +14154,17 @@ Elm.Tariff.make = function (_elm) {
             return {ctor: "_Tuple2"
                    ,_0: model
                    ,_1: A2(getListTariff,
-                   "RUVVO",
-                   "HKHKG")};}
+                   model.pol,
+                   model.pod)};}
          _U.badCase($moduleName,
-         "between lines 46 and 53");
+         "between lines 48 and 55");
       }();
    });
    _elm.Tariff.values = {_op: _op
                         ,init: init
                         ,update: update
                         ,view: view
+                        ,tariffList: tariffList
                         ,Model: Model
                         ,Tariff: Tariff};
    return _elm.Tariff.values;

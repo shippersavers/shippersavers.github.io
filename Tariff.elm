@@ -1,4 +1,4 @@
-module Tariff (Model, Tariff, init, Action, update, view) where
+module Tariff (Model, Tariff, init, Action, update, view, tariffList) where
 
 import Effects exposing (Effects, Never)
 import Html exposing (..)
@@ -34,9 +34,20 @@ type alias Tariff =
 
 init : (Model, Effects Action)
 init =
-  ( Model "RUVVO" "HKHKG" []
+  ( Model "" "" []
   , Effects.none
   )
+
+
+priceTariff : Tariff -> String
+priceTariff t =
+  let freight =
+        (String.toFloat t.freight)
+      baf =
+        (String.toFloat t.baf)
+      result = Result.map2 (+) freight baf
+  in Result.toMaybe result |> Maybe.withDefault 0.0 |> toString 
+
 
 -- UPDATE
 type Action
@@ -64,13 +75,11 @@ view address model =
       [ classList
         [ ("pure-button", True)
         , ("pure-button-primary", True)
+        , ("button-xlarge ", True)
         ]
       , onClick address (RequestMore model.pol model.pod)
       ]
       [ text "Search"]
-    , ul
-      [ ]
-      (tariffList model.tariffs)
     ]
 
 tariffStr : Tariff -> String
@@ -88,7 +97,83 @@ tariffStr t =
 tariffList : List Tariff -> List Html
 tariffList tariffs =
   List.map (\t ->
-              li [ ] [ text (tariffStr t) ]
+              div
+              [ class "callout" ]
+              [ div
+                [ class "pure-g" ]
+                [ div [ class "pure-u-1-5" ]
+                  [ div [ class "logo" ]
+                    [ h3 [ ] [ text t.company ] ]
+                  ]
+                , div [ class "pure-u-1-5" ]
+                  [ div [ class "pol" ] 
+                    [ h3 [ ] [ text t.pol ] ]
+                  ]
+                , div [ class "pure-u-1-5" ]
+                  [ div [ class "container" ]
+                    [ h3 [ ] [ text t.container ] ]
+                  ]
+                , div [ class "pure-u-1-5" ]
+                  [ div [ class "pod" ]
+                    [ h3 [ ] [ text t.pod ] ]
+                  ]
+                , div [ class "pure-u-1-5" ]
+                  [ div [ class "price" ]
+                    [ h3 [ ] [ text ("$ " ++ (priceTariff t)) ] ]
+                  ]
+                ]
+              , div
+                [ class "pure-g" ]
+                [ div [ class "pure-u-1-5" ] []
+                , div [ class "pure-u-3-5" ]
+                  [ div [ class "pure-g arrow" ]
+                    [ div [ class "pure-u-2-24" ] []
+                    , div [ class "pure-u-20-24" ]
+                      [ div [class "line"] []
+                      ]
+                    , div [ class "pure-u-2-24" ]
+                      [ div [class "point"] [] ]
+                    ]
+                  ]
+                , div [ class "pure-u-1-5" ] []
+                ]
+              , div
+                [ class "pure-g" ]
+                [ div [ class "pure-u-1-24" ] []
+                , div [ class "pure-u-22-24" ]
+                  [ hr [] []
+                  , p [ ] [ text "Details" ]
+                  ] 
+                , div [ class "pure-u-1-24" ] []
+                ]
+              , div
+                [ class "pure-g details" ]
+                [ div [ class "pure-u-6-24" ]
+                  [ p [ ]
+                    [ span [ class "status" ] [ text "Status: " ]
+                    , span [ ] [ text t.status ]
+                    ]
+                  ]
+                , div [ class "pure-u-6-24" ]
+                  [ p [ ]
+                    [ span [ class "owners" ] [ text "Owners: " ]
+                    , span [ ] [ text t.owners ]
+                    ]
+                  ]
+                , div [ class "pure-u-6-24" ]
+                  [ p [ ]
+                    [ span [ class "freight" ] [ text "Freight: " ]
+                    , span [ ] [ text t.freight ]
+                    ]
+                  ]
+                , div [ class "pure-u-6-24" ]
+                  [ p [ ]
+                    [ span [ class "baf" ] [ text "BAF: " ]
+                    , span [ ] [ text t.baf ]
+                    ]
+                  ]
+                ]
+              ]
            ) tariffs
 
 

@@ -54,6 +54,7 @@ type Action
     | PickupEnter
     | HideList
     | ShowList
+    | EmptyAction
 
 update : Action -> Model -> (Model, Effects Action)
 update action model =
@@ -101,6 +102,9 @@ update action model =
       , Effects.none
       )      
 
+    EmptyAction ->
+      ( model, Effects.none)
+
 -- VIEW
 
 (=>) = (,)
@@ -121,6 +125,7 @@ handler x =
     38 -> NextPort "up"
     40 -> NextPort "down"
     13 -> PickupEnter
+    _  -> EmptyAction
 
 view : Signal.Address Action -> Model -> Html
 view address model =

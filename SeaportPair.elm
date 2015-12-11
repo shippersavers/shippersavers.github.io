@@ -58,7 +58,8 @@ update action model =
 
     Tariff act ->
       let
-        (tariff, fx) = Tariff.update act model.tariff
+        (tariff, fx) =
+          Tariff.update act (Tariff.Model model.from.seaportCode model.to.seaportCode [])
       in
         (Model model.from model.to tariff
         , Effects.map Tariff fx
@@ -78,14 +79,15 @@ view address model =
     [ span [] [] ]
   , div [ id "menu"]
     [ div [ class "pure-menu" ]
-      [ a [ class "pure-menu-heading" ]
+      [ a [ href "/"
+        , class "pure-menu-heading" ]
         [ text "Shipper Savers"]
       , ul [ class "pure-menu-list"]
         [ li [ class "pure-menu-item"]
           [ a
             [ href "#"
             , class "pure-menu-link" ]
-            [ text "Home"]
+            [ text "About"]
           ]
         ]
       ]
@@ -106,5 +108,7 @@ view address model =
           ]
         ]
       ]
+      , section [ class "content" ]
+        (Tariff.tariffList model.tariff.tariffs)
     ]
   ]
