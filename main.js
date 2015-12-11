@@ -13111,7 +13111,7 @@ Elm.Seaport.make = function (_elm) {
                                                ,seaport._0.country]));
             case "Nothing": return "";}
          _U.badCase($moduleName,
-         "between lines 148 and 150");
+         "between lines 162 and 164");
       }();
    };
    var seaportExist = function (maybe) {
@@ -13120,7 +13120,7 @@ Elm.Seaport.make = function (_elm) {
          {case "Just": return true;
             case "Nothing": return false;}
          _U.badCase($moduleName,
-         "between lines 140 and 144");
+         "between lines 154 and 158");
       }();
    };
    var addCounter = F3(function (s,
@@ -13134,7 +13134,7 @@ Elm.Seaport.make = function (_elm) {
             case "up": return _U.cmp(x - 1,
               0) > 0 ? x - 1 : l + x - 1;}
          _U.badCase($moduleName,
-         "between lines 102 and 105");
+         "between lines 113 and 116");
       }();
    });
    var selectedPort = F2(function (n,
@@ -13155,6 +13155,8 @@ Elm.Seaport.make = function (_elm) {
                                                          ,A2(_op["=>"],
                                                          "text-align",
                                                          "left")]));
+   var ShowList = {ctor: "ShowList"};
+   var HideList = {ctor: "HideList"};
    var PickupEnter = {ctor: "PickupEnter"};
    var NextPort = function (a) {
       return {ctor: "NextPort"
@@ -13168,7 +13170,7 @@ Elm.Seaport.make = function (_elm) {
             case 40:
             return NextPort("down");}
          _U.badCase($moduleName,
-         "between lines 109 and 112");
+         "between lines 120 and 123");
       }();
    };
    var Pickup = function (a) {
@@ -13241,7 +13243,10 @@ Elm.Seaport.make = function (_elm) {
                                                                                        ,_1: $List.isEmpty(model.ports)}
                                                                                       ,{ctor: "_Tuple2"
                                                                                        ,_0: "loaded"
-                                                                                       ,_1: $Basics.not($List.isEmpty(model.ports))}]))]),
+                                                                                       ,_1: $Basics.not($List.isEmpty(model.ports))}]))
+                                             ,A2($Html$Events.onMouseLeave,
+                                             address,
+                                             HideList)]),
                                 A3(seaportList,
                                 address,
                                 model.ports,
@@ -13292,35 +13297,6 @@ Elm.Seaport.make = function (_elm) {
       decodePorts,
       portUrl(query)))));
    };
-   var places = function () {
-      var place = A4($Json$Decode.object3,
-      Seaport,
-      A2($Json$Decode._op[":="],
-      "code",
-      $Json$Decode.string),
-      A2($Json$Decode._op[":="],
-      "name",
-      $Json$Decode.string),
-      A2($Json$Decode._op[":="],
-      "country",
-      $Json$Decode.string));
-      return A2($Json$Decode._op[":="],
-      "seaports",
-      $Json$Decode.list(place));
-   }();
-   var lookupSeaport = function (inquiry) {
-      return function () {
-         var toUrl = _U.cmp($String.length(inquiry),
-         1) > -1 ? $Task.succeed(A2($Basics._op["++"],
-         "http://seaports.herokuapp.com/api/v1/seaports?q=",
-         inquiry)) : $Task.fail("Please input some character");
-         return A2($Task.andThen,
-         toUrl,
-         function ($) {
-            return $Task.mapError($Basics.always("Not found :("))($Http.get(places)($));
-         });
-      }();
-   };
    var Model = F6(function (a,
    b,
    c,
@@ -13350,7 +13326,17 @@ Elm.Seaport.make = function (_elm) {
    model) {
       return function () {
          switch (action.ctor)
-         {case "NewList":
+         {case "HideList":
+            return {ctor: "_Tuple2"
+                   ,_0: A6(Model,
+                   model.id,
+                   model.seaportCode,
+                   model.seaport,
+                   model.ports,
+                   true,
+                   model.counter)
+                   ,_1: $Effects.none};
+            case "NewList":
             return {ctor: "_Tuple2"
                    ,_0: A6(Model,
                    model.id,
@@ -13417,9 +13403,19 @@ Elm.Seaport.make = function (_elm) {
             case "RequestMore":
             return {ctor: "_Tuple2"
                    ,_0: model
-                   ,_1: getListPort(action._0)};}
+                   ,_1: getListPort(action._0)};
+            case "ShowList":
+            return {ctor: "_Tuple2"
+                   ,_0: A6(Model,
+                   model.id,
+                   model.seaportCode,
+                   model.seaport,
+                   model.ports,
+                   false,
+                   model.counter)
+                   ,_1: $Effects.none};}
          _U.badCase($moduleName,
-         "between lines 58 and 90");
+         "between lines 60 and 102");
       }();
    });
    _elm.Seaport.values = {_op: _op

@@ -125,15 +125,6 @@ header h3 {
   font-weight: 300;
   color: #888; }
 
-.pure-button:focus, .pure-button:hover {
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-    border: 1px solid #4d90fe;
-    outline: none;
-}
-.pure-button {
-    border: 1px solid #fff;
-}
-
 /*
 The `#menu` `<div>` is the parent `<div>` that contains the `.pure-menu` that
 appears on the left side of the page.
@@ -286,4 +277,3 @@ Hides the menu at `48em`, but modify this based on your app's needs.
     left: 150px; } }
 
 /*# sourceMappingURL=style.css.map */
-

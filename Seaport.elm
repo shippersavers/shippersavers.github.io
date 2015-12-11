@@ -14,14 +14,14 @@ import Task exposing (..)
 -- MODEL
 
 type alias Model =
-    { id : String
-    , seaportCode : String
-    , seaport : Maybe Seaport
-    , ports : List Seaport
-    , hideList : Bool
-    , counter : Int
-    }
-
+  { id : String
+  , seaportCode : String
+  , seaport : Maybe Seaport
+  , ports : List Seaport
+  , hideList : Bool
+  , counter : Int
+  }
+                 
 type alias Seaport =
   { code: String,
     name: String,
@@ -52,6 +52,8 @@ type Action
     | Pickup Seaport
     | NextPort String
     | PickupEnter
+    | HideList
+    | ShowList
 
 update : Action -> Model -> (Model, Effects Action)
 update action model =
@@ -89,6 +91,15 @@ update action model =
         , Effects.none
         )
 
+    HideList ->
+      ( Model model.id model.seaportCode model.seaport model.ports True model.counter
+      , Effects.none
+      )      
+
+    ShowList ->
+      ( Model model.id model.seaportCode model.seaport model.ports False model.counter
+      , Effects.none
+      )      
 
 -- VIEW
 
@@ -121,7 +132,8 @@ view address model =
       , value model.seaportCode
       ] [ ]
     , div
-      [ class "autocomplete" ]
+      [ class "autocomplete"
+      ]
       [ p [ hidden (not <| seaportExist model.seaport) ] [ text (seaportStr model.seaport) ]      
       , ul
         [ hidden model.hideList
@@ -130,7 +142,9 @@ view address model =
            ("waiting", List.isEmpty model.ports),
            ("loaded", not (List.isEmpty model.ports))
           ]
+        , onMouseLeave address (HideList)
         ]
+
         (seaportList address model.ports model.counter)
       ]
     ]
@@ -190,28 +204,6 @@ portUrl query=
 
 decodePorts : Json.Decoder (List Seaport)
 decodePorts =
-  let place =
-        Json.object3 Seaport
-          ("code" := Json.string)
-          ("name" := Json.string)
-          ("country" := Json.string)          
-  in
-      "seaports" := Json.list place
-
-
-lookupSeaport : String -> Task String (List Seaport)
-lookupSeaport inquiry =
-  let
-    toUrl =
-      if String.length inquiry >= 1
-        then succeed ("http://seaports.herokuapp.com/api/v1/seaports?q=" ++ inquiry)
-        else fail "Please input some character"
-  in
-    toUrl `andThen` (mapError (always "Not found :(") << Http.get places)
-
-
-places : Json.Decoder (List Seaport)
-places =
   let place =
         Json.object3 Seaport
           ("code" := Json.string)
