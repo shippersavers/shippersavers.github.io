@@ -16,7 +16,9 @@ import StartApp
 -- MODEL
 
 type alias Model =
-  { tariffs : List Tariff
+  { pol     : String,
+    pod     : String,          
+    tariffs : List Tariff
   }
 
 type alias Tariff =
@@ -32,23 +34,23 @@ type alias Tariff =
 
 init : (Model, Effects Action)
 init =
-  ( Model []
+  ( Model "RUVVO" "HKHKG" []
   , Effects.none
   )
 
 -- UPDATE
 type Action
-    = RequestMore
+    = RequestMore String String
     | NewList (Maybe (List Tariff))
 
 update : Action -> Model -> (Model, Effects Action)
 update action model =
   case action of
-    RequestMore ->
-      (model, getListTariff "RUVVO" "HKHKG")
+    RequestMore pol pod ->
+      (model, getListTariff model.pol model.pod)
       
     NewList maybeTariff ->
-      ( Model (Maybe.withDefault model.tariffs maybeTariff)
+      ( Model model.pol model.pod (Maybe.withDefault model.tariffs maybeTariff) 
       , Effects.none
       )
 
@@ -63,7 +65,7 @@ view address model =
         [ ("pure-button", True)
         , ("pure-button-primary", True)
         ]
-      , onClick address (RequestMore)
+      , onClick address (RequestMore model.pol model.pod)
       ]
       [ text "Search"]
     , ul

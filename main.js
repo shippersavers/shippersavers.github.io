@@ -14030,7 +14030,12 @@ Elm.Tariff.make = function (_elm) {
       return {ctor: "NewList"
              ,_0: a};
    };
-   var RequestMore = {ctor: "RequestMore"};
+   var RequestMore = F2(function (a,
+   b) {
+      return {ctor: "RequestMore"
+             ,_0: a
+             ,_1: b};
+   });
    var view = F2(function (address,
    model) {
       return A2($Html.div,
@@ -14044,7 +14049,9 @@ Elm.Tariff.make = function (_elm) {
                                                                           ,_1: true}]))
                                 ,A2($Html$Events.onClick,
                                 address,
-                                RequestMore)]),
+                                A2(RequestMore,
+                                model.pol,
+                                model.pod))]),
                    _L.fromArray([$Html.text("Search")]))
                    ,A2($Html.ul,
                    _L.fromArray([]),
@@ -14105,11 +14112,19 @@ Elm.Tariff.make = function (_elm) {
       decodePorts,
       A2(portUrl,pol,pod)))));
    });
-   var Model = function (a) {
-      return {_: {},tariffs: a};
-   };
+   var Model = F3(function (a,
+   b,
+   c) {
+      return {_: {}
+             ,pod: b
+             ,pol: a
+             ,tariffs: c};
+   });
    var init = {ctor: "_Tuple2"
-              ,_0: Model(_L.fromArray([]))
+              ,_0: A3(Model,
+              "RUVVO",
+              "HKHKG",
+              _L.fromArray([]))
               ,_1: $Effects.none};
    var update = F2(function (action,
    model) {
@@ -14117,7 +14132,10 @@ Elm.Tariff.make = function (_elm) {
          switch (action.ctor)
          {case "NewList":
             return {ctor: "_Tuple2"
-                   ,_0: Model(A2($Maybe.withDefault,
+                   ,_0: A3(Model,
+                   model.pol,
+                   model.pod,
+                   A2($Maybe.withDefault,
                    model.tariffs,
                    action._0))
                    ,_1: $Effects.none};
@@ -14125,10 +14143,10 @@ Elm.Tariff.make = function (_elm) {
             return {ctor: "_Tuple2"
                    ,_0: model
                    ,_1: A2(getListTariff,
-                   "RUVVO",
-                   "HKHKG")};}
+                   model.pol,
+                   model.pod)};}
          _U.badCase($moduleName,
-         "between lines 46 and 53");
+         "between lines 48 and 55");
       }();
    });
    _elm.Tariff.values = {_op: _op
