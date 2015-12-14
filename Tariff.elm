@@ -11,14 +11,12 @@ import Task
 import Char
 import Task exposing (..)
 
-import StartApp
-
 -- MODEL
 
 type alias Model =
   { pol     : String,
     pod     : String,          
-    tariffs : List Tariff
+    tariffs : List Tariff,
   }
 
 type alias Tariff =
@@ -31,6 +29,7 @@ type alias Tariff =
     freight  :  String,
     baf      :  String
   }
+
 
 init : (Model, Effects Action)
 init =
@@ -61,7 +60,7 @@ update action model =
       (model, getListTariff model.pol model.pod)
       
     NewList maybeTariff ->
-      ( Model model.pol model.pod (Maybe.withDefault model.tariffs maybeTariff) 
+      ( Model model.pol model.pod (Maybe.withDefault model.tariffs maybeTariff)
       , Effects.none
       )
 

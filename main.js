@@ -13487,7 +13487,48 @@ Elm.SeaportPair.make = function (_elm) {
                                 _L.fromArray([A2($Html.a,
                                 _L.fromArray([$Html$Attributes.href("#")
                                              ,$Html$Attributes.$class("pure-menu-link")]),
-                                _L.fromArray([$Html.text("About")]))]))]))]))]))
+                                _L.fromArray([$Html.text("About")]))]))]))
+                                ,A2($Html.div,
+                                _L.fromArray([$Html$Attributes.$class("filters")]),
+                                _L.fromArray([A2($Html.h2,
+                                             _L.fromArray([$Html$Attributes.$class("")]),
+                                             _L.fromArray([$Html.text("Filters")]))
+                                             ,A2($Html.div,
+                                             _L.fromArray([$Html$Attributes.$class("containers")]),
+                                             _L.fromArray([A2($Html.h3,
+                                             _L.fromArray([$Html$Attributes.$class("")]),
+                                             _L.fromArray([$Html.text("Containers")]))]))
+                                             ,A2($Html.div,
+                                             _L.fromArray([$Html$Attributes.$class("owners pure-form")]),
+                                             _L.fromArray([A2($Html.h3,
+                                                          _L.fromArray([$Html$Attributes.$class("")]),
+                                                          _L.fromArray([$Html.text("owners")]))
+                                                          ,A2($Html.label,
+                                                          _L.fromArray([$Html$Attributes.$class("pure-checkbox")]),
+                                                          _L.fromArray([A2($Html.input,
+                                                                       _L.fromArray([$Html$Attributes.$for("option-one")
+                                                                                    ,$Html$Attributes.type$("radio")]),
+                                                                       _L.fromArray([]))
+                                                                       ,$Html.text("SOC")]))
+                                                          ,A2($Html.label,
+                                                          _L.fromArray([$Html$Attributes.$class("pure-checkbox")]),
+                                                          _L.fromArray([A2($Html.input,
+                                                                       _L.fromArray([$Html$Attributes.$for("option-one")
+                                                                                    ,$Html$Attributes.type$("radio")]),
+                                                                       _L.fromArray([]))
+                                                                       ,$Html.text("COC")]))]))
+                                             ,A2($Html.h3,
+                                             _L.fromArray([$Html$Attributes.$class("")]),
+                                             _L.fromArray([$Html.text("Status")]))
+                                             ,A2($Html.h3,
+                                             _L.fromArray([$Html$Attributes.$class("")]),
+                                             _L.fromArray([$Html.text("Freight")]))
+                                             ,A2($Html.h3,
+                                             _L.fromArray([$Html$Attributes.$class("")]),
+                                             _L.fromArray([$Html.text("BAF")]))
+                                             ,A2($Html.h3,
+                                             _L.fromArray([$Html$Attributes.$class("")]),
+                                             _L.fromArray([$Html.text("Companies")]))]))]))]))
                    ,A2($Html.main$,
                    _L.fromArray([]),
                    _L.fromArray([A2($Html.header,
@@ -13578,10 +13619,11 @@ Elm.SeaportPair.make = function (_elm) {
             return function () {
                  var $ = A2($Tariff.update,
                  action._0,
-                 A3($Tariff.Model,
+                 A4($Tariff.Model,
                  model.from.seaportCode,
                  model.to.seaportCode,
-                 _L.fromArray([]))),
+                 _L.fromArray([]),
+                 $Tariff.emptyFilter)),
                  tariff = $._0,
                  fx = $._1;
                  return {ctor: "_Tuple2"
@@ -14028,6 +14070,19 @@ Elm.Tariff.make = function (_elm) {
                                          ," BAF: "
                                          ,t.baf]));
    };
+   var isSOC = function (tariff) {
+      return _U.eq(tariff.owners,
+      "SOC");
+   };
+   var filtrateTariffs = function (tariffs) {
+      return A2($List.filter,
+      isSOC,
+      tariffs);
+   };
+   var Filtrate = function (a) {
+      return {ctor: "Filtrate"
+             ,_0: a};
+   };
    var NewList = function (a) {
       return {ctor: "NewList"
              ,_0: a};
@@ -14202,6 +14257,13 @@ Elm.Tariff.make = function (_elm) {
       },
       tariffs);
    };
+   var emptyFilter = {_: {}
+                     ,owners: _L.fromArray([])};
+   var COC = {ctor: "COC"};
+   var SOC = {ctor: "SOC"};
+   var Filter = function (a) {
+      return {_: {},owners: a};
+   };
    var Tariff = F8(function (a,
    b,
    c,
@@ -14257,32 +14319,44 @@ Elm.Tariff.make = function (_elm) {
       decodePorts,
       A2(portUrl,pol,pod)))));
    });
-   var Model = F3(function (a,
+   var Model = F4(function (a,
    b,
-   c) {
+   c,
+   d) {
       return {_: {}
+             ,filters: d
              ,pod: b
              ,pol: a
              ,tariffs: c};
    });
    var init = {ctor: "_Tuple2"
-              ,_0: A3(Model,
+              ,_0: A4(Model,
               "",
               "",
-              _L.fromArray([]))
+              _L.fromArray([]),
+              emptyFilter)
               ,_1: $Effects.none};
    var update = F2(function (action,
    model) {
       return function () {
          switch (action.ctor)
-         {case "NewList":
+         {case "Filtrate":
             return {ctor: "_Tuple2"
-                   ,_0: A3(Model,
+                   ,_0: A4(Model,
+                   model.pol,
+                   model.pod,
+                   filtrateTariffs(model.tariffs),
+                   model.filters)
+                   ,_1: $Effects.none};
+            case "NewList":
+            return {ctor: "_Tuple2"
+                   ,_0: A4(Model,
                    model.pol,
                    model.pod,
                    A2($Maybe.withDefault,
                    model.tariffs,
-                   action._0))
+                   action._0),
+                   model.filters)
                    ,_1: $Effects.none};
             case "RequestMore":
             return {ctor: "_Tuple2"
@@ -14291,7 +14365,7 @@ Elm.Tariff.make = function (_elm) {
                    model.pol,
                    model.pod)};}
          _U.badCase($moduleName,
-         "between lines 59 and 66");
+         "between lines 70 and 82");
       }();
    });
    _elm.Tariff.values = {_op: _op
@@ -14299,8 +14373,10 @@ Elm.Tariff.make = function (_elm) {
                         ,update: update
                         ,view: view
                         ,tariffList: tariffList
+                        ,emptyFilter: emptyFilter
                         ,Model: Model
-                        ,Tariff: Tariff};
+                        ,Tariff: Tariff
+                        ,Filter: Filter};
    return _elm.Tariff.values;
 };
 Elm.Task = Elm.Task || {};

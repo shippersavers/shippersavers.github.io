@@ -182,14 +182,19 @@ appears on the left side of the page.
   overflow-y: auto;
   -webkit-overflow-scrolling: touch; }
 
+.filters {
+  margin-top: 2rem; }
+  .filters h2, .filters h3, .filters p, .filters label {
+    color: #999;
+    border: none;
+    padding: 0.6em 0 0.6em 0.6em; }
+  .filters h3 {
+    border-bottom: 1px solid #333;
+    border-top: 1px solid #333; }
+
 /*
     All anchors inside the menu should be styled like this.
     */
-#menu a {
-  color: #999;
-  border: none;
-  padding: 0.6em 0 0.6em 0.6em; }
-
 /*
     Remove all background/borders, since we are applying them to #menu.
     */
