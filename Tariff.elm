@@ -1,4 +1,4 @@
-module Tariff (Model, Tariff, init, Action, update, view, tariffList) where
+module Tariff (Model, Tariff, Filter, emptyFilter, init, Action, update, view, view', tariffList) where
 
 import Effects exposing (Effects, Never)
 import Html exposing (..)
@@ -10,13 +10,17 @@ import String
 import Task
 import Char
 import Task exposing (..)
+import Set exposing (..)
 
 -- MODEL
 
 type alias Model =
-  { pol     : String,
-    pod     : String,          
-    tariffs : List Tariff,
+  { pol     : String
+  , pod     : String
+  , tariffs : List Tariff
+  , filter  : Filter
+  , setFilter : Filter
+  , filterTariffs : List Tariff
   }
 
 type alias Tariff =
@@ -30,11 +34,18 @@ type alias Tariff =
     baf      :  String
   }
 
+type alias Filter =
+  { owners : String }
+
+emptyFilter = Filter ""
 
 init : (Model, Effects Action)
 init =
-  ( Model "" "" []
-  , Effects.none
+  -- ( Model "" "" []
+  -- , Effects.none
+  -- )
+  ( Model "RUVVO" "HKHKG"  []  emptyFilter emptyFilter []
+  , getListTariff "RUVVO" "HKHKG"
   )
 
 
@@ -52,19 +63,81 @@ priceTariff t =
 type Action
     = RequestMore String String
     | NewList (Maybe (List Tariff))
+    | Filtrate
+    | SetFilter String
+
 
 update : Action -> Model -> (Model, Effects Action)
-update action model =
-  case action of
+update a m =
+  case a of
     RequestMore pol pod ->
-      (model, getListTariff model.pol model.pod)
+      ( m
+      , getListTariff m.pol m.pod)
       
     NewList maybeTariff ->
-      ( Model model.pol model.pod (Maybe.withDefault model.tariffs maybeTariff)
+      ( Model m.pol m.pod (Maybe.withDefault m.tariffs maybeTariff) m.filter m.setFilter m.filterTariffs
       , Effects.none
       )
 
+    Filtrate ->
+      ( Model m.pol m.pod m.tariffs m.filter m.setFilter m.filterTariffs
+      , Effects.none
+      )
+
+    SetFilter string ->
+      let
+        setFilter = Filter string
+      in
+        ( Model m.pol m.pod m.tariffs m.filter setFilter m.filterTariffs
+        , Effects.none
+        )
+
 -- VIEW
+
+radioFilterOwners : Signal.Address Action -> Filter -> String -> Html
+radioFilterOwners address filter style =
+  div
+  []
+  [ input
+    [ type' "radio"
+    , checked (filter.owners == style )
+    , on "change" targetChecked (\_ -> Signal.message address (SetFilter style))
+-- (Signal.message address << PortUpdate)
+    ]
+    []
+  , text style ]
+
+
+view' : Signal.Address Action -> Model -> Html
+view' address model =
+    div
+    [ class "filters"]
+    [ h2 [] [ text "Filters"]
+    , h1 [] [ text model.setFilter.owners ]
+    , div [ class "owners pure-form"]
+      [ h3 [] [ text "owners"]
+      , radioFilterOwners address model.setFilter "SOC"
+      , radioFilterOwners address model.setFilter "COC"
+      ]
+    , div [ class "containers"]
+      [ h3
+        [ class "" ]
+        [ text "Containers"]
+      ]          
+    , h3
+      [ class "" ]
+      [ text "Status"]
+    , h3
+      [ class "" ]
+      [ text "Freight"]
+    , h3
+      [ class "" ]
+      [ text "BAF"]
+    , h3
+      [ class "" ]
+      [ text "Companies"]
+    ]
+
 
 view : Signal.Address Action -> Model -> Html
 view address model =

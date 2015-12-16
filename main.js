@@ -13451,6 +13451,11 @@ Elm.SeaportPair.make = function (_elm) {
    $Seaport = Elm.Seaport.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $Tariff = Elm.Tariff.make(_elm);
+   var filtrateTariff = function (tarrif) {
+      return _U.replace([["tariffs"
+                         ,_L.fromArray([])]],
+      tarrif);
+   };
    var Tariff = function (a) {
       return {ctor: "Tariff"
              ,_0: a};
@@ -13488,47 +13493,11 @@ Elm.SeaportPair.make = function (_elm) {
                                 _L.fromArray([$Html$Attributes.href("#")
                                              ,$Html$Attributes.$class("pure-menu-link")]),
                                 _L.fromArray([$Html.text("About")]))]))]))
-                                ,A2($Html.div,
-                                _L.fromArray([$Html$Attributes.$class("filters")]),
-                                _L.fromArray([A2($Html.h2,
-                                             _L.fromArray([$Html$Attributes.$class("")]),
-                                             _L.fromArray([$Html.text("Filters")]))
-                                             ,A2($Html.div,
-                                             _L.fromArray([$Html$Attributes.$class("containers")]),
-                                             _L.fromArray([A2($Html.h3,
-                                             _L.fromArray([$Html$Attributes.$class("")]),
-                                             _L.fromArray([$Html.text("Containers")]))]))
-                                             ,A2($Html.div,
-                                             _L.fromArray([$Html$Attributes.$class("owners pure-form")]),
-                                             _L.fromArray([A2($Html.h3,
-                                                          _L.fromArray([$Html$Attributes.$class("")]),
-                                                          _L.fromArray([$Html.text("owners")]))
-                                                          ,A2($Html.label,
-                                                          _L.fromArray([$Html$Attributes.$class("pure-checkbox")]),
-                                                          _L.fromArray([A2($Html.input,
-                                                                       _L.fromArray([$Html$Attributes.$for("option-one")
-                                                                                    ,$Html$Attributes.type$("radio")]),
-                                                                       _L.fromArray([]))
-                                                                       ,$Html.text("SOC")]))
-                                                          ,A2($Html.label,
-                                                          _L.fromArray([$Html$Attributes.$class("pure-checkbox")]),
-                                                          _L.fromArray([A2($Html.input,
-                                                                       _L.fromArray([$Html$Attributes.$for("option-one")
-                                                                                    ,$Html$Attributes.type$("radio")]),
-                                                                       _L.fromArray([]))
-                                                                       ,$Html.text("COC")]))]))
-                                             ,A2($Html.h3,
-                                             _L.fromArray([$Html$Attributes.$class("")]),
-                                             _L.fromArray([$Html.text("Status")]))
-                                             ,A2($Html.h3,
-                                             _L.fromArray([$Html$Attributes.$class("")]),
-                                             _L.fromArray([$Html.text("Freight")]))
-                                             ,A2($Html.h3,
-                                             _L.fromArray([$Html$Attributes.$class("")]),
-                                             _L.fromArray([$Html.text("BAF")]))
-                                             ,A2($Html.h3,
-                                             _L.fromArray([$Html$Attributes.$class("")]),
-                                             _L.fromArray([$Html.text("Companies")]))]))]))]))
+                                ,A2($Tariff.view$,
+                                A2($Signal.forwardTo,
+                                address,
+                                Tariff),
+                                model.tariff)]))]))
                    ,A2($Html.main$,
                    _L.fromArray([]),
                    _L.fromArray([A2($Html.header,
@@ -13619,11 +13588,13 @@ Elm.SeaportPair.make = function (_elm) {
             return function () {
                  var $ = A2($Tariff.update,
                  action._0,
-                 A4($Tariff.Model,
+                 A6($Tariff.Model,
                  model.from.seaportCode,
                  model.to.seaportCode,
                  _L.fromArray([]),
-                 $Tariff.emptyFilter)),
+                 $Tariff.emptyFilter,
+                 $Tariff.emptyFilter,
+                 _L.fromArray([]))),
                  tariff = $._0,
                  fx = $._1;
                  return {ctor: "_Tuple2"
@@ -13649,7 +13620,7 @@ Elm.SeaportPair.make = function (_elm) {
                         ,_1: A2($Effects.map,To,fx)};
               }();}
          _U.badCase($moduleName,
-         "between lines 42 and 68");
+         "between lines 43 and 67");
       }();
    });
    _elm.SeaportPair.values = {_op: _op
@@ -13659,8 +13630,114 @@ Elm.SeaportPair.make = function (_elm) {
                              ,To: To
                              ,Tariff: Tariff
                              ,update: update
+                             ,filtrateTariff: filtrateTariff
                              ,view: view};
    return _elm.SeaportPair.values;
+};
+Elm.Set = Elm.Set || {};
+Elm.Set.make = function (_elm) {
+   "use strict";
+   _elm.Set = _elm.Set || {};
+   if (_elm.Set.values)
+   return _elm.Set.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Set",
+   $Dict = Elm.Dict.make(_elm),
+   $List = Elm.List.make(_elm);
+   var partition = F2(function (p,
+   set) {
+      return A2($Dict.partition,
+      F2(function (k,_v0) {
+         return function () {
+            return p(k);
+         }();
+      }),
+      set);
+   });
+   var filter = F2(function (p,
+   set) {
+      return A2($Dict.filter,
+      F2(function (k,_v2) {
+         return function () {
+            return p(k);
+         }();
+      }),
+      set);
+   });
+   var foldr = F3(function (f,
+   b,
+   s) {
+      return A3($Dict.foldr,
+      F3(function (k,_v4,b) {
+         return function () {
+            return A2(f,k,b);
+         }();
+      }),
+      b,
+      s);
+   });
+   var foldl = F3(function (f,
+   b,
+   s) {
+      return A3($Dict.foldl,
+      F3(function (k,_v6,b) {
+         return function () {
+            return A2(f,k,b);
+         }();
+      }),
+      b,
+      s);
+   });
+   var toList = $Dict.keys;
+   var diff = $Dict.diff;
+   var intersect = $Dict.intersect;
+   var union = $Dict.union;
+   var member = $Dict.member;
+   var isEmpty = $Dict.isEmpty;
+   var remove = $Dict.remove;
+   var insert = function (k) {
+      return A2($Dict.insert,
+      k,
+      {ctor: "_Tuple0"});
+   };
+   var singleton = function (k) {
+      return A2($Dict.singleton,
+      k,
+      {ctor: "_Tuple0"});
+   };
+   var empty = $Dict.empty;
+   var fromList = function (xs) {
+      return A3($List.foldl,
+      insert,
+      empty,
+      xs);
+   };
+   var map = F2(function (f,s) {
+      return fromList(A2($List.map,
+      f,
+      toList(s)));
+   });
+   _elm.Set.values = {_op: _op
+                     ,empty: empty
+                     ,singleton: singleton
+                     ,insert: insert
+                     ,remove: remove
+                     ,isEmpty: isEmpty
+                     ,member: member
+                     ,foldl: foldl
+                     ,foldr: foldr
+                     ,map: map
+                     ,filter: filter
+                     ,partition: partition
+                     ,union: union
+                     ,intersect: intersect
+                     ,diff: diff
+                     ,toList: toList
+                     ,fromList: fromList};
+   return _elm.Set.values;
 };
 Elm.Signal = Elm.Signal || {};
 Elm.Signal.make = function (_elm) {
@@ -14070,19 +14147,74 @@ Elm.Tariff.make = function (_elm) {
                                          ," BAF: "
                                          ,t.baf]));
    };
-   var isSOC = function (tariff) {
-      return _U.eq(tariff.owners,
-      "SOC");
-   };
-   var filtrateTariffs = function (tariffs) {
-      return A2($List.filter,
-      isSOC,
-      tariffs);
-   };
-   var Filtrate = function (a) {
-      return {ctor: "Filtrate"
+   var SetFilter = function (a) {
+      return {ctor: "SetFilter"
              ,_0: a};
    };
+   var radioFilterOwners = F3(function (address,
+   filter,
+   style) {
+      return A2($Html.div,
+      _L.fromArray([]),
+      _L.fromArray([A2($Html.input,
+                   _L.fromArray([$Html$Attributes.type$("radio")
+                                ,$Html$Attributes.checked(_U.eq(filter.owners,
+                                style))
+                                ,A3($Html$Events.on,
+                                "change",
+                                $Html$Events.targetChecked,
+                                function (_v0) {
+                                   return function () {
+                                      return A2($Signal.message,
+                                      address,
+                                      SetFilter(style));
+                                   }();
+                                })]),
+                   _L.fromArray([]))
+                   ,$Html.text(style)]));
+   });
+   var view$ = F2(function (address,
+   model) {
+      return A2($Html.div,
+      _L.fromArray([$Html$Attributes.$class("filters")]),
+      _L.fromArray([A2($Html.h2,
+                   _L.fromArray([]),
+                   _L.fromArray([$Html.text("Filters")]))
+                   ,A2($Html.h1,
+                   _L.fromArray([]),
+                   _L.fromArray([$Html.text(model.setFilter.owners)]))
+                   ,A2($Html.div,
+                   _L.fromArray([$Html$Attributes.$class("owners pure-form")]),
+                   _L.fromArray([A2($Html.h3,
+                                _L.fromArray([]),
+                                _L.fromArray([$Html.text("owners")]))
+                                ,A3(radioFilterOwners,
+                                address,
+                                model.setFilter,
+                                "SOC")
+                                ,A3(radioFilterOwners,
+                                address,
+                                model.setFilter,
+                                "COC")]))
+                   ,A2($Html.div,
+                   _L.fromArray([$Html$Attributes.$class("containers")]),
+                   _L.fromArray([A2($Html.h3,
+                   _L.fromArray([$Html$Attributes.$class("")]),
+                   _L.fromArray([$Html.text("Containers")]))]))
+                   ,A2($Html.h3,
+                   _L.fromArray([$Html$Attributes.$class("")]),
+                   _L.fromArray([$Html.text("Status")]))
+                   ,A2($Html.h3,
+                   _L.fromArray([$Html$Attributes.$class("")]),
+                   _L.fromArray([$Html.text("Freight")]))
+                   ,A2($Html.h3,
+                   _L.fromArray([$Html$Attributes.$class("")]),
+                   _L.fromArray([$Html.text("BAF")]))
+                   ,A2($Html.h3,
+                   _L.fromArray([$Html$Attributes.$class("")]),
+                   _L.fromArray([$Html.text("Companies")]))]));
+   });
+   var Filtrate = {ctor: "Filtrate"};
    var NewList = function (a) {
       return {ctor: "NewList"
              ,_0: a};
@@ -14257,13 +14389,10 @@ Elm.Tariff.make = function (_elm) {
       },
       tariffs);
    };
-   var emptyFilter = {_: {}
-                     ,owners: _L.fromArray([])};
-   var COC = {ctor: "COC"};
-   var SOC = {ctor: "SOC"};
    var Filter = function (a) {
       return {_: {},owners: a};
    };
+   var emptyFilter = Filter("");
    var Tariff = F8(function (a,
    b,
    c,
@@ -14319,61 +14448,86 @@ Elm.Tariff.make = function (_elm) {
       decodePorts,
       A2(portUrl,pol,pod)))));
    });
-   var Model = F4(function (a,
+   var Model = F6(function (a,
    b,
    c,
-   d) {
+   d,
+   e,
+   f) {
       return {_: {}
-             ,filters: d
+             ,filter: d
+             ,filterTariffs: f
              ,pod: b
              ,pol: a
+             ,setFilter: e
              ,tariffs: c};
    });
    var init = {ctor: "_Tuple2"
-              ,_0: A4(Model,
-              "",
-              "",
+              ,_0: A6(Model,
+              "RUVVO",
+              "HKHKG",
               _L.fromArray([]),
-              emptyFilter)
-              ,_1: $Effects.none};
-   var update = F2(function (action,
-   model) {
+              emptyFilter,
+              emptyFilter,
+              _L.fromArray([]))
+              ,_1: A2(getListTariff,
+              "RUVVO",
+              "HKHKG")};
+   var update = F2(function (a,m) {
       return function () {
-         switch (action.ctor)
+         switch (a.ctor)
          {case "Filtrate":
             return {ctor: "_Tuple2"
-                   ,_0: A4(Model,
-                   model.pol,
-                   model.pod,
-                   filtrateTariffs(model.tariffs),
-                   model.filters)
+                   ,_0: A6(Model,
+                   m.pol,
+                   m.pod,
+                   m.tariffs,
+                   m.filter,
+                   m.setFilter,
+                   m.filterTariffs)
                    ,_1: $Effects.none};
             case "NewList":
             return {ctor: "_Tuple2"
-                   ,_0: A4(Model,
-                   model.pol,
-                   model.pod,
+                   ,_0: A6(Model,
+                   m.pol,
+                   m.pod,
                    A2($Maybe.withDefault,
-                   model.tariffs,
-                   action._0),
-                   model.filters)
+                   m.tariffs,
+                   a._0),
+                   m.filter,
+                   m.setFilter,
+                   m.filterTariffs)
                    ,_1: $Effects.none};
             case "RequestMore":
             return {ctor: "_Tuple2"
-                   ,_0: model
+                   ,_0: m
                    ,_1: A2(getListTariff,
-                   model.pol,
-                   model.pod)};}
+                   m.pol,
+                   m.pod)};
+            case "SetFilter":
+            return function () {
+                 var setFilter = Filter(a._0);
+                 return {ctor: "_Tuple2"
+                        ,_0: A6(Model,
+                        m.pol,
+                        m.pod,
+                        m.tariffs,
+                        m.filter,
+                        setFilter,
+                        m.filterTariffs)
+                        ,_1: $Effects.none};
+              }();}
          _U.badCase($moduleName,
-         "between lines 70 and 82");
+         "between lines 72 and 93");
       }();
    });
    _elm.Tariff.values = {_op: _op
+                        ,emptyFilter: emptyFilter
                         ,init: init
                         ,update: update
                         ,view: view
+                        ,view$: view$
                         ,tariffList: tariffList
-                        ,emptyFilter: emptyFilter
                         ,Model: Model
                         ,Tariff: Tariff
                         ,Filter: Filter};

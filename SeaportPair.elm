@@ -10,7 +10,8 @@ import Html.Attributes exposing (..)
 type alias Model =
   { from   : Seaport.Model
   , to     : Seaport.Model
-  , tariff : Tariff.Model }
+  , tariff : Tariff.Model
+  }
 
 init : String -> String -> (Model, Effects Action)
 init fromPort toPort =
@@ -59,15 +60,18 @@ update action model =
     Tariff act ->
       let
         (tariff, fx) =
-          Tariff.update act (Tariff.Model model.from.seaportCode model.to.seaportCode [] Tariff.emptyFilter)
+          Tariff.update act (Tariff.Model model.from.seaportCode model.to.seaportCode [] Tariff.emptyFilter Tariff.emptyFilter []) 
       in
-        (Model model.from model.to tariff
+        (Model model.from model.to tariff 
         , Effects.map Tariff fx
         )
-      
-      
 
 -- VIEW
+
+filtrateTariff : Tariff.Model -> Tariff.Model
+filtrateTariff tarrif = { tarrif | tariffs <- [] }
+
+
 view : Signal.Address Action -> Model -> Html
 view address model =
   div
@@ -90,47 +94,7 @@ view address model =
             [ text "About"]
           ]
         ]
-      , div [ class "filters"]
-        [ h2
-          [ class "" ]
-          [ text "Filters"]
-        , div [ class "containers"]
-          [ h3
-            [ class "" ]
-            [ text "Containers"]
-          ]          
-        , div [ class "owners pure-form"]
-          [ h3
-            [ class "" ]
-            [ text "owners"]
-          , label [ class "pure-checkbox" ]
-            [ input
-              [ for "option-one"
-              , type' "radio" ]
-              []
-            , text "SOC"
-            ]
-          , label [ class "pure-checkbox" ]
-            [ input
-              [ for "option-one"
-              , type' "radio" ]
-              []
-            , text "COC"
-            ]
-          ]          
-        , h3
-          [ class "" ]
-          [ text "Status"]
-        , h3
-          [ class "" ]
-          [ text "Freight"]
-        , h3
-          [ class "" ]
-          [ text "BAF"]
-        , h3
-          [ class "" ]
-          [ text "Companies"]
-        ]
+      , Tariff.view' (Signal.forwardTo address Tariff) model.tariff
       ]
     ]
   , Html.main' [ ]
