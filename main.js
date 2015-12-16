@@ -14114,6 +14114,7 @@ Elm.Tariff.make = function (_elm) {
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
+   $Set = Elm.Set.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $String = Elm.String.make(_elm),
    $Task = Elm.Task.make(_elm);
@@ -14147,31 +14148,41 @@ Elm.Tariff.make = function (_elm) {
                                          ," BAF: "
                                          ,t.baf]));
    };
-   var SetFilter = function (a) {
-      return {ctor: "SetFilter"
-             ,_0: a};
+   var setToStr = function (set) {
+      return function () {
+         var list = $Set.toList(set);
+         return $String.concat(list);
+      }();
    };
+   var SetFilter = F2(function (a,
+   b) {
+      return {ctor: "SetFilter"
+             ,_0: a
+             ,_1: b};
+   });
    var radioFilterOwners = F3(function (address,
    filter,
    style) {
-      return A2($Html.div,
-      _L.fromArray([]),
-      _L.fromArray([A2($Html.input,
-                   _L.fromArray([$Html$Attributes.type$("radio")
-                                ,$Html$Attributes.checked(_U.eq(filter.owners,
-                                style))
-                                ,A3($Html$Events.on,
-                                "change",
-                                $Html$Events.targetChecked,
-                                function (_v0) {
-                                   return function () {
+      return function () {
+         var isChecked = A2($Set.member,
+         style,
+         filter.owners);
+         return A2($Html.div,
+         _L.fromArray([]),
+         _L.fromArray([A2($Html.input,
+                      _L.fromArray([$Html$Attributes.type$("checkbox")
+                                   ,$Html$Attributes.checked(isChecked)
+                                   ,A3($Html$Events.on,
+                                   "change",
+                                   $Html$Events.targetChecked,
+                                   function (bool) {
                                       return A2($Signal.message,
                                       address,
-                                      SetFilter(style));
-                                   }();
-                                })]),
-                   _L.fromArray([]))
-                   ,$Html.text(style)]));
+                                      A2(SetFilter,style,bool));
+                                   })]),
+                      _L.fromArray([]))
+                      ,$Html.text(style)]));
+      }();
    });
    var view$ = F2(function (address,
    model) {
@@ -14182,7 +14193,7 @@ Elm.Tariff.make = function (_elm) {
                    _L.fromArray([$Html.text("Filters")]))
                    ,A2($Html.h1,
                    _L.fromArray([]),
-                   _L.fromArray([$Html.text(model.setFilter.owners)]))
+                   _L.fromArray([$Html.text($String.concat($Set.toList(model.setFilter.owners)))]))
                    ,A2($Html.div,
                    _L.fromArray([$Html$Attributes.$class("owners pure-form")]),
                    _L.fromArray([A2($Html.h3,
@@ -14392,7 +14403,7 @@ Elm.Tariff.make = function (_elm) {
    var Filter = function (a) {
       return {_: {},owners: a};
    };
-   var emptyFilter = Filter("");
+   var emptyFilter = Filter($Set.empty);
    var Tariff = F8(function (a,
    b,
    c,
@@ -14506,7 +14517,20 @@ Elm.Tariff.make = function (_elm) {
                    m.pod)};
             case "SetFilter":
             return function () {
-                 var setFilter = Filter(a._0);
+                 var insertSet = function () {
+                    switch (a._1)
+                    {case false:
+                       return A2($Set.remove,
+                         a._0,
+                         m.setFilter.owners);
+                       case true:
+                       return A2($Set.insert,
+                         a._0,
+                         m.setFilter.owners);}
+                    _U.badCase($moduleName,
+                    "between lines 90 and 93");
+                 }();
+                 var setFilter = Filter(insertSet);
                  return {ctor: "_Tuple2"
                         ,_0: A6(Model,
                         m.pol,
@@ -14518,7 +14542,7 @@ Elm.Tariff.make = function (_elm) {
                         ,_1: $Effects.none};
               }();}
          _U.badCase($moduleName,
-         "between lines 72 and 93");
+         "between lines 72 and 97");
       }();
    });
    _elm.Tariff.values = {_op: _op

@@ -35,9 +35,9 @@ type alias Tariff =
   }
 
 type alias Filter =
-  { owners : String }
+  { owners : Set String }
 
-emptyFilter = Filter ""
+emptyFilter = Filter empty
 
 init : (Model, Effects Action)
 init =
@@ -64,7 +64,7 @@ type Action
     = RequestMore String String
     | NewList (Maybe (List Tariff))
     | Filtrate
-    | SetFilter String
+    | SetFilter String Bool
 
 
 update : Action -> Model -> (Model, Effects Action)
@@ -84,9 +84,13 @@ update a m =
       , Effects.none
       )
 
-    SetFilter string ->
+    SetFilter string bool->
       let
-        setFilter = Filter string
+        insertSet =
+          case bool of
+            True -> Set.insert string m.setFilter.owners
+            False -> Set.remove string m.setFilter.owners
+        setFilter = Filter insertSet
       in
         ( Model m.pol m.pod m.tariffs m.filter setFilter m.filterTariffs
         , Effects.none
@@ -96,24 +100,34 @@ update a m =
 
 radioFilterOwners : Signal.Address Action -> Filter -> String -> Html
 radioFilterOwners address filter style =
-  div
-  []
-  [ input
-    [ type' "radio"
-    , checked (filter.owners == style )
-    , on "change" targetChecked (\_ -> Signal.message address (SetFilter style))
--- (Signal.message address << PortUpdate)
-    ]
+  let
+    isChecked = member style filter.owners
+  in
+    div
     []
-  , text style ]
+    [ input
+      [ type' "checkbox"
+      , checked isChecked
+      , on "change" targetChecked (\bool -> Signal.message address (SetFilter style bool))
+      -- (Signal.message address << PortUpdate)
+      ]
+      []
+    , text style ]
 
+
+setToStr : Set String -> String
+setToStr set =
+  let
+    list = toList set
+  in
+    String.concat list
 
 view' : Signal.Address Action -> Model -> Html
 view' address model =
     div
     [ class "filters"]
     [ h2 [] [ text "Filters"]
-    , h1 [] [ text model.setFilter.owners ]
+    , h1 [] [ text (String.concat (toList model.setFilter.owners)) ]
     , div [ class "owners pure-form"]
       [ h3 [] [ text "owners"]
       , radioFilterOwners address model.setFilter "SOC"
