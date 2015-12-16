@@ -60,7 +60,7 @@ update action model =
     Tariff act ->
       let
         (tariff, fx) =
-          Tariff.update act (Tariff.Model model.from.seaportCode model.to.seaportCode [] Tariff.emptyFilter Tariff.emptyFilter []) 
+          Tariff.update act (Tariff.Model model.from.seaportCode model.to.seaportCode model.tariff.tariffs model.tariff.filter model.tariff.setFilter model.tariff.filterTariffs) 
       in
         (Model model.from model.to tariff 
         , Effects.map Tariff fx

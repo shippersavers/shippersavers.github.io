@@ -13451,6 +13451,11 @@ Elm.SeaportPair.make = function (_elm) {
    $Seaport = Elm.Seaport.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $Tariff = Elm.Tariff.make(_elm);
+   var filtrateTariff = function (tarrif) {
+      return _U.replace([["tariffs"
+                         ,_L.fromArray([])]],
+      tarrif);
+   };
    var Tariff = function (a) {
       return {ctor: "Tariff"
              ,_0: a};
@@ -13477,7 +13482,8 @@ Elm.SeaportPair.make = function (_elm) {
                    _L.fromArray([A2($Html.div,
                    _L.fromArray([$Html$Attributes.$class("pure-menu")]),
                    _L.fromArray([A2($Html.a,
-                                _L.fromArray([$Html$Attributes.$class("pure-menu-heading")]),
+                                _L.fromArray([$Html$Attributes.href("/")
+                                             ,$Html$Attributes.$class("pure-menu-heading")]),
                                 _L.fromArray([$Html.text("Shipper Savers")]))
                                 ,A2($Html.ul,
                                 _L.fromArray([$Html$Attributes.$class("pure-menu-list")]),
@@ -13486,43 +13492,48 @@ Elm.SeaportPair.make = function (_elm) {
                                 _L.fromArray([A2($Html.a,
                                 _L.fromArray([$Html$Attributes.href("#")
                                              ,$Html$Attributes.$class("pure-menu-link")]),
-                                _L.fromArray([$Html.text("Home")]))]))]))]))]))
+                                _L.fromArray([$Html.text("About")]))]))]))
+                                ,A2($Tariff.view,
+                                A2($Signal.forwardTo,
+                                address,
+                                Tariff),
+                                model.tariff)]))]))
                    ,A2($Html.main$,
                    _L.fromArray([]),
                    _L.fromArray([A2($Html.header,
-                   _L.fromArray([]),
-                   _L.fromArray([A2($Html.div,
-                                _L.fromArray([$Html$Attributes.$class("hero-titles")]),
-                                _L.fromArray([A2($Html.h1,
-                                             _L.fromArray([]),
-                                             _L.fromArray([$Html.text("Shipper Savers")]))
-                                             ,A2($Html.h3,
-                                             _L.fromArray([]),
-                                             _L.fromArray([$Html.text("We compare sea freight from shipping lines and help save money")]))]))
-                                ,A2($Html.div,
-                                _L.fromArray([$Html$Attributes.$class("hero-form")]),
-                                _L.fromArray([A2($Html.div,
-                                _L.fromArray([$Html$Attributes.$class("pure-form")]),
-                                _L.fromArray([A2($Html.fieldset,
                                 _L.fromArray([]),
-                                _L.fromArray([A2($Seaport.view,
-                                             A2($Signal.forwardTo,
-                                             address,
-                                             From),
-                                             model.from)
-                                             ,A2($Seaport.view,
-                                             A2($Signal.forwardTo,
-                                             address,
-                                             To),
-                                             model.to)
-                                             ,A2($Tariff.view,
-                                             A2($Signal.forwardTo,
-                                             address,
-                                             Tariff),
-                                             model.tariff)]))]))]))
-                                ,A2($Html.div,
-                                _L.fromArray([$Html$Attributes.$class("listTariff")]),
-                                $Tariff.tariffList(model.tariff.tariffs))]))]))]));
+                                _L.fromArray([A2($Html.div,
+                                             _L.fromArray([$Html$Attributes.$class("hero-titles")]),
+                                             _L.fromArray([A2($Html.h1,
+                                                          _L.fromArray([]),
+                                                          _L.fromArray([$Html.text("Shipper Savers")]))
+                                                          ,A2($Html.h3,
+                                                          _L.fromArray([]),
+                                                          _L.fromArray([$Html.text("We compare sea freight from shipping lines and help save money")]))]))
+                                             ,A2($Html.div,
+                                             _L.fromArray([$Html$Attributes.$class("hero-form")]),
+                                             _L.fromArray([A2($Html.div,
+                                             _L.fromArray([$Html$Attributes.$class("pure-form")]),
+                                             _L.fromArray([A2($Html.fieldset,
+                                             _L.fromArray([]),
+                                             _L.fromArray([A2($Seaport.view,
+                                                          A2($Signal.forwardTo,
+                                                          address,
+                                                          From),
+                                                          model.from)
+                                                          ,A2($Seaport.view,
+                                                          A2($Signal.forwardTo,
+                                                          address,
+                                                          To),
+                                                          model.to)
+                                                          ,A2($Tariff.view,
+                                                          A2($Signal.forwardTo,
+                                                          address,
+                                                          Tariff),
+                                                          model.tariff)]))]))]))]))
+                                ,A2($Html.section,
+                                _L.fromArray([$Html$Attributes.$class("content")]),
+                                $Tariff.tariffList(model.tariff.tariffs))]))]));
    });
    var Model = F3(function (a,
    b,
@@ -13577,9 +13588,12 @@ Elm.SeaportPair.make = function (_elm) {
             return function () {
                  var $ = A2($Tariff.update,
                  action._0,
-                 A3($Tariff.Model,
+                 A6($Tariff.Model,
                  model.from.seaportCode,
                  model.to.seaportCode,
+                 _L.fromArray([]),
+                 $Tariff.emptyFilter,
+                 $Tariff.emptyFilter,
                  _L.fromArray([]))),
                  tariff = $._0,
                  fx = $._1;
@@ -13606,7 +13620,7 @@ Elm.SeaportPair.make = function (_elm) {
                         ,_1: A2($Effects.map,To,fx)};
               }();}
          _U.badCase($moduleName,
-         "between lines 42 and 68");
+         "between lines 43 and 67");
       }();
    });
    _elm.SeaportPair.values = {_op: _op
@@ -13616,8 +13630,114 @@ Elm.SeaportPair.make = function (_elm) {
                              ,To: To
                              ,Tariff: Tariff
                              ,update: update
+                             ,filtrateTariff: filtrateTariff
                              ,view: view};
    return _elm.SeaportPair.values;
+};
+Elm.Set = Elm.Set || {};
+Elm.Set.make = function (_elm) {
+   "use strict";
+   _elm.Set = _elm.Set || {};
+   if (_elm.Set.values)
+   return _elm.Set.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Set",
+   $Dict = Elm.Dict.make(_elm),
+   $List = Elm.List.make(_elm);
+   var partition = F2(function (p,
+   set) {
+      return A2($Dict.partition,
+      F2(function (k,_v0) {
+         return function () {
+            return p(k);
+         }();
+      }),
+      set);
+   });
+   var filter = F2(function (p,
+   set) {
+      return A2($Dict.filter,
+      F2(function (k,_v2) {
+         return function () {
+            return p(k);
+         }();
+      }),
+      set);
+   });
+   var foldr = F3(function (f,
+   b,
+   s) {
+      return A3($Dict.foldr,
+      F3(function (k,_v4,b) {
+         return function () {
+            return A2(f,k,b);
+         }();
+      }),
+      b,
+      s);
+   });
+   var foldl = F3(function (f,
+   b,
+   s) {
+      return A3($Dict.foldl,
+      F3(function (k,_v6,b) {
+         return function () {
+            return A2(f,k,b);
+         }();
+      }),
+      b,
+      s);
+   });
+   var toList = $Dict.keys;
+   var diff = $Dict.diff;
+   var intersect = $Dict.intersect;
+   var union = $Dict.union;
+   var member = $Dict.member;
+   var isEmpty = $Dict.isEmpty;
+   var remove = $Dict.remove;
+   var insert = function (k) {
+      return A2($Dict.insert,
+      k,
+      {ctor: "_Tuple0"});
+   };
+   var singleton = function (k) {
+      return A2($Dict.singleton,
+      k,
+      {ctor: "_Tuple0"});
+   };
+   var empty = $Dict.empty;
+   var fromList = function (xs) {
+      return A3($List.foldl,
+      insert,
+      empty,
+      xs);
+   };
+   var map = F2(function (f,s) {
+      return fromList(A2($List.map,
+      f,
+      toList(s)));
+   });
+   _elm.Set.values = {_op: _op
+                     ,empty: empty
+                     ,singleton: singleton
+                     ,insert: insert
+                     ,remove: remove
+                     ,isEmpty: isEmpty
+                     ,member: member
+                     ,foldl: foldl
+                     ,foldr: foldr
+                     ,map: map
+                     ,filter: filter
+                     ,partition: partition
+                     ,union: union
+                     ,intersect: intersect
+                     ,diff: diff
+                     ,toList: toList
+                     ,fromList: fromList};
+   return _elm.Set.values;
 };
 Elm.Signal = Elm.Signal || {};
 Elm.Signal.make = function (_elm) {
@@ -13994,6 +14114,7 @@ Elm.Tariff.make = function (_elm) {
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
+   $Set = Elm.Set.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $String = Elm.String.make(_elm),
    $Task = Elm.Task.make(_elm);
@@ -14009,19 +14130,6 @@ Elm.Tariff.make = function (_elm) {
       pod))),
       _L.fromArray([]));
    });
-   var tariffList = function (tariffs) {
-      return A2($List.map,
-      function (t) {
-         return A2($Html.div,
-         _L.fromArray([$Html$Attributes.$class("tariff")]),
-         _L.fromArray([A2($Html.div,
-         _L.fromArray([$Html$Attributes.$class("logo")]),
-         _L.fromArray([A2($Html.p,
-         _L.fromArray([]),
-         _L.fromArray([$Html.text(t.pol)]))]))]));
-      },
-      tariffs);
-   };
    var tariffStr = function (t) {
       return $String.concat(_L.fromArray(["Company: "
                                          ,t.company
@@ -14040,6 +14148,84 @@ Elm.Tariff.make = function (_elm) {
                                          ," BAF: "
                                          ,t.baf]));
    };
+   var setToStr = function (set) {
+      return function () {
+         var list = $Set.toList(set);
+         return $String.concat(list);
+      }();
+   };
+   var SetFilter = F2(function (a,
+   b) {
+      return {ctor: "SetFilter"
+             ,_0: a
+             ,_1: b};
+   });
+   var radioFilterOwners = F3(function (address,
+   filter,
+   style) {
+      return function () {
+         var isChecked = A2($Set.member,
+         style,
+         filter.owners);
+         return A2($Html.div,
+         _L.fromArray([]),
+         _L.fromArray([A2($Html.input,
+                      _L.fromArray([$Html$Attributes.type$("checkbox")
+                                   ,$Html$Attributes.checked(isChecked)
+                                   ,A3($Html$Events.on,
+                                   "change",
+                                   $Html$Events.targetChecked,
+                                   function (bool) {
+                                      return A2($Signal.message,
+                                      address,
+                                      A2(SetFilter,style,bool));
+                                   })]),
+                      _L.fromArray([]))
+                      ,$Html.text(style)]));
+      }();
+   });
+   var view$ = F2(function (address,
+   model) {
+      return A2($Html.div,
+      _L.fromArray([$Html$Attributes.$class("filters")]),
+      _L.fromArray([A2($Html.h2,
+                   _L.fromArray([]),
+                   _L.fromArray([$Html.text("Filters")]))
+                   ,A2($Html.h1,
+                   _L.fromArray([]),
+                   _L.fromArray([$Html.text($String.concat($Set.toList(model.setFilter.owners)))]))
+                   ,A2($Html.div,
+                   _L.fromArray([$Html$Attributes.$class("owners pure-form")]),
+                   _L.fromArray([A2($Html.h3,
+                                _L.fromArray([]),
+                                _L.fromArray([$Html.text("owners")]))
+                                ,A3(radioFilterOwners,
+                                address,
+                                model.setFilter,
+                                "SOC")
+                                ,A3(radioFilterOwners,
+                                address,
+                                model.setFilter,
+                                "COC")]))
+                   ,A2($Html.div,
+                   _L.fromArray([$Html$Attributes.$class("containers")]),
+                   _L.fromArray([A2($Html.h3,
+                   _L.fromArray([$Html$Attributes.$class("")]),
+                   _L.fromArray([$Html.text("Containers")]))]))
+                   ,A2($Html.h3,
+                   _L.fromArray([$Html$Attributes.$class("")]),
+                   _L.fromArray([$Html.text("Status")]))
+                   ,A2($Html.h3,
+                   _L.fromArray([$Html$Attributes.$class("")]),
+                   _L.fromArray([$Html.text("Freight")]))
+                   ,A2($Html.h3,
+                   _L.fromArray([$Html$Attributes.$class("")]),
+                   _L.fromArray([$Html.text("BAF")]))
+                   ,A2($Html.h3,
+                   _L.fromArray([$Html$Attributes.$class("")]),
+                   _L.fromArray([$Html.text("Companies")]))]));
+   });
+   var Filtrate = {ctor: "Filtrate"};
    var NewList = function (a) {
       return {ctor: "NewList"
              ,_0: a};
@@ -14060,6 +14246,9 @@ Elm.Tariff.make = function (_elm) {
                                                              ,_1: true}
                                                             ,{ctor: "_Tuple2"
                                                              ,_0: "pure-button-primary"
+                                                             ,_1: true}
+                                                            ,{ctor: "_Tuple2"
+                                                             ,_0: "button-xlarge "
                                                              ,_1: true}]))
                    ,A2($Html$Events.onClick,
                    address,
@@ -14068,6 +14257,153 @@ Elm.Tariff.make = function (_elm) {
                    model.pod))]),
       _L.fromArray([$Html.text("Search")]))]));
    });
+   var priceTariff = function (t) {
+      return function () {
+         var baf = $String.toFloat(t.baf);
+         var freight = $String.toFloat(t.freight);
+         var result = A3($Result.map2,
+         F2(function (x,y) {
+            return x + y;
+         }),
+         freight,
+         baf);
+         return $Basics.toString($Maybe.withDefault(0.0)($Result.toMaybe(result)));
+      }();
+   };
+   var tariffList = function (tariffs) {
+      return A2($List.map,
+      function (t) {
+         return A2($Html.div,
+         _L.fromArray([$Html$Attributes.$class("callout")]),
+         _L.fromArray([A2($Html.div,
+                      _L.fromArray([$Html$Attributes.$class("pure-g")]),
+                      _L.fromArray([A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-1-5")]),
+                                   _L.fromArray([A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("logo")]),
+                                   _L.fromArray([A2($Html.h3,
+                                   _L.fromArray([]),
+                                   _L.fromArray([$Html.text(t.company)]))]))]))
+                                   ,A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-1-5")]),
+                                   _L.fromArray([A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pol")]),
+                                   _L.fromArray([A2($Html.h3,
+                                   _L.fromArray([]),
+                                   _L.fromArray([$Html.text(t.pol)]))]))]))
+                                   ,A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-1-5")]),
+                                   _L.fromArray([A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("container")]),
+                                   _L.fromArray([A2($Html.h3,
+                                   _L.fromArray([]),
+                                   _L.fromArray([$Html.text(t.container)]))]))]))
+                                   ,A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-1-5")]),
+                                   _L.fromArray([A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pod")]),
+                                   _L.fromArray([A2($Html.h3,
+                                   _L.fromArray([]),
+                                   _L.fromArray([$Html.text(t.pod)]))]))]))
+                                   ,A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-1-5")]),
+                                   _L.fromArray([A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("price")]),
+                                   _L.fromArray([A2($Html.h3,
+                                   _L.fromArray([]),
+                                   _L.fromArray([$Html.text(A2($Basics._op["++"],
+                                   "$ ",
+                                   priceTariff(t)))]))]))]))]))
+                      ,A2($Html.div,
+                      _L.fromArray([$Html$Attributes.$class("pure-g")]),
+                      _L.fromArray([A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-1-5")]),
+                                   _L.fromArray([]))
+                                   ,A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-3-5")]),
+                                   _L.fromArray([A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-g arrow")]),
+                                   _L.fromArray([A2($Html.div,
+                                                _L.fromArray([$Html$Attributes.$class("pure-u-2-24")]),
+                                                _L.fromArray([]))
+                                                ,A2($Html.div,
+                                                _L.fromArray([$Html$Attributes.$class("pure-u-20-24")]),
+                                                _L.fromArray([A2($Html.div,
+                                                _L.fromArray([$Html$Attributes.$class("line")]),
+                                                _L.fromArray([]))]))
+                                                ,A2($Html.div,
+                                                _L.fromArray([$Html$Attributes.$class("pure-u-2-24")]),
+                                                _L.fromArray([A2($Html.div,
+                                                _L.fromArray([$Html$Attributes.$class("point")]),
+                                                _L.fromArray([]))]))]))]))
+                                   ,A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-1-5")]),
+                                   _L.fromArray([]))]))
+                      ,A2($Html.div,
+                      _L.fromArray([$Html$Attributes.$class("pure-g")]),
+                      _L.fromArray([A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-1-24")]),
+                                   _L.fromArray([]))
+                                   ,A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-22-24")]),
+                                   _L.fromArray([A2($Html.hr,
+                                                _L.fromArray([]),
+                                                _L.fromArray([]))
+                                                ,A2($Html.p,
+                                                _L.fromArray([]),
+                                                _L.fromArray([$Html.text("Details")]))]))
+                                   ,A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-1-24")]),
+                                   _L.fromArray([]))]))
+                      ,A2($Html.div,
+                      _L.fromArray([$Html$Attributes.$class("pure-g details")]),
+                      _L.fromArray([A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-6-24")]),
+                                   _L.fromArray([A2($Html.p,
+                                   _L.fromArray([]),
+                                   _L.fromArray([A2($Html.span,
+                                                _L.fromArray([$Html$Attributes.$class("status")]),
+                                                _L.fromArray([$Html.text("Status: ")]))
+                                                ,A2($Html.span,
+                                                _L.fromArray([]),
+                                                _L.fromArray([$Html.text(t.status)]))]))]))
+                                   ,A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-6-24")]),
+                                   _L.fromArray([A2($Html.p,
+                                   _L.fromArray([]),
+                                   _L.fromArray([A2($Html.span,
+                                                _L.fromArray([$Html$Attributes.$class("owners")]),
+                                                _L.fromArray([$Html.text("Owners: ")]))
+                                                ,A2($Html.span,
+                                                _L.fromArray([]),
+                                                _L.fromArray([$Html.text(t.owners)]))]))]))
+                                   ,A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-6-24")]),
+                                   _L.fromArray([A2($Html.p,
+                                   _L.fromArray([]),
+                                   _L.fromArray([A2($Html.span,
+                                                _L.fromArray([$Html$Attributes.$class("freight")]),
+                                                _L.fromArray([$Html.text("Freight: ")]))
+                                                ,A2($Html.span,
+                                                _L.fromArray([]),
+                                                _L.fromArray([$Html.text(t.freight)]))]))]))
+                                   ,A2($Html.div,
+                                   _L.fromArray([$Html$Attributes.$class("pure-u-6-24")]),
+                                   _L.fromArray([A2($Html.p,
+                                   _L.fromArray([]),
+                                   _L.fromArray([A2($Html.span,
+                                                _L.fromArray([$Html$Attributes.$class("baf")]),
+                                                _L.fromArray([$Html.text("BAF: ")]))
+                                                ,A2($Html.span,
+                                                _L.fromArray([]),
+                                                _L.fromArray([$Html.text(t.baf)]))]))]))]))]));
+      },
+      tariffs);
+   };
+   var Filter = function (a) {
+      return {_: {},owners: a};
+   };
+   var emptyFilter = Filter($Set.empty);
    var Tariff = F8(function (a,
    b,
    c,
@@ -14123,50 +14459,86 @@ Elm.Tariff.make = function (_elm) {
       decodePorts,
       A2(portUrl,pol,pod)))));
    });
-   var Model = F3(function (a,
+   var Model = F6(function (a,
    b,
-   c) {
+   c,
+   d,
+   e,
+   f) {
       return {_: {}
+             ,filter: d
+             ,filterTariffs: f
              ,pod: b
              ,pol: a
+             ,setFilter: e
              ,tariffs: c};
    });
    var init = {ctor: "_Tuple2"
-              ,_0: A3(Model,
-              "",
-              "",
+              ,_0: A6(Model,
+              "RUVVO",
+              "HKHKG",
+              _L.fromArray([]),
+              emptyFilter,
+              emptyFilter,
               _L.fromArray([]))
-              ,_1: $Effects.none};
-   var update = F2(function (action,
-   model) {
+              ,_1: A2(getListTariff,
+              "RUVVO",
+              "HKHKG")};
+   var update = F2(function (a,m) {
       return function () {
-         switch (action.ctor)
-         {case "NewList":
+         switch (a.ctor)
+         {case "Filtrate":
             return {ctor: "_Tuple2"
-                   ,_0: A3(Model,
-                   model.pol,
-                   model.pod,
+                   ,_0: A6(Model,
+                   m.pol,
+                   m.pod,
+                   m.tariffs,
+                   m.filter,
+                   m.setFilter,
+                   m.filterTariffs)
+                   ,_1: $Effects.none};
+            case "NewList":
+            return {ctor: "_Tuple2"
+                   ,_0: A6(Model,
+                   m.pol,
+                   m.pod,
                    A2($Maybe.withDefault,
-                   model.tariffs,
-                   action._0))
+                   m.tariffs,
+                   a._0),
+                   m.filter,
+                   m.setFilter,
+                   m.filterTariffs)
                    ,_1: $Effects.none};
             case "RequestMore":
             return {ctor: "_Tuple2"
-                   ,_0: model
+                   ,_0: m
                    ,_1: A2(getListTariff,
-                   model.pol,
-                   model.pod)};}
+                   m.pol,
+                   m.pod)};
+            case "SetFilter":
+            return {ctor: "_Tuple2"
+                   ,_0: A6(Model,
+                   m.pol,
+                   m.pod,
+                   m.tariffs,
+                   m.filter,
+                   m.setFilter,
+                   m.filterTariffs)
+                   ,_1: $Effects.none};}
          _U.badCase($moduleName,
-         "between lines 48 and 55");
+         "between lines 72 and 98");
       }();
    });
    _elm.Tariff.values = {_op: _op
+                        ,emptyFilter: emptyFilter
                         ,init: init
                         ,update: update
                         ,view: view
+                        ,view$: view$
                         ,tariffList: tariffList
                         ,Model: Model
-                        ,Tariff: Tariff};
+                        ,Tariff: Tariff
+                        ,Filter: Filter};
    return _elm.Tariff.values;
 };
 Elm.Task = Elm.Task || {};

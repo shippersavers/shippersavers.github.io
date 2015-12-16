@@ -75,9 +75,15 @@ update a m =
       , getListTariff m.pol m.pod)
       
     NewList maybeTariff ->
-      ( Model m.pol m.pod (Maybe.withDefault m.tariffs maybeTariff) m.filter m.setFilter m.filterTariffs
-      , Effects.none
-      )
+      let
+        tariffs = Maybe.withDefault m.tariffs maybeTariff
+        listOwners = List.map (.owners) tariffs
+        filters = fromList listOwners
+        filter  = Filter filters
+      in
+        ( Model m.pol m.pod tariffs filter filter m.filterTariffs
+        , Effects.none
+        )
 
     Filtrate ->
       ( Model m.pol m.pod m.tariffs m.filter m.setFilter m.filterTariffs
@@ -97,42 +103,47 @@ update a m =
         )
 
 -- VIEW
+filterOwners : Signal.Address Action -> Model-> Html
+filterOwners address model =
+  case isEmpty model.filter.owners of
+    True ->
+      p [] []
+    False ->
+      div
+      [ class "owners pure-form"]
+      [ p [] [ text "Owners"]
+      , ul [ class "filter owners" ] (listFilterOwners address model)
+      ]
+
+listFilterOwners : Signal.Address Action -> Model-> List Html
+listFilterOwners address model
+  = List.map (\x -> radioFilterOwners address model.setFilter x) (Set.toList model.filter.owners)
 
 radioFilterOwners : Signal.Address Action -> Filter -> String -> Html
 radioFilterOwners address filter style =
   let
     isChecked = member style filter.owners
   in
-    div
-    []
-    [ input
-      [ type' "checkbox"
-      , checked isChecked
-      , on "change" targetChecked (\bool -> Signal.message address (SetFilter style bool))
-      -- (Signal.message address << PortUpdate)
+    li
+    [ ]
+    [ label
+      [ ]
+      [ input
+        [ type' "checkbox"
+        , checked isChecked
+        , on "change" targetChecked (\bool -> Signal.message address (SetFilter style bool))
+        ]
+        []
+      , span [] [text style]
       ]
-      []
-    , text style ]
+    ]
 
-
-setToStr : Set String -> String
-setToStr set =
-  let
-    list = toList set
-  in
-    String.concat list
 
 view' : Signal.Address Action -> Model -> Html
 view' address model =
     div
     [ class "filters"]
-    [ h2 [] [ text "Filters"]
-    , h1 [] [ text (String.concat (toList model.setFilter.owners)) ]
-    , div [ class "owners pure-form"]
-      [ h3 [] [ text "owners"]
-      , radioFilterOwners address model.setFilter "SOC"
-      , radioFilterOwners address model.setFilter "COC"
-      ]
+    [ filterOwners address model
     , div [ class "containers"]
       [ h3
         [ class "" ]
@@ -261,6 +272,14 @@ tariffList tariffs =
                 ]
               ]
            ) tariffs
+
+
+setToStr : Set String -> String
+setToStr set =
+  let 
+    list = toList set
+  in
+    String.concat list
 
 
 -- EFFECTS

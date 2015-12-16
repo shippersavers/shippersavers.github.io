@@ -215,19 +215,6 @@ appears on the left side of the page.
   -webkit-overflow-scrolling: touch;
 }
 
-.filters {
-  margin-top: 2rem;
-  h2, h3, p, label {
-    color: #999;
-    border: none;
-    padding: 0.6em 0 0.6em 0.6em;
-  }
-  h3 {
-    border-bottom: 1px solid #333;
-    border-top: 1px solid #333;
-  }
-  
-}
     /*
     All anchors inside the menu should be styled like this.
     */
@@ -357,6 +344,51 @@ small screens.
   font-size: 125%;
 }
 
+/* Filters */
+.filters {
+  margin-top: 2rem;
+  h2, h3, p {
+    color: #999;
+    border: none;
+  }
+  p {
+    border-bottom: 1px solid #333;
+    padding: 0.6em 0 0.6em 0.6em;
+    margin: 0;
+  }
+}
+
+#menu .pure-menu ul.filter {
+  border: none;
+}
+
+ul.filter {
+  color: $base2;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  li {
+    margin: 0;
+    padding: 0;
+  }
+  label {
+    cursor: pointer;
+    padding: 10px;
+    font-weight: 700;
+    display: block;
+    transition: background .1s ease-in-out;
+    margin: 0;
+  }
+  label:hover {
+    background: #333;
+    color: #fff;
+  }
+  input {
+    margin-right: 1em;    
+  }
+}
+
+  
 
 
 /* -- Responsive Styles (Media Queries) ------------------------------------- */
