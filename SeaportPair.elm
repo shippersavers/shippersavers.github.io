@@ -118,7 +118,7 @@ view address model =
             [(Tariff.view (Signal.forwardTo address Tariff) model.tariff)]
           ]
         ]
-      , div [] (Tariff.tariffList model.tariff.tariffs)
+      , div [] (Tariff.tariffList model.tariff.filterTariffs)
       ]
     ]
   ]

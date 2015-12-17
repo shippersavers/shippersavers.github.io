@@ -29,7 +29,7 @@ type alias Tariff =
     pod      :  String,
     container:  String,
     status   :  String,
-    owners   :  String,
+    owner    :  String,
     freight  :  String,
     baf      :  String
   }
@@ -63,7 +63,6 @@ priceTariff t =
 type Action
     = RequestMore String String
     | NewList (Maybe (List Tariff))
-    | Filtrate
     | SetFilter String Bool
 
 
@@ -77,18 +76,13 @@ update a m =
     NewList maybeTariff ->
       let
         tariffs = Maybe.withDefault m.tariffs maybeTariff
-        listOwners = List.map (.owners) tariffs
+        listOwners = List.map (.owner) tariffs
         filters = fromList listOwners
         filter  = Filter filters
       in
-        ( Model m.pol m.pod tariffs filter filter m.filterTariffs
+        ( Model m.pol m.pod tariffs filter filter tariffs
         , Effects.none
         )
-
-    Filtrate ->
-      ( Model m.pol m.pod m.tariffs m.filter m.setFilter m.filterTariffs
-      , Effects.none
-      )
 
     SetFilter string bool->
       let
@@ -97,12 +91,21 @@ update a m =
             True -> Set.insert string m.setFilter.owners
             False -> Set.remove string m.setFilter.owners
         setFilter = Filter insertSet
+        filterTariffs = filterTariff setFilter m.tariffs
       in
-        ( Model m.pol m.pod m.tariffs m.filter setFilter m.filterTariffs
+        ( Model m.pol m.pod m.tariffs m.filter setFilter filterTariffs
         , Effects.none
         )
 
 -- VIEW
+filterTariff : Filter -> List Tariff -> List Tariff
+filterTariff filter tariffs = List.filter (\x -> byOwners x filter.owners) tariffs
+
+byOwners : Tariff ->  Set String -> Bool
+byOwners { owner } list =
+  member owner list
+
+
 filterOwners : Signal.Address Action -> Model-> Html
 filterOwners address model =
   case isEmpty model.filter.owners of
@@ -186,7 +189,7 @@ tariffStr t =
                 , " POD: ",       t.pod
                 , " Container: ", t.container
                 , " Status: ",    t.status
-                , " Owners: ",    t.owners
+                , " Owner: ",     t.owner
                 , " Freight: ",   t.freight
                 , " BAF: ",       t.baf
                 ]
@@ -254,7 +257,7 @@ tariffList tariffs =
                 , div [ class "pure-u-6-24" ]
                   [ p [ ]
                     [ span [ class "owners" ] [ text "Owners: " ]
-                    , span [ ] [ text t.owners ]
+                    , span [ ] [ text t.owner ]
                     ]
                   ]
                 , div [ class "pure-u-6-24" ]
