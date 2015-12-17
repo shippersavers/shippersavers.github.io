@@ -139,8 +139,7 @@ view address model =
     , div
       [ class "autocomplete"
       ]
-      [ p [ hidden (not <| seaportExist model.seaport) ] [ text (seaportStr model.seaport) ]      
-      , ul
+      [ ul
         [ hidden model.hideList
         , classList [
            ("select", True),
@@ -149,8 +148,8 @@ view address model =
           ]
         , onMouseLeave address (HideList)
         ]
-
         (seaportList address model.ports model.counter)
+      , p [ hidden (not <| seaportExist model.seaport) ] [ text (seaportStr model.seaport) ]
       ]
     ]
 
@@ -169,15 +168,18 @@ seaportStr seaport =
     Nothing -> ""
 
 seaportList : Signal.Address Action -> List Seaport -> Int -> List Html
-seaportList address seaports counter =
-  List.map (\s ->
-              li
-              [ onClick address (Pickup (fst s))
-              , classList
-                [ ("selected", (snd s))]
-              ]
-            [ text (seaportStr (Just (fst s)))]
-           ) (List.map2 (,) seaports (counterList (List.length seaports) counter))
+seaportList address listSeaports counter =
+  let
+    seaports = List.take 10 listSeaports
+  in
+    List.map (\s ->
+                li
+                [ onClick address (Pickup (fst s))
+                , classList
+                  [ ("selected", (snd s))]
+                ]
+              [ text (seaportStr (Just (fst s)))]
+             ) (List.map2 (,) seaports (counterList (List.length seaports) counter))
 
 counterList : Int -> Int -> List Bool
 counterList l n =

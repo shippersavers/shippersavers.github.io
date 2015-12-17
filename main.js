@@ -13111,7 +13111,7 @@ Elm.Seaport.make = function (_elm) {
                                                ,seaport._0.country]));
             case "Nothing": return "";}
          _U.badCase($moduleName,
-         "between lines 167 and 169");
+         "between lines 166 and 168");
       }();
    };
    var seaportExist = function (maybe) {
@@ -13120,7 +13120,7 @@ Elm.Seaport.make = function (_elm) {
          {case "Just": return true;
             case "Nothing": return false;}
          _U.badCase($moduleName,
-         "between lines 159 and 163");
+         "between lines 158 and 162");
       }();
    };
    var addCounter = F3(function (s,
@@ -13178,29 +13178,34 @@ Elm.Seaport.make = function (_elm) {
              ,_0: a};
    };
    var seaportList = F3(function (address,
-   seaports,
+   listSeaports,
    counter) {
-      return A2($List.map,
-      function (s) {
-         return A2($Html.li,
-         _L.fromArray([A2($Html$Events.onClick,
-                      address,
-                      Pickup($Basics.fst(s)))
-                      ,$Html$Attributes.classList(_L.fromArray([{ctor: "_Tuple2"
-                                                                ,_0: "selected"
-                                                                ,_1: $Basics.snd(s)}]))]),
-         _L.fromArray([$Html.text(seaportStr($Maybe.Just($Basics.fst(s))))]));
-      },
-      A3($List.map2,
-      F2(function (v0,v1) {
-         return {ctor: "_Tuple2"
-                ,_0: v0
-                ,_1: v1};
-      }),
-      seaports,
-      A2(counterList,
-      $List.length(seaports),
-      counter)));
+      return function () {
+         var seaports = A2($List.take,
+         10,
+         listSeaports);
+         return A2($List.map,
+         function (s) {
+            return A2($Html.li,
+            _L.fromArray([A2($Html$Events.onClick,
+                         address,
+                         Pickup($Basics.fst(s)))
+                         ,$Html$Attributes.classList(_L.fromArray([{ctor: "_Tuple2"
+                                                                   ,_0: "selected"
+                                                                   ,_1: $Basics.snd(s)}]))]),
+            _L.fromArray([$Html.text(seaportStr($Maybe.Just($Basics.fst(s))))]));
+         },
+         A3($List.map2,
+         F2(function (v0,v1) {
+            return {ctor: "_Tuple2"
+                   ,_0: v0
+                   ,_1: v1};
+         }),
+         seaports,
+         A2(counterList,
+         $List.length(seaports),
+         counter)));
+      }();
    });
    var PortUpdate = function (a) {
       return {ctor: "PortUpdate"
@@ -13230,10 +13235,7 @@ Elm.Seaport.make = function (_elm) {
                    _L.fromArray([]))
                    ,A2($Html.div,
                    _L.fromArray([$Html$Attributes.$class("autocomplete")]),
-                   _L.fromArray([A2($Html.p,
-                                _L.fromArray([$Html$Attributes.hidden($Basics.not(seaportExist(model.seaport)))]),
-                                _L.fromArray([$Html.text(seaportStr(model.seaport))]))
-                                ,A2($Html.ul,
+                   _L.fromArray([A2($Html.ul,
                                 _L.fromArray([$Html$Attributes.hidden(model.hideList)
                                              ,$Html$Attributes.classList(_L.fromArray([{ctor: "_Tuple2"
                                                                                        ,_0: "select"
@@ -13250,7 +13252,10 @@ Elm.Seaport.make = function (_elm) {
                                 A3(seaportList,
                                 address,
                                 model.ports,
-                                model.counter))]))]));
+                                model.counter))
+                                ,A2($Html.p,
+                                _L.fromArray([$Html$Attributes.hidden($Basics.not(seaportExist(model.seaport)))]),
+                                _L.fromArray([$Html.text(seaportStr(model.seaport))]))]))]));
    });
    var NewList = function (a) {
       return {ctor: "NewList"
@@ -13503,14 +13508,16 @@ Elm.SeaportPair.make = function (_elm) {
                    _L.fromArray([A2($Html.header,
                                 _L.fromArray([]),
                                 _L.fromArray([A2($Html.div,
-                                             _L.fromArray([$Html$Attributes.$class("hero-titles")]),
-                                             _L.fromArray([A2($Html.h1,
-                                                          _L.fromArray([]),
-                                                          _L.fromArray([$Html.text("Shipper Savers")]))
-                                                          ,A2($Html.h3,
-                                                          _L.fromArray([]),
-                                                          _L.fromArray([$Html.text("We compare sea freight from shipping lines and help save money")]))]))
-                                             ,A2($Html.div,
+                                _L.fromArray([$Html$Attributes.$class("hero-titles")]),
+                                _L.fromArray([A2($Html.h1,
+                                             _L.fromArray([]),
+                                             _L.fromArray([$Html.text("Shipper Savers")]))
+                                             ,A2($Html.h3,
+                                             _L.fromArray([]),
+                                             _L.fromArray([$Html.text("We compare sea freight from shipping lines and help save money")]))]))]))
+                                ,A2($Html.section,
+                                _L.fromArray([$Html$Attributes.$class("content")]),
+                                _L.fromArray([A2($Html.div,
                                              _L.fromArray([$Html$Attributes.$class("hero-form")]),
                                              _L.fromArray([A2($Html.div,
                                              _L.fromArray([$Html$Attributes.$class("pure-form pure-g")]),
@@ -13534,10 +13541,10 @@ Elm.SeaportPair.make = function (_elm) {
                                                           A2($Signal.forwardTo,
                                                           address,
                                                           Tariff),
-                                                          model.tariff)]))]))]))]))
-                                ,A2($Html.section,
-                                _L.fromArray([$Html$Attributes.$class("content")]),
-                                $Tariff.tariffList(model.tariff.tariffs))]))]));
+                                                          model.tariff)]))]))]))
+                                             ,A2($Html.div,
+                                             _L.fromArray([]),
+                                             $Tariff.tariffList(model.tariff.tariffs))]))]))]));
    });
    var Model = F3(function (a,
    b,

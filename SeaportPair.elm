@@ -103,7 +103,9 @@ view address model =
         [ h1 [] [ text "Shipper Savers" ]
         , h3 [] [ text "We compare sea freight from shipping lines and help save money"]
         ]
-      , div [ class "hero-form" ]
+      ]
+      , section [ class "content" ]
+      [ div [ class "hero-form" ]
         [ div [ class "pure-form pure-g" ]
           [ div
             [ class "pure-u-5-5 pure-u-md-2-5 pure-u-lg-2-5"]
@@ -116,8 +118,7 @@ view address model =
             [(Tariff.view (Signal.forwardTo address Tariff) model.tariff)]
           ]
         ]
+      , div [] (Tariff.tariffList model.tariff.tariffs)
       ]
-      , section [ class "content" ]
-        (Tariff.tariffList model.tariff.tariffs)
     ]
   ]

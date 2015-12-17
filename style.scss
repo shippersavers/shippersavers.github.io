@@ -20,6 +20,9 @@ body {
 .pickSeaport {
   padding-right: 1em;
 }
+.requestTariff {
+  padding-right: 0em;
+}
 .requestTariff button{
   width: 100%;
 }
@@ -27,9 +30,7 @@ body {
 .autocomplete {
   text-align: left;
   p {
-    position: absolute;
     margin: .2em .5em 0;
-    width: 15em;
   }
 }
 
@@ -180,8 +181,8 @@ The content `<div>` is where all your content goes.
 }
 
 header {
-  margin: 0 0 3rem 0;
-  padding: 2em 2em 3em 2em;
+  margin: 0;
+  padding: 2em 2em 0em 2em;
   text-align: center;
   h1 {
     font-size: 3em;
@@ -195,14 +196,11 @@ header {
 }
 
 .hero-titles {
-    margin: 2em auto;
+    margin: 0 auto;
 }
 .hero-form {
     text-align: left;
-    margin: 0 auto;
-    padding: 0 2em;
-    max-width: 800px;
-    line-height: 1.6em;
+    padding: 1em 0 3em 0;
 }
 
 
@@ -416,9 +414,10 @@ Hides the menu at `48em`, but modify this based on your app's needs.
 @media (min-width: 60em) {
 
     header,
-    .content {
-        padding-left: 2em;
-        padding-right: 2em;
+    .content,
+    {
+      padding-left: 2em;
+      padding-right: 2em;
     }
 
     #layout {
@@ -451,6 +450,14 @@ Hides the menu at `48em`, but modify this based on your app's needs.
         position: relative;
         left: 200px;
     }
+
+    .hero-form {
+      .pickSeaport, .requestTariff {
+        padding: 1em 0;
+      }
+    }
+
+
 }
 
 
