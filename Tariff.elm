@@ -1,4 +1,4 @@
-module Tariff (Model, Tariff, Filter, emptyFilter, init, Action, update, view, view', tariffList) where
+module Tariff (Model, Tariff, Filter, emptyFilter, init, Action, update, view, view', tariffList, countTariffs) where
 
 import Effects exposing (Effects, Never)
 import Html exposing (..)
@@ -284,6 +284,12 @@ setToStr set =
   in
     String.concat list
 
+countTariffs : Model -> String
+countTariffs model =
+  let
+    tariffs = toString (List.length model.filterTariffs)
+  in
+    tariffs ++ " results"
 
 -- EFFECTS
 

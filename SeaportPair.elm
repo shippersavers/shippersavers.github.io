@@ -118,7 +118,8 @@ view address model =
             [(Tariff.view (Signal.forwardTo address Tariff) model.tariff)]
           ]
         ]
-      , div [] (Tariff.tariffList model.tariff.filterTariffs)
+      , div [ class "callout" ] [text (Tariff.countTariffs model.tariff)]
+      , div [] (Tariff.tariffList model.tariff.tariffs)
       ]
     ]
   ]

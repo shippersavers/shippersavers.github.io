@@ -13543,8 +13543,11 @@ Elm.SeaportPair.make = function (_elm) {
                                                           Tariff),
                                                           model.tariff)]))]))]))
                                              ,A2($Html.div,
+                                             _L.fromArray([$Html$Attributes.$class("callout")]),
+                                             _L.fromArray([$Html.text($Tariff.countTariffs(model.tariff))]))
+                                             ,A2($Html.div,
                                              _L.fromArray([]),
-                                             $Tariff.tariffList(model.tariff.filterTariffs))]))]))]));
+                                             $Tariff.tariffList(model.tariff.tariffs))]))]))]));
    });
    var Model = F3(function (a,
    b,
@@ -14141,6 +14144,14 @@ Elm.Tariff.make = function (_elm) {
       pod))),
       _L.fromArray([]));
    });
+   var countTariffs = function (model) {
+      return function () {
+         var tariffs = $Basics.toString($List.length(model.filterTariffs));
+         return A2($Basics._op["++"],
+         tariffs,
+         " results");
+      }();
+   };
    var setToStr = function (set) {
       return function () {
          var list = $Set.toList(set);
@@ -14605,6 +14616,7 @@ Elm.Tariff.make = function (_elm) {
                         ,view: view
                         ,view$: view$
                         ,tariffList: tariffList
+                        ,countTariffs: countTariffs
                         ,Model: Model
                         ,Tariff: Tariff
                         ,Filter: Filter};
