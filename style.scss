@@ -4,8 +4,8 @@ $base2: #daad86;
 $base3: #312c32;
 
 html {
-    position: relative;
-    min-height: 100%;
+  position: relative;
+  min-height: 100%;
 }
 
 body {
@@ -17,80 +17,84 @@ body {
   color: $base3;
 }
 
+.pickSeaport {
+  padding-right: 1em;
+}
+.requestTariff button{
+  width: 100%;
+}
+
 .autocomplete {
-    text-align: left;
-    p {
-        position: absolute;
-        margin: .2em .5em 0;
-        width: 15em;
-    }
+  text-align: left;
+  p {
+    position: absolute;
+    margin: .2em .5em 0;
+    width: 15em;
+  }
 }
 
 input.autocomplete {
-    width: 15em;
-    margin-right: 2em;
+  width: 100%;
+  padding-right: 2em;
 }
 
+
 ul.select {
-    /* margin: 0; */
-    margin: .2em 0 0;
-    padding: 0;
-    list-style: none;
-    box-sizing: border-box;
-    border: 1px solid rgba(0,0,0,.3);
-    box-shadow: .05em .2em .6em rgba(0,0,0,.2);
-    border-radius: .3em;
-    background: rgba(white,.8);
-    /* background: linear-gradient(to bottom right, white, rgba(white,.8)); */
-    border: 1px solid rgba(0,0,0,.3);
-    box-shadow: .05em .2em .6em rgba(0,0,0,.2);
-    text-shadow: none;
-    position: absolute;
+  /* margin: 0; */
+  margin: .2em 0 0;
+  padding: 0;
+  list-style: none;
+  box-sizing: border-box;
+  border: 1px solid rgba(0,0,0,.3);
+  box-shadow: .05em .2em .6em rgba(0,0,0,.2);
+  border-radius: .3em;
+  background: rgba(white,.8);
+  /* background: linear-gradient(to bottom right, white, rgba(white,.8)); */
+  border: 1px solid rgba(0,0,0,.3);
+  box-shadow: .05em .2em .6em rgba(0,0,0,.2);
+  text-shadow: none;
+  position: absolute;
+  z-index: 1000;
 }
 ul.loaded:before {
-    content: "";
-    position: absolute;
-    top: -.43em;
-    left: 1em;
-    width: 0;
-    height: 0;
-    padding: .4em;
-    background: white;
-    border: inherit;
-    border-right: 0;
-    border-bottom: 0;
-    -webkit-transform: rotate(45deg);
-    transform: rotate(45deg);
+  content: "";
+  position: absolute;
+  top: -.43em;
+  left: 1em;
+  width: 0;
+  height: 0;
+  padding: .4em;
+  background: white;
+  border: inherit;
+  border-right: 0;
+  border-bottom: 0;
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 .select {
-    li {
-        position: relative;
-        padding: .2em .5em;
-        cursor: pointer;        
-    }
-    li:hover, li.selected{background: hsl(200, 40%, 80%); }
+  li {
+    position: relative;
+    padding: .2em .5em;
+    cursor: pointer;        
+  }
+  li:hover, li.selected{background: hsl(200, 40%, 80%); }
 }
 
 .inline {
-    display: inline-block;
+  display: inline-block;
 }
 
-.hero-titles {
-    margin: 2em auto;
-}
-.hero-form {
-}
 
 
 /* Callout */
 
 .callout {
-    margin: 0 0 1rem 0;
-    padding: 1rem;
-    border: 1px solid $base2;
-    border-radius: 0;
-    position: relative;
-    background-color: white;
+  margin: 0 0 1rem 0;
+  padding: 1rem;
+  border: 1px solid $base2;
+  border-radius: 0;
+  position: relative;
+  background-color: white;
 }
 
 .pod {
@@ -109,7 +113,7 @@ ul.loaded:before {
 .status, .owners, .freight, .baf{
   font-weight: bold;
 }
-  
+
 /* Arrow */
 .arrow {
   margin-bottom: 1rem;  
@@ -177,17 +181,30 @@ The content `<div>` is where all your content goes.
 
 header {
   margin: 0 0 3rem 0;
-  text-align: center;
   padding: 2em 2em 3em 2em;
+  text-align: center;
   h1 {
     font-size: 3em;
     font-weight: 300;
+    line-height: 1.0em;
   }
   h3 {
     font-weight: 300;
     color: $base2;
   }
 }
+
+.hero-titles {
+    margin: 2em auto;
+}
+.hero-form {
+    text-align: left;
+    margin: 0 auto;
+    padding: 0 2em;
+    max-width: 800px;
+    line-height: 1.6em;
+}
+
 
 .content-subhead {
     margin: 50px 0 20px 0;
@@ -218,7 +235,7 @@ appears on the left side of the page.
     /*
     All anchors inside the menu should be styled like this.
     */
-    
+
 
     /*
     Remove all background/borders, since we are applying them to #menu.
@@ -388,7 +405,7 @@ ul.filter {
   }
 }
 
-  
+
 
 
 /* -- Responsive Styles (Media Queries) ------------------------------------- */
@@ -396,7 +413,7 @@ ul.filter {
 /*
 Hides the menu at `48em`, but modify this based on your app's needs.
 */
-@media (min-width: 48em) {
+@media (min-width: 60em) {
 
     header,
     .content {
@@ -423,7 +440,7 @@ Hides the menu at `48em`, but modify this based on your app's needs.
     }
 }
 
-@media (max-width: 48em) {
+@media (max-width: 60em) {
     /* Only apply this when the window is small. Otherwise, the following
     case results in extra padding on the left:
         * Make the window small.

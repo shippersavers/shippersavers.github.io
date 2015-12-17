@@ -167,12 +167,12 @@ view' address model =
 view : Signal.Address Action -> Model -> Html
 view address model =
   
-  div [ class "inline" ]
+  div [ class "requestTariff" ]
     [ button
       [ classList
         [ ("pure-button", True)
         , ("pure-button-primary", True)
-        , ("button-xlarge ", True)
+        , ("button-large ", True)
         ]
       , onClick address (RequestMore model.pol model.pod)
       ]

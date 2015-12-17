@@ -13209,7 +13209,7 @@ Elm.Seaport.make = function (_elm) {
    var view = F2(function (address,
    model) {
       return A2($Html.div,
-      _L.fromArray([$Html$Attributes.$class("inline")]),
+      _L.fromArray([$Html$Attributes.$class("pickSeaport")]),
       _L.fromArray([A2($Html.input,
                    _L.fromArray([$Html$Attributes.$class("autocomplete")
                                 ,A3($Html$Events.on,
@@ -13513,20 +13513,24 @@ Elm.SeaportPair.make = function (_elm) {
                                              ,A2($Html.div,
                                              _L.fromArray([$Html$Attributes.$class("hero-form")]),
                                              _L.fromArray([A2($Html.div,
-                                             _L.fromArray([$Html$Attributes.$class("pure-form")]),
-                                             _L.fromArray([A2($Html.fieldset,
-                                             _L.fromArray([]),
-                                             _L.fromArray([A2($Seaport.view,
+                                             _L.fromArray([$Html$Attributes.$class("pure-form pure-g")]),
+                                             _L.fromArray([A2($Html.div,
+                                                          _L.fromArray([$Html$Attributes.$class("pure-u-5-5 pure-u-md-2-5 pure-u-lg-2-5")]),
+                                                          _L.fromArray([A2($Seaport.view,
                                                           A2($Signal.forwardTo,
                                                           address,
                                                           From),
-                                                          model.from)
-                                                          ,A2($Seaport.view,
+                                                          model.from)]))
+                                                          ,A2($Html.div,
+                                                          _L.fromArray([$Html$Attributes.$class("pure-u-5-5 pure-u-md-2-5 pure-u-lg-2-5")]),
+                                                          _L.fromArray([A2($Seaport.view,
                                                           A2($Signal.forwardTo,
                                                           address,
                                                           To),
-                                                          model.to)
-                                                          ,A2($Tariff.view,
+                                                          model.to)]))
+                                                          ,A2($Html.div,
+                                                          _L.fromArray([$Html$Attributes.$class("pure-u-5-5 pure-u-md-1-5 pure-u-lg-1-5")]),
+                                                          _L.fromArray([A2($Tariff.view,
                                                           A2($Signal.forwardTo,
                                                           address,
                                                           Tariff),
@@ -14261,7 +14265,7 @@ Elm.Tariff.make = function (_elm) {
    var view = F2(function (address,
    model) {
       return A2($Html.div,
-      _L.fromArray([$Html$Attributes.$class("inline")]),
+      _L.fromArray([$Html$Attributes.$class("requestTariff")]),
       _L.fromArray([A2($Html.button,
       _L.fromArray([$Html$Attributes.classList(_L.fromArray([{ctor: "_Tuple2"
                                                              ,_0: "pure-button"
@@ -14270,7 +14274,7 @@ Elm.Tariff.make = function (_elm) {
                                                              ,_0: "pure-button-primary"
                                                              ,_1: true}
                                                             ,{ctor: "_Tuple2"
-                                                             ,_0: "button-xlarge "
+                                                             ,_0: "button-large "
                                                              ,_1: true}]))
                    ,A2($Html$Events.onClick,
                    address,

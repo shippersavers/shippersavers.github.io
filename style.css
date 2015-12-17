@@ -10,6 +10,12 @@ body {
   background-color: #ffffff;
   color: #312c32; }
 
+.pickSeaport {
+  padding-right: 1em; }
+
+.requestTariff button {
+  width: 100%; }
+
 .autocomplete {
   text-align: left; }
   .autocomplete p {
@@ -18,8 +24,8 @@ body {
     width: 15em; }
 
 input.autocomplete {
-  width: 15em;
-  margin-right: 2em; }
+  width: 100%;
+  padding-right: 2em; }
 
 ul.select {
   /* margin: 0; */
@@ -35,7 +41,8 @@ ul.select {
   border: 1px solid rgba(0, 0, 0, 0.3);
   box-shadow: 0.05em 0.2em 0.6em rgba(0, 0, 0, 0.2);
   text-shadow: none;
-  position: absolute; }
+  position: absolute;
+  z-index: 1000; }
 
 ul.loaded:before {
   content: "";
@@ -62,9 +69,6 @@ ul.loaded:before {
 
 .inline {
   display: inline-block; }
-
-.hero-titles {
-  margin: 2em auto; }
 
 /* Callout */
 .callout {
@@ -150,14 +154,25 @@ The content `<div>` is where all your content goes.
 
 header {
   margin: 0 0 3rem 0;
-  text-align: center;
-  padding: 2em 2em 3em 2em; }
+  padding: 2em 2em 3em 2em;
+  text-align: center; }
   header h1 {
     font-size: 3em;
-    font-weight: 300; }
+    font-weight: 300;
+    line-height: 1.0em; }
   header h3 {
     font-weight: 300;
     color: #daad86; }
+
+.hero-titles {
+  margin: 2em auto; }
+
+.hero-form {
+  text-align: left;
+  margin: 0 auto;
+  padding: 0 2em;
+  max-width: 800px;
+  line-height: 1.6em; }
 
 .content-subhead {
   margin: 50px 0 20px 0;
@@ -327,7 +342,7 @@ ul.filter {
 /*
 Hides the menu at `48em`, but modify this based on your app's needs.
 */
-@media (min-width: 48em) {
+@media (min-width: 60em) {
   header,
   .content {
     padding-left: 2em;
@@ -345,7 +360,7 @@ Hides the menu at `48em`, but modify this based on your app's needs.
   #layout.active .menu-link {
     left: 200px; } }
 
-@media (max-width: 48em) {
+@media (max-width: 60em) {
   /* Only apply this when the window is small. Otherwise, the following
     case results in extra padding on the left:
         * Make the window small.

@@ -104,12 +104,16 @@ view address model =
         , h3 [] [ text "We compare sea freight from shipping lines and help save money"]
         ]
       , div [ class "hero-form" ]
-        [ div [ class "pure-form" ]
-          [ fieldset []
-            [ Seaport.view (Signal.forwardTo address From) model.from
-            , Seaport.view (Signal.forwardTo address To) model.to
-            , Tariff.view (Signal.forwardTo address Tariff) model.tariff
-            ]
+        [ div [ class "pure-form pure-g" ]
+          [ div
+            [ class "pure-u-5-5 pure-u-md-2-5 pure-u-lg-2-5"]
+            [(Seaport.view (Signal.forwardTo address From) model.from)]
+          , div
+            [ class "pure-u-5-5 pure-u-md-2-5 pure-u-lg-2-5"]
+            [(Seaport.view (Signal.forwardTo address To) model.to)]
+          , div
+            [ class "pure-u-5-5 pure-u-md-1-5 pure-u-lg-1-5"]
+            [(Tariff.view (Signal.forwardTo address Tariff) model.tariff)]
           ]
         ]
       ]

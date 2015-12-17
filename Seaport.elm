@@ -129,7 +129,7 @@ handler x =
 
 view : Signal.Address Action -> Model -> Html
 view address model =
-  div  [ class "inline" ]
+  div  [ class "pickSeaport" ]
     [ input
       [ class "autocomplete"
       , on "input" targetValue (Signal.message address << PortUpdate)
