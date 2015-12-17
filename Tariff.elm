@@ -35,9 +35,12 @@ type alias Tariff =
   }
 
 type alias Filter =
-  { owners : Set String }
+  { owners     : Set String
+  , containers : Set String
+  , status     : Set String
+  }
 
-emptyFilter = Filter empty
+emptyFilter = Filter empty empty empty
 
 init : (Model, Effects Action)
 init =
@@ -63,8 +66,9 @@ priceTariff t =
 type Action
     = RequestMore String String
     | NewList (Maybe (List Tariff))
-    | SetFilter String Bool
-
+    | FilterByOwners String  Bool 
+    | FilterByContainers String Bool
+    | FilterByStatus String Bool
 
 update : Action -> Model -> (Model, Effects Action)
 update a m =
@@ -76,21 +80,56 @@ update a m =
     NewList maybeTariff ->
       let
         tariffs = Maybe.withDefault m.tariffs maybeTariff
-        listOwners = List.map (.owner) tariffs
-        filters = fromList listOwners
-        filter  = Filter filters
+        listContainers   = List.map (.container) tariffs
+        filterContainers = fromList listContainers
+
+        listOwners       = List.map (.owner) tariffs
+        filterOwners     = fromList listOwners
+
+        listStatus       = List.map (.status) tariffs
+        filterStatus     = fromList listStatus
+
+        filter : Filter
+        filter  = { owners = filterOwners , containers = filterContainers, status = filterStatus }
       in
         ( Model m.pol m.pod tariffs filter filter tariffs
         , Effects.none
         )
 
-    SetFilter string bool->
+    FilterByOwners string bool -> 
       let
         insertSet =
           case bool of
             True -> Set.insert string m.setFilter.owners
             False -> Set.remove string m.setFilter.owners
-        setFilter = Filter insertSet
+        setFilter = Filter insertSet m.setFilter.containers m.setFilter.status
+
+        filterTariffs = filterTariff setFilter m.tariffs
+      in
+        ( Model m.pol m.pod m.tariffs m.filter setFilter filterTariffs
+        , Effects.none
+        )
+
+    FilterByContainers string bool -> 
+      let
+        set =
+          case bool of
+            True -> Set.insert string m.setFilter.containers
+            False -> Set.remove string m.setFilter.containers
+        setFilter = Filter m.setFilter.owners set m.setFilter.status
+        filterTariffs = filterTariff setFilter m.tariffs
+      in
+        ( Model m.pol m.pod m.tariffs m.filter setFilter filterTariffs
+        , Effects.none
+        )
+
+    FilterByStatus string bool -> 
+      let
+        set =
+          case bool of
+            True -> Set.insert string m.setFilter.status
+            False -> Set.remove string m.setFilter.status
+        setFilter = Filter m.setFilter.owners m.setFilter.containers set
         filterTariffs = filterTariff setFilter m.tariffs
       in
         ( Model m.pol m.pod m.tariffs m.filter setFilter filterTariffs
@@ -99,33 +138,45 @@ update a m =
 
 -- VIEW
 filterTariff : Filter -> List Tariff -> List Tariff
-filterTariff filter tariffs = List.filter (\x -> byOwners x filter.owners) tariffs
-
+filterTariff filter tariffs
+  = List.filter (\x -> byContainers x filter.containers)
+    (List.filter (\x -> byStatus x filter.status)
+     (List.filter (\x -> byOwners x filter.owners) tariffs))
+    
 byOwners : Tariff ->  Set String -> Bool
 byOwners { owner } list =
   member owner list
 
+byContainers : Tariff ->  Set String -> Bool
+byContainers { container } list =
+  member container list
 
-filterOwners : Signal.Address Action -> Model-> Html
-filterOwners address model =
-  case isEmpty model.filter.owners of
+byStatus : Tariff ->  Set String -> Bool
+byStatus { status } list =
+  member status list
+
+
+checkbox : Signal.Address Action -> Model -> Set String -> (String -> Bool -> Action) -> String -> Html
+checkbox address model filter tag title=
+  case isEmpty filter of
     True ->
-      p [] []
+      div [class "hidde"] [ ]
     False ->
       div
       [ class "owners pure-form"]
-      [ p [] [ text "Owners"]
-      , ul [ class "filter owners" ] (listFilterOwners address model)
+      [ p [] [ text title]
+      , ul [ class "filter owners" ] (listFilterUniversal address model filter tag)
       ]
 
-listFilterOwners : Signal.Address Action -> Model-> List Html
-listFilterOwners address model
-  = List.map (\x -> radioFilterOwners address model.setFilter x) (Set.toList model.filter.owners)
+listFilterUniversal : Signal.Address Action -> Model-> Set String -> (String -> Bool -> Action) -> List Html
+listFilterUniversal address model filter tag
+  = List.map (\x -> radioFilterUniversal address model.setFilter filter tag x) (Set.toList filter)
 
-radioFilterOwners : Signal.Address Action -> Filter -> String -> Html
-radioFilterOwners address filter style =
+radioFilterUniversal : Signal.Address Action -> Filter -> Set String -> (String -> Bool -> Action) -> String -> Html
+radioFilterUniversal address setFilter filter' tag style =
   let
-    isChecked = member style filter.owners
+    isChecked = member style filter'
+    -- f' = FilterByOwners style filter'
   in
     li
     [ ]
@@ -134,7 +185,7 @@ radioFilterOwners address filter style =
       [ input
         [ type' "checkbox"
         , checked isChecked
-        , on "change" targetChecked (\bool -> Signal.message address (SetFilter style bool))
+        , on "change" targetChecked (Signal.message address << (tag style))
         ]
         []
       , span [] [text style]
@@ -146,12 +197,11 @@ view' : Signal.Address Action -> Model -> Html
 view' address model =
     div
     [ class "filters"]
-    [ filterOwners address model
-    , div [ class "containers"]
-      [ h3
-        [ class "" ]
-        [ text "Containers"]
-      ]          
+    [ checkbox address model model.filter.containers FilterByContainers "Containers"
+    , checkbox address model model.filter.owners FilterByOwners "Owners"
+    , checkbox address model model.filter.status FilterByStatus "Status"
+    -- , p [ ] [ text (setToStr model.setFilter.owners)]
+    -- , p [ ] [ text (setToStr model.setFilter.containers)]
     , h3
       [ class "" ]
       [ text "Status"]
@@ -324,10 +374,3 @@ decodePorts =
           ("baf"       := Json.string)
   in
       "tariffs" := Json.list tariff
-
-  -- let tariff =
-  --       Json.object2 Tariff
-  --         ("pol" := Json.string)
-  --         ("pod" := Json.string)
-  -- in
-  --     "tariffs" := Json.list tariff

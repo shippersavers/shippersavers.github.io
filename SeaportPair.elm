@@ -119,7 +119,7 @@ view address model =
           ]
         ]
       , div [ class "callout" ] [text (Tariff.countTariffs model.tariff)]
-      , div [] (Tariff.tariffList model.tariff.tariffs)
+      , div [] (Tariff.tariffList model.tariff.filterTariffs)
       ]
     ]
   ]

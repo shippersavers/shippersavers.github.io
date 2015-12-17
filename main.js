@@ -13547,7 +13547,7 @@ Elm.SeaportPair.make = function (_elm) {
                                              _L.fromArray([$Html.text($Tariff.countTariffs(model.tariff))]))
                                              ,A2($Html.div,
                                              _L.fromArray([]),
-                                             $Tariff.tariffList(model.tariff.tariffs))]))]))]));
+                                             $Tariff.tariffList(model.tariff.filterTariffs))]))]))]));
    });
    var Model = F3(function (a,
    b,
@@ -14176,37 +14176,15 @@ Elm.Tariff.make = function (_elm) {
                                          ," BAF: "
                                          ,t.baf]));
    };
-   var byOwners = F2(function (_v0,
-   list) {
-      return function () {
-         return A2($Set.member,
-         _v0.owner,
-         list);
-      }();
-   });
-   var filterTariff = F2(function (filter,
-   tariffs) {
-      return A2($List.filter,
-      function (x) {
-         return A2(byOwners,
-         x,
-         filter.owners);
-      },
-      tariffs);
-   });
-   var SetFilter = F2(function (a,
-   b) {
-      return {ctor: "SetFilter"
-             ,_0: a
-             ,_1: b};
-   });
-   var radioFilterOwners = F3(function (address,
-   filter,
+   var radioFilterUniversal = F5(function (address,
+   setFilter,
+   filter$,
+   tag,
    style) {
       return function () {
          var isChecked = A2($Set.member,
          style,
-         filter.owners);
+         filter$);
          return A2($Html.li,
          _L.fromArray([]),
          _L.fromArray([A2($Html.label,
@@ -14217,10 +14195,8 @@ Elm.Tariff.make = function (_elm) {
                                    ,A3($Html$Events.on,
                                    "change",
                                    $Html$Events.targetChecked,
-                                   function (bool) {
-                                      return A2($Signal.message,
-                                      address,
-                                      A2(SetFilter,style,bool));
+                                   function ($) {
+                                      return $Signal.message(address)(tag(style)($));
                                    })]),
                       _L.fromArray([]))
                       ,A2($Html.span,
@@ -14228,52 +14204,135 @@ Elm.Tariff.make = function (_elm) {
                       _L.fromArray([$Html.text(style)]))]))]));
       }();
    });
-   var listFilterOwners = F2(function (address,
-   model) {
+   var listFilterUniversal = F4(function (address,
+   model,
+   filter,
+   tag) {
       return A2($List.map,
       function (x) {
-         return A3(radioFilterOwners,
+         return A5(radioFilterUniversal,
          address,
          model.setFilter,
+         filter,
+         tag,
          x);
       },
-      $Set.toList(model.filter.owners));
+      $Set.toList(filter));
    });
-   var filterOwners = F2(function (address,
-   model) {
+   var checkbox = F5(function (address,
+   model,
+   filter,
+   tag,
+   title) {
       return function () {
-         var _v2 = $Set.isEmpty(model.filter.owners);
-         switch (_v2)
+         var _v0 = $Set.isEmpty(filter);
+         switch (_v0)
          {case false:
             return A2($Html.div,
               _L.fromArray([$Html$Attributes.$class("owners pure-form")]),
               _L.fromArray([A2($Html.p,
                            _L.fromArray([]),
-                           _L.fromArray([$Html.text("Owners")]))
+                           _L.fromArray([$Html.text(title)]))
                            ,A2($Html.ul,
                            _L.fromArray([$Html$Attributes.$class("filter owners")]),
-                           A2(listFilterOwners,
+                           A4(listFilterUniversal,
                            address,
-                           model))]));
-            case true: return A2($Html.p,
-              _L.fromArray([]),
+                           model,
+                           filter,
+                           tag))]));
+            case true: return A2($Html.div,
+              _L.fromArray([$Html$Attributes.$class("hidde")]),
               _L.fromArray([]));}
          _U.badCase($moduleName,
-         "between lines 111 and 119");
+         "between lines 161 and 169");
       }();
+   });
+   var byStatus = F2(function (_v1,
+   list) {
+      return function () {
+         return A2($Set.member,
+         _v1.status,
+         list);
+      }();
+   });
+   var byContainers = F2(function (_v3,
+   list) {
+      return function () {
+         return A2($Set.member,
+         _v3.container,
+         list);
+      }();
+   });
+   var byOwners = F2(function (_v5,
+   list) {
+      return function () {
+         return A2($Set.member,
+         _v5.owner,
+         list);
+      }();
+   });
+   var filterTariff = F2(function (filter,
+   tariffs) {
+      return A2($List.filter,
+      function (x) {
+         return A2(byContainers,
+         x,
+         filter.containers);
+      },
+      A2($List.filter,
+      function (x) {
+         return A2(byStatus,
+         x,
+         filter.status);
+      },
+      A2($List.filter,
+      function (x) {
+         return A2(byOwners,
+         x,
+         filter.owners);
+      },
+      tariffs)));
+   });
+   var FilterByStatus = F2(function (a,
+   b) {
+      return {ctor: "FilterByStatus"
+             ,_0: a
+             ,_1: b};
+   });
+   var FilterByContainers = F2(function (a,
+   b) {
+      return {ctor: "FilterByContainers"
+             ,_0: a
+             ,_1: b};
+   });
+   var FilterByOwners = F2(function (a,
+   b) {
+      return {ctor: "FilterByOwners"
+             ,_0: a
+             ,_1: b};
    });
    var view$ = F2(function (address,
    model) {
       return A2($Html.div,
       _L.fromArray([$Html$Attributes.$class("filters")]),
-      _L.fromArray([A2(filterOwners,
+      _L.fromArray([A5(checkbox,
                    address,
-                   model)
-                   ,A2($Html.div,
-                   _L.fromArray([$Html$Attributes.$class("containers")]),
-                   _L.fromArray([A2($Html.h3,
-                   _L.fromArray([$Html$Attributes.$class("")]),
-                   _L.fromArray([$Html.text("Containers")]))]))
+                   model,
+                   model.filter.containers,
+                   FilterByContainers,
+                   "Containers")
+                   ,A5(checkbox,
+                   address,
+                   model,
+                   model.filter.owners,
+                   FilterByOwners,
+                   "Owners")
+                   ,A5(checkbox,
+                   address,
+                   model,
+                   model.filter.status,
+                   FilterByStatus,
+                   "Status")
                    ,A2($Html.h3,
                    _L.fromArray([$Html$Attributes.$class("")]),
                    _L.fromArray([$Html.text("Status")]))
@@ -14461,10 +14520,18 @@ Elm.Tariff.make = function (_elm) {
       },
       tariffs);
    };
-   var Filter = function (a) {
-      return {_: {},owners: a};
-   };
-   var emptyFilter = Filter($Set.empty);
+   var Filter = F3(function (a,
+   b,
+   c) {
+      return {_: {}
+             ,containers: b
+             ,owners: a
+             ,status: c};
+   });
+   var emptyFilter = A3(Filter,
+   $Set.empty,
+   $Set.empty,
+   $Set.empty);
    var Tariff = F8(function (a,
    b,
    c,
@@ -14548,18 +14615,129 @@ Elm.Tariff.make = function (_elm) {
    var update = F2(function (a,m) {
       return function () {
          switch (a.ctor)
-         {case "NewList":
+         {case "FilterByContainers":
+            return function () {
+                 var set = function () {
+                    switch (a._1)
+                    {case false:
+                       return A2($Set.remove,
+                         a._0,
+                         m.setFilter.containers);
+                       case true:
+                       return A2($Set.insert,
+                         a._0,
+                         m.setFilter.containers);}
+                    _U.badCase($moduleName,
+                    "between lines 116 and 119");
+                 }();
+                 var setFilter = A3(Filter,
+                 m.setFilter.owners,
+                 set,
+                 m.setFilter.status);
+                 var filterTariffs = A2(filterTariff,
+                 setFilter,
+                 m.tariffs);
+                 return {ctor: "_Tuple2"
+                        ,_0: A6(Model,
+                        m.pol,
+                        m.pod,
+                        m.tariffs,
+                        m.filter,
+                        setFilter,
+                        filterTariffs)
+                        ,_1: $Effects.none};
+              }();
+            case "FilterByOwners":
+            return function () {
+                 var insertSet = function () {
+                    switch (a._1)
+                    {case false:
+                       return A2($Set.remove,
+                         a._0,
+                         m.setFilter.owners);
+                       case true:
+                       return A2($Set.insert,
+                         a._0,
+                         m.setFilter.owners);}
+                    _U.badCase($moduleName,
+                    "between lines 102 and 105");
+                 }();
+                 var setFilter = A3(Filter,
+                 insertSet,
+                 m.setFilter.containers,
+                 m.setFilter.status);
+                 var filterTariffs = A2(filterTariff,
+                 setFilter,
+                 m.tariffs);
+                 return {ctor: "_Tuple2"
+                        ,_0: A6(Model,
+                        m.pol,
+                        m.pod,
+                        m.tariffs,
+                        m.filter,
+                        setFilter,
+                        filterTariffs)
+                        ,_1: $Effects.none};
+              }();
+            case "FilterByStatus":
+            return function () {
+                 var set = function () {
+                    switch (a._1)
+                    {case false:
+                       return A2($Set.remove,
+                         a._0,
+                         m.setFilter.status);
+                       case true:
+                       return A2($Set.insert,
+                         a._0,
+                         m.setFilter.status);}
+                    _U.badCase($moduleName,
+                    "between lines 129 and 132");
+                 }();
+                 var setFilter = A3(Filter,
+                 m.setFilter.owners,
+                 m.setFilter.containers,
+                 set);
+                 var filterTariffs = A2(filterTariff,
+                 setFilter,
+                 m.tariffs);
+                 return {ctor: "_Tuple2"
+                        ,_0: A6(Model,
+                        m.pol,
+                        m.pod,
+                        m.tariffs,
+                        m.filter,
+                        setFilter,
+                        filterTariffs)
+                        ,_1: $Effects.none};
+              }();
+            case "NewList":
             return function () {
                  var tariffs = A2($Maybe.withDefault,
                  m.tariffs,
                  a._0);
+                 var listContainers = A2($List.map,
+                 function (_) {
+                    return _.container;
+                 },
+                 tariffs);
+                 var filterContainers = $Set.fromList(listContainers);
                  var listOwners = A2($List.map,
                  function (_) {
                     return _.owner;
                  },
                  tariffs);
-                 var filters = $Set.fromList(listOwners);
-                 var filter = Filter(filters);
+                 var filterOwners = $Set.fromList(listOwners);
+                 var listStatus = A2($List.map,
+                 function (_) {
+                    return _.status;
+                 },
+                 tariffs);
+                 var filterStatus = $Set.fromList(listStatus);
+                 var filter = {_: {}
+                              ,containers: filterContainers
+                              ,owners: filterOwners
+                              ,status: filterStatus};
                  return {ctor: "_Tuple2"
                         ,_0: A6(Model,
                         m.pol,
@@ -14575,38 +14753,9 @@ Elm.Tariff.make = function (_elm) {
                    ,_0: m
                    ,_1: A2(getListTariff,
                    m.pol,
-                   m.pod)};
-            case "SetFilter":
-            return function () {
-                 var insertSet = function () {
-                    switch (a._1)
-                    {case false:
-                       return A2($Set.remove,
-                         a._0,
-                         m.setFilter.owners);
-                       case true:
-                       return A2($Set.insert,
-                         a._0,
-                         m.setFilter.owners);}
-                    _U.badCase($moduleName,
-                    "between lines 90 and 93");
-                 }();
-                 var setFilter = Filter(insertSet);
-                 var filterTariffs = A2(filterTariff,
-                 setFilter,
-                 m.tariffs);
-                 return {ctor: "_Tuple2"
-                        ,_0: A6(Model,
-                        m.pol,
-                        m.pod,
-                        m.tariffs,
-                        m.filter,
-                        setFilter,
-                        filterTariffs)
-                        ,_1: $Effects.none};
-              }();}
+                   m.pod)};}
          _U.badCase($moduleName,
-         "between lines 71 and 98");
+         "between lines 75 and 137");
       }();
    });
    _elm.Tariff.values = {_op: _op
