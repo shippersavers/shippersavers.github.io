@@ -135,6 +135,7 @@ view address model =
       , on "input" targetValue (Signal.message address << PortUpdate)
       , on "keydown" keyCode (\code -> Signal.message address (handler code))
       , value model.seaportCode
+      , placeholder model.id
       ] [ ]
     , div
       [ class "autocomplete"

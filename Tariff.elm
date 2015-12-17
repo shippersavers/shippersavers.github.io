@@ -1,4 +1,4 @@
-module Tariff (Model, Tariff, Filter, emptyFilter, init, Action, update, view, view', tariffList, countTariffs) where
+module Tariff (Model, Tariff, Filter, emptyFilter, init, Action, update, view, view', tariffDiv) where
 
 import Effects exposing (Effects, Never)
 import Html exposing (..)
@@ -44,12 +44,12 @@ emptyFilter = Filter empty empty empty
 
 init : (Model, Effects Action)
 init =
-  -- ( Model "" "" []
-  -- , Effects.none
-  -- )
-  ( Model "RUVVO" "HKHKG"  []  emptyFilter emptyFilter []
-  , getListTariff "RUVVO" "HKHKG"
+  ( Model "" "" [] emptyFilter emptyFilter []
+  , Effects.none
   )
+  -- ( Model "RUVVO" "HKHKG"  []  emptyFilter emptyFilter []
+  -- , getListTariff "RUVVO" "HKHKG"
+  -- )
 
 
 priceTariff : Tariff -> String
@@ -202,18 +202,15 @@ view' address model =
     , checkbox address model model.filter.status FilterByStatus "Status"
     -- , p [ ] [ text (setToStr model.setFilter.owners)]
     -- , p [ ] [ text (setToStr model.setFilter.containers)]
-    , h3
-      [ class "" ]
-      [ text "Status"]
-    , h3
-      [ class "" ]
-      [ text "Freight"]
-    , h3
-      [ class "" ]
-      [ text "BAF"]
-    , h3
-      [ class "" ]
-      [ text "Companies"]
+    -- , h3
+    --   [ class "" ]
+    --   [ text "Freight"]
+    -- , h3
+    --   [ class "" ]
+    --   [ text "BAF"]
+    -- , h3
+    --   [ class "" ]
+    --   [ text "Companies"]
     ]
 
 
@@ -243,6 +240,33 @@ tariffStr t =
                 , " Freight: ",   t.freight
                 , " BAF: ",       t.baf
                 ]
+
+countTariffs : List Tariff -> String
+countTariffs filterTariffs =
+  let
+    number  = List.length filterTariffs
+    tariffs = toString (List.length filterTariffs)
+  in
+    case number of
+      0 -> "No tariffs found for your request. Change your filter settings to see tariffs."
+      _ -> tariffs ++ " results"
+
+validateFields : Model -> List Html
+validateFields model =
+  case model.pol of
+    "" -> [ p [] [text ""] ]
+    _  -> [ p [] [text "No tariffs found for your request. "] ]
+
+tariffDiv : Model -> List Html
+tariffDiv model =
+  let
+    tariffs = model.tariffs
+    filterTariffs = model.filterTariffs
+  in
+    case tariffs of
+      [] -> validateFields model
+      _ -> [ div [ class "callout" ] [text (countTariffs filterTariffs)] ] ++ (tariffList model.filterTariffs)
+
 
 tariffList : List Tariff -> List Html
 tariffList tariffs =
@@ -333,13 +357,6 @@ setToStr set =
     list = toList set
   in
     String.concat list
-
-countTariffs : Model -> String
-countTariffs model =
-  let
-    tariffs = toString (List.length model.filterTariffs)
-  in
-    tariffs ++ " results"
 
 -- EFFECTS
 
